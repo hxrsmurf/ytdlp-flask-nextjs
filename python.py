@@ -2,7 +2,11 @@ import json
 from flask import Flask, jsonify, request, redirect, url_for
 from yt_dlp import YoutubeDL
 
+from functions.handler_json import handler_json
+
+
 app = Flask(__name__)
+
 @app.route('/', methods=['GET'])
 def query_records():
     if request.args:
@@ -22,12 +26,26 @@ def query_records():
                 'progress_hooks' : [hook]
             }
 
-            # http://127.0.0.1:5000/?video=https://www.youtube.com/
+            # http://127.0.0.1:5000/?video=https://www.youtube.com/watch?v=KjR0H8N94Ek
 
             with YoutubeDL(ytdl_opts) as ydl:
-                info = ydl.extract_info(video, download=True)
+                info = ydl.extract_info(video_url, download=False)
                 filename = ydl.prepare_filename(info)
                 filename = filename.replace('\\','/')
+
+                channel = info['channel']
+                description = info['description']
+                title = info['fulltitle']
+                thumbnail = info['thumbnail']
+                playlist = info['playlist']
+                original_url = info['original_url']
+
+                print(playlist)
+
+                handler_json(channel, description, title, thumbnail, playlist, original_url)
+
+                return (info)
+
                 return redirect(f'http://127.0.0.1:5000/{filename}')
 
     else:
