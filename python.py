@@ -27,24 +27,32 @@ def query_records():
             }
 
             # http://127.0.0.1:5000/?video=https://www.youtube.com/watch?v=KjR0H8N94Ek
+            # http://127.0.0.1:5000/?video=https://www.youtube.com/playlist?list=PLIwiAebpd5CJiaj64YaRzbW5XhymIXS6V
 
             with YoutubeDL(ytdl_opts) as ydl:
-                info = ydl.extract_info(video_url, download=False)
+                info = ydl.extract_info(video_url, download=True)
                 filename = ydl.prepare_filename(info)
                 filename = filename.replace('\\','/')
 
+                title, thumbnail, playlist = None, None, None
+
+                try:
+                    if not info['_type']:
+                        title = info['fulltitle']
+                        thumbnail = info['thumbnail']
+                        playlist = info['playlist']
+                except:
+                    thumbnail = None
+                    playlist = True
+                    title = info['title']
+
                 channel = info['channel']
                 description = info['description']
-                title = info['fulltitle']
-                thumbnail = info['thumbnail']
-                playlist = info['playlist']
                 original_url = info['original_url']
-
-                print(playlist)
 
                 handler_json(channel, description, title, thumbnail, playlist, original_url)
 
-                return (info)
+                #return (info)
 
                 return redirect(f'http://127.0.0.1:5000/{filename}')
 
