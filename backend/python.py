@@ -1,11 +1,14 @@
+import os
 import json
 from flask import Flask, jsonify, request, redirect
 from yt_dlp import YoutubeDL
 from flask_cors import CORS, cross_origin
+from dotenv import load_dotenv
 
 from functions.handler_json import handler_json, handler_json_file, handler_downloader
 from functions.downloader import download
 
+load_dotenv('.env')
 app = Flask(__name__)
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
@@ -125,5 +128,10 @@ def single_download():
     video = request.args.get('url')
     download(video)
     return ('Success')
+
+@app.route('/test_env_variables')
+def test():
+    API_url = os.environ.get("API_url")
+    return(API_url)
 
 app.run()

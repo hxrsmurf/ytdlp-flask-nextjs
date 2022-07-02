@@ -1,2 +1,3 @@
 *.mp4
 backend/functions/__pycache__/*
+backend/.env
