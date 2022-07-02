@@ -101,4 +101,19 @@ def channels():
         search = None
         return(handler_json_file('channels', search))
 
+
+@app.route('/videos', methods=['GET'])
+@cross_origin()
+def videos():
+    search = request.args.get('search')
+    if search:
+        # http://127.0.0.1:5000/channels?search=https://www.youtube.com/c/aliensrock
+
+        handler_json_file('videos', search)
+
+        return('Success')
+    else:
+        search = None
+        return(handler_json_file('videos', search))
+
 app.run()
