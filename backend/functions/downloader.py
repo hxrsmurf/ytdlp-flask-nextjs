@@ -12,7 +12,7 @@ def download(video):
         'download_archive': 'static/downloaded_videos.txt'
     }
 
-    if '/c/' in video:
+    if '/c/' in video or '/user/' in video:
         ytdl_opts['playlistend'] = 5 # Not sure how the python daterange works.
 
     with YoutubeDL(ytdl_opts) as ydl:
