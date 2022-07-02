@@ -1,4 +1,5 @@
 from yt_dlp import YoutubeDL
+from functions.backblaze_upload import b2_upload
 
 def download(video):
     def hook(d):
@@ -9,7 +10,8 @@ def download(video):
         'outtmpl' : 'static/%(uploader)s/%(upload_date>%Y-%m-%d)s_%(id)s_%(title)s.%(ext)s',
         'progress_hooks' : [hook],
         #'daterange' : 'today-1year',
-        'download_archive': 'static/downloaded_videos.txt'
+        'download_archive': 'static/downloaded_videos.txt',
+        'windowsfilenames': True
     }
 
     if '/c/' in video or '/user/' in video:
@@ -17,3 +19,4 @@ def download(video):
 
     with YoutubeDL(ytdl_opts) as ydl:
         info = ydl.extract_info(video, download=True)
+        filename = ydl.prepare_filename(info)
