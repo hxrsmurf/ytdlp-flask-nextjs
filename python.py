@@ -2,8 +2,7 @@ import json
 from flask import Flask, jsonify, request, redirect, url_for
 from yt_dlp import YoutubeDL
 
-from functions.handler_json import handler_json
-
+from functions.handler_json import handler_json, handler_json_file
 
 app = Flask(__name__)
 
@@ -85,5 +84,17 @@ def create_record():
         f.write(json.dumps(records, indent=2))
 
     return jsonify(record)
+
+@app.route('/channels', methods=['GET'])
+def channels():
+    search = request.args.get('search')
+    if search:
+        # http://127.0.0.1:5000/channels?search=https://www.youtube.com/c/aliensrock
+
+        handler_json_file('channels', search)
+
+        return('Success')
+    else:
+        return('No channel inputted')
 
 app.run()

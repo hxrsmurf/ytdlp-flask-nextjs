@@ -24,3 +24,15 @@ def handler_json(channel, description, title, thumbnail, playlist, original_url)
 
     with open(file_name, 'w') as f:
         f.write(json.dumps(records, indent=2))
+
+def handler_json_file(type, input):
+    with open(f'{type}.txt', 'r') as f:
+        data = f.read()
+
+    if data:
+        records = json.loads(data)
+        if not input in records:
+            records.append(input)
+
+            with open(f'{type}.txt', 'w') as f:
+                f.write(json.dumps(records, indent=2))
