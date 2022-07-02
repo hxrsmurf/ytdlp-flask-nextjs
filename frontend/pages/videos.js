@@ -15,7 +15,7 @@ export default function videos({ results }) {
                             {result.channel}
                             <ul>
                                 {result.videos.map((video,id) => (
-                                    <li key={id}><a href={ process.env.API_URL + result.channel + '/' + video}>{video}</a></li>
+                                    <li key={id}><a href={ process.env.VIDEO_URL + result.channel + '/' + video}>{video}</a></li>
                                 ))}
                             </ul>
                         </li>
