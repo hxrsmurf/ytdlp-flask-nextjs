@@ -42,7 +42,7 @@ export default function channels({ results }) {
     )
 }
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
     const res = await fetch('http://127.0.0.1:5000/channels')
     const results = await res.json()
     return {
