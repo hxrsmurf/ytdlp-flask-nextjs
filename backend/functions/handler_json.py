@@ -50,17 +50,17 @@ def handler_downloader(directory):
         return available_files
 
     if 'static' in directory:
-        available_files = []
         available_videos = []
         for root, dirs, files in os.walk(directory):
+            channel_videos = []
             files.sort(reverse=True)
             if not root == 'static':
                 for file in files:
-                    available_files.append(file)
+                    channel_videos.append(file)
 
                 available_videos.append({
                     'channel': root.split('\\')[1],
-                    'videos': available_files
+                    'videos': channel_videos
                 })
 
         return (available_videos)
