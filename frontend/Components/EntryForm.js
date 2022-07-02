@@ -13,6 +13,7 @@ export default function EntryForm( {type}) {
         const base_url = 'http://127.0.0.1:5000/'
         const url = base_url + type.toLowerCase() + '?search=' + value
         await fetch(url)
+        await fetch('http://127.0.0.1:5000/downloader')
         Router.reload(window.location.pathname)
     }
 
