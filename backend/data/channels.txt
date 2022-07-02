@@ -1,1 +1,11 @@
-[]
+[
+  "https://www.youtube.com/c/aliensrock",
+  "https://www.youtube.com/c/EntertainTheElk",
+  "https://www.youtube.com/c/Nerdstalgic",
+  "https://www.youtube.com/c/F1",
+  "https://www.youtube.com/c/CasuallyExplained",
+  "https://www.youtube.com/c/Wendoverproductions",
+  "https://www.youtube.com/c/inanutshell",
+  "https://www.youtube.com/user/BostonDynamics",
+  "https://www.youtube.com/c/StuffMadeHere"
+]
