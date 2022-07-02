@@ -113,7 +113,6 @@ def downloader():
             if len(json_value) >= 1:
                 for j in json_value:
                     download(j)
-                    #print(j)
 
     return(jsonify(available_files))
 

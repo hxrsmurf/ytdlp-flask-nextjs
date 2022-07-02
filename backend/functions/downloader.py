@@ -15,9 +15,8 @@ def download(video):
         'download_archive': 'downloaded_videos.txt'
     }
 
-    # http://127.0.0.1:5000/?video=https://www.youtube.com/watch?v=KjR0H8N94Ek
-    # http://127.0.0.1:5000/?video=https://www.youtube.com/playlist?list=PLIwiAebpd5CJiaj64YaRzbW5XhymIXS6V
-    # http://127.0.0.1:5000/?video=https://www.youtube.com/c/aliensrock
+    if '/c/' in video:
+        ytdl_opts['playlistend'] = 30 # Not sure how the python daterange works.
 
     with YoutubeDL(ytdl_opts) as ydl:
         info = ydl.extract_info(video, download=True)
