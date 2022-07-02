@@ -29,7 +29,8 @@ def query_records():
             ytdl_opts = {
                 'outtmpl' : 'static/%(uploader)s/%(title)s.%(ext)s',
                 'progress_hooks' : [hook],
-                'daterange' : 'today-1weeks'
+                'daterange' : 'today-1weeks',
+                'ignoreerrors' : True
             }
 
             # http://127.0.0.1:5000/?video=https://www.youtube.com/watch?v=KjR0H8N94Ek
@@ -58,8 +59,6 @@ def query_records():
                 original_url = info['original_url']
 
                 handler_json(channel, description, title, thumbnail, playlist, original_url)
-
-                #return (info)
 
                 return redirect(f'http://127.0.0.1:5000/{filename}')
 
