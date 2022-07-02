@@ -11,7 +11,6 @@ export default function EntryForm({ type }) {
 
     const handleSubmit = async (event) => {
         event.preventDefault()
-        console.log(event)
         const base_url = 'http://127.0.0.1:5000/'
         setLoading(true)
         await fetch('http://127.0.0.1:5000/download?url=' + value)
@@ -35,7 +34,8 @@ export default function EntryForm({ type }) {
                     <Button variant="primary" type="submit" onClick={(e) => handleSubmit(e)}>
                         Submit
                     </Button>
-                </Form>}
+                </Form>
+            }
         </>
     )
 }
