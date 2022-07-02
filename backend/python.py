@@ -94,9 +94,9 @@ def videos():
         search = None
         return(handler_json_file('videos', search))
 
-@app.route('/downloader', methods=['GET'])
+@app.route('/download_all_videos', methods=['GET'])
 @cross_origin()
-def downloader():
+def download_all_videos():
     files = handler_downloader('data')
     available_files = []
 
@@ -118,7 +118,12 @@ def downloader():
 @app.route('/available_videos', methods=['GET'])
 def available_videos():
     available_files = handler_downloader('static')
-
     return(jsonify(available_files))
+
+@app.route('/download',methods=['GET'])
+def single_download():
+    video = request.args.get('url')
+    download(video)
+    return ('Success')
 
 app.run()

@@ -11,13 +11,12 @@ export default function EntryForm({ type }) {
 
     const handleSubmit = async (event) => {
         event.preventDefault()
+        console.log(event)
         const base_url = 'http://127.0.0.1:5000/'
-        const url = base_url + type.toLowerCase() + '?search=' + value
-        await fetch(url)
         setLoading(true)
-        await fetch('http://127.0.0.1:5000/downloader')
-        Router.reload(window.location.pathname)
+        await fetch('http://127.0.0.1:5000/download?url=' + value)
         setLoading(false)
+        Router.reload(window.location.pathname)
     }
 
     return (
