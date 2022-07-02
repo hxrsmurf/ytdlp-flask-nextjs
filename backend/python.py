@@ -1,9 +1,10 @@
 import json
-from flask import Flask, jsonify, request, redirect, url_for
+from flask import Flask, jsonify, request, redirect
 from yt_dlp import YoutubeDL
 from flask_cors import CORS, cross_origin
 
-from functions.handler_json import handler_json, handler_json_file
+from functions.handler_json import handler_json, handler_json_file, handler_downloader
+from functions.downloader import download
 
 app = Flask(__name__)
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
@@ -93,5 +94,27 @@ def videos():
     else:
         search = None
         return(handler_json_file('videos', search))
+
+@app.route('/downloader', methods=['GET'])
+@cross_origin()
+def downloader():
+    files = handler_downloader()
+    available_files = []
+
+    for file in files:
+        file_data = handler_json_file(file, input=None)
+        available_files.append({file:file_data})
+
+    # Bad way to iterate through the JSON and get the values.
+    for key, value in enumerate(available_files):
+        json_array = json.loads(json.dumps(value))
+        for key, value in json_array.items():
+            json_value = json.loads(value)
+            if len(json_value) >= 1:
+                for j in json_value:
+                    download(j)
+                    #print(j)
+
+    return(jsonify(available_files))
 
 app.run()

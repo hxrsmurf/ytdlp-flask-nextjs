@@ -1,3 +1,4 @@
+import os
 import json
 from flask import jsonify
 
@@ -26,7 +27,10 @@ def handler_json(channel, description, title, thumbnail, playlist, original_url)
         f.write(json.dumps(records, indent=2))
 
 def handler_json_file(type, input):
-    with open(f'{type}.txt', 'r') as f:
+    if '.txt' in type:
+        type = type.split('.')[0]
+
+    with open(f'data/{type}.txt', 'r') as f:
         data = f.read()
 
     if not input:
@@ -37,5 +41,10 @@ def handler_json_file(type, input):
             if not input in records:
                 records.append(input)
 
-                with open(f'{type}.txt', 'w') as f:
+                with open(f'data/{type}.txt', 'w') as f:
                     f.write(json.dumps(records, indent=2))
+
+def handler_downloader():
+    directory = 'data'
+    files = os.listdir(directory)
+    return (files)
