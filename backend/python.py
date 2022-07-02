@@ -65,28 +65,6 @@ def query_records():
             print(data)
             return jsonify(data)
 
-@app.route('/', methods=['PUT'])
-def create_record():
-    try:
-        record = json.loads(request.data)
-    except:
-        request_data = request.data.decode('UTF-8')
-        record = {'youtube': request_data}
-        print(record)
-
-    with open('data.txt', 'r') as f:
-        data = f.read()
-
-    if not data:
-        records = [record]
-    else:
-        records = json.loads(data)
-        records.append(record)
-    with open('data.txt', 'w') as f:
-        f.write(json.dumps(records, indent=2))
-
-    return jsonify(record)
-
 @app.route('/channels', methods=['GET'])
 @cross_origin()
 def channels():
