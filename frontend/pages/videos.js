@@ -12,7 +12,12 @@ export default function videos({ results }) {
                 <ul>
                     {results.map((result, id) => (
                         <li key={id}>
-                            <a href={result}>{result}</a>
+                            {result.channel}
+                            <ul>
+                                {result.videos.map(video => (
+                                    <li><a href={'http://127.0.0.1:5000/static/' + result.channel + '/' + video}>{video}</a></li>
+                                ))}
+                            </ul>
                         </li>
                     ))}
                 </ul>
@@ -22,7 +27,7 @@ export default function videos({ results }) {
 }
 
 export async function getServerSideProps() {
-    const res = await fetch('http://127.0.0.1:5000/videos')
+    const res = await fetch('http://127.0.0.1:5000/available_videos')
     const results = await res.json()
 
     return {

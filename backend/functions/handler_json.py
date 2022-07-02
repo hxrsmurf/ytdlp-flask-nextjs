@@ -44,7 +44,23 @@ def handler_json_file(type, input):
                 with open(f'data/{type}.txt', 'w') as f:
                     f.write(json.dumps(records, indent=2))
 
-def handler_downloader():
-    directory = 'data'
-    files = os.listdir(directory)
-    return (files)
+def handler_downloader(directory):
+    if 'data' in directory:
+        available_files = os.listdir(directory)
+        return available_files
+
+    if 'static' in directory:
+        available_files = []
+        available_videos = []
+        for root, dirs, files in os.walk(directory):
+            files.sort(reverse=True)
+            if not root == 'static':
+                for file in files:
+                    available_files.append(file)
+
+                available_videos.append({
+                    'channel': root.split('\\')[1],
+                    'videos': available_files
+                })
+
+        return (available_videos)
