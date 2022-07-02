@@ -1,10 +1,12 @@
 import json
 from flask import Flask, jsonify, request, redirect, url_for
 from yt_dlp import YoutubeDL
+from flask_cors import CORS, cross_origin
 
 from functions.handler_json import handler_json, handler_json_file
 
 app = Flask(__name__)
+cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
 @app.route('/', methods=['GET'])
 def query_records():
@@ -86,6 +88,7 @@ def create_record():
     return jsonify(record)
 
 @app.route('/channels', methods=['GET'])
+@cross_origin()
 def channels():
     search = request.args.get('search')
     if search:
