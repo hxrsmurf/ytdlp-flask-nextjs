@@ -1,9 +1,6 @@
 from yt_dlp import YoutubeDL
 
 def download(video):
-    if video == None:
-        pass
-
     def hook(d):
             if d['status'] == 'finished':
                 return(d['filename'])
@@ -20,5 +17,3 @@ def download(video):
 
     with YoutubeDL(ytdl_opts) as ydl:
         info = ydl.extract_info(video, download=True)
-        filename = ydl.prepare_filename(info)
-        filename = filename.replace('\\','/')
