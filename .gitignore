@@ -1,2 +1,2 @@
 *.mp4
-functions/__pycache__/*
+backend/functions/__pycache__/*
