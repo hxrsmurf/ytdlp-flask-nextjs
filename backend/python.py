@@ -95,6 +95,7 @@ def channels():
 
         return('Success')
     else:
-        return('No channel inputted')
+        search = None
+        return(handler_json_file('channels', search))
 
 app.run()
