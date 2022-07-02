@@ -12,7 +12,6 @@ export default function EntryForm( {type}) {
         event.preventDefault()
         const base_url = 'http://127.0.0.1:5000/'
         const url = base_url + type.toLowerCase() + '?search=' + value
-        console.log(url)
         await fetch(url)
         Router.reload(window.location.pathname)
     }
