@@ -63,7 +63,6 @@ def query_records():
     else:
         with open('data.txt', 'r') as f:
             data = json.loads(f.read())
-            print(data)
             return jsonify(data)
 
 @app.route('/channels', methods=['GET'])
@@ -98,7 +97,7 @@ def videos():
 @app.route('/downloader', methods=['GET'])
 @cross_origin()
 def downloader():
-    files = handler_downloader()
+    files = handler_downloader('data')
     available_files = []
 
     for file in files:
@@ -113,6 +112,12 @@ def downloader():
             if len(json_value) >= 1:
                 for j in json_value:
                     download(j)
+
+    return(jsonify(available_files))
+
+@app.route('/available_videos', methods=['GET'])
+def available_videos():
+    available_files = handler_downloader('static')
 
     return(jsonify(available_files))
 
