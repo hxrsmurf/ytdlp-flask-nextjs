@@ -11,6 +11,7 @@ export default function Navigation() {
                         <Nav.Link href="/">Home</Nav.Link>
                         <Nav.Link href="/videos">Videos</Nav.Link>
                         <Nav.Link href="/channels">Channels</Nav.Link>
+                        <Nav.Link href="/download_all_videos">All - Vids</Nav.Link>
                     </Nav>
                 </Container>
             </Navbar>
