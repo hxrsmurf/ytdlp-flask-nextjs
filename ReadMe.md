@@ -9,3 +9,4 @@ This is based on / inspired by the below GitHub Repos.
 - https://github.com/yt-dlp/yt-dlp
 - https://github.com/ytdl-org/youtube-dl
 - https://gitlab.com/osp-group/flask-nginx-rtmp-manager
+- https://github.com/tubearchivist/tubearchivist
