@@ -14,7 +14,7 @@ export default function channels({ results }) {
                 <ul>
                     {results.map((result, id) => (
                         <li key={id}>
-                            <a href={result}>{result}</a>
+                            <a href={result.channel}>{result.channel}</a>
                         </li>
                     ))}
                 </ul>
@@ -24,7 +24,7 @@ export default function channels({ results }) {
 }
 
 export async function getServerSideProps() {
-    const res = await fetch('http://127.0.0.1:5000/channels')
+    const res = await fetch('http://127.0.0.1:5000/sqlalchemy?channels')
     const results = await res.json()
     return {
         props: {

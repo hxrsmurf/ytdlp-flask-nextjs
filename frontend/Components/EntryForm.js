@@ -16,7 +16,7 @@ export default function EntryForm({ type }) {
 
         // If channel URL, then save to JSON file
         if (value.includes('/c/') || value.includes('/user/')){
-            await fetch('http://127.0.0.1:5000/channels?search=' + value)
+            await fetch('http://127.0.0.1:5000/sqlalchemy?channels=' + value)
         }
 
         await fetch('http://127.0.0.1:5000/download?url=' + value)

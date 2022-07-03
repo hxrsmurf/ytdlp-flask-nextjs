@@ -5,11 +5,29 @@ from yt_dlp import YoutubeDL
 from flask_cors import CORS, cross_origin
 from dotenv import load_dotenv
 
+from flask_sqlalchemy import SQLAlchemy
+
 from functions.handler_json import handler_json, handler_json_file, handler_downloader
 from functions.downloader import download
 
 load_dotenv('.env')
 app = Flask(__name__)
+
+# SQLAlchemy
+app.config ['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///youtube.sqlite3'
+db = SQLAlchemy(app)
+
+class db_channel(db.Model):
+    id = db.Column('id', db.Integer, primary_key = True)
+    channel = db.Column(db.String(100))
+    videos = db.Column(db.String(100))
+
+    def __init__(self, channel, videos=None):
+        self.channel = channel
+        self.videos = videos
+
+db.create_all()
+
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
 @app.route('/', methods=['GET'])
@@ -132,5 +150,34 @@ def single_download():
 def test():
     API_url = os.environ.get("API_url")
     return(API_url)
+
+@app.route('/sqlalchemy')
+def db_sqllite():
+    if request.args:
+        request_data = request.args.get('channels')
+        # http://127.0.0.1:5000/sqlalchemy?channels=test
+        if request_data:
+            query_result = db.session.query(db_channel).filter_by(channel=request_data).all()
+            if not query_result:
+                db_entry = db_channel(request_data)
+                db.session.add(db_entry)
+                db.session.commit()
+                return('Success')
+            else:
+                return('Record already exists')
+        else:
+            db_results = db_channel.query.all()
+            all_db_results = []
+
+            for result in db_results:
+                all_db_results.append({
+                    'id' : result.id,
+                    'channel' : result.channel,
+                    'videos' : result.videos
+                })
+
+            return(jsonify(all_db_results))
+    else:
+        return('Hello World')
 
 app.run()
