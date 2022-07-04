@@ -7,11 +7,13 @@ import Button from 'react-bootstrap/Button'
 import { Youtube, Download } from 'react-bootstrap-icons'
 import Dropdown from 'react-bootstrap/Dropdown'
 import { useState } from 'react'
+import LoadingCircle from '../Components/LoadingCircle'
 
 export default function videos({ results, result_all_channels }) {
     const [channel, setChannel] = useState()
     const [dropdownName, setDropdownName] = useState()
     const [newResults, setNewResults] = useState()
+    const [loading, setLoading] = useState()
 
     const handleClick = async (event) => {
         window.open(event, '_blank')
@@ -29,6 +31,12 @@ export default function videos({ results, result_all_channels }) {
         const request_channel_videos = await fetch(process.env.NEXT_PUBLIC_BASE_API_URL + '/videos')
         const new_results = await request_channel_videos.json()
         setNewResults(new_results)
+    }
+
+    const handleQueryLatest = async (event) => {
+        setLoading(true)
+        const request_channel_videos = await fetch(process.env.NEXT_PUBLIC_BASE_API_URL + '/videos?latest')
+        setLoading(false)
     }
 
     return (
@@ -63,9 +71,19 @@ export default function videos({ results, result_all_channels }) {
                     </Col>
                     <Col>
                         <Button
+                            variant='secondary'
                             onMouseDown={(e) => handleResetFilter(e)}
                         >
                             Reset</Button>
+                    </Col>
+                    <Col md='auto'>
+                    {loading ? <LoadingCircle text='Downloading...'/> :
+                        <Button
+                            variant='info'
+                            onMouseDown={(e) => handleQueryLatest(e)}
+                        >
+                            Query latest</Button>
+                    }
                     </Col>
                 </Row>
             </Container>

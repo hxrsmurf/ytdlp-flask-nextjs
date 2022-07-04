@@ -1,7 +1,7 @@
 from yt_dlp import YoutubeDL
 from functions.backblaze_upload import b2_upload
 
-def download(video, video_range=3, download_confirm=True):
+def download(video, video_range=1, download_confirm=True):
 
     if video_range == 1:
         download_confirm=False

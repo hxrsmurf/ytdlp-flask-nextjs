@@ -6,6 +6,7 @@ from yt_dlp import YoutubeDL
 from flask_cors import CORS, cross_origin
 from dotenv import load_dotenv
 import datetime
+import requests
 
 from flask_sqlalchemy import SQLAlchemy
 
@@ -32,8 +33,9 @@ class db_channel(db.Model):
     picture_profile = db.Column(db.String(100))
     picture_cover = db.Column(db.String(100))
     last_updated = db.Column(db.String(100))
+    latest_upload = db.Column(db.String(100))
 
-    def __init__(self, channel, channel_follower_count, channel_id, description, original_url, uploader, uploader_id, webpage_url, picture_profile, picture_cover, last_updated):
+    def __init__(self, channel, channel_follower_count, channel_id, description, original_url, uploader, uploader_id, webpage_url, picture_profile, picture_cover, last_updated, latest_upload):
         self.channel = channel
         self.channel_follower_count = channel_follower_count
         self.channel_id = channel_id
@@ -45,6 +47,7 @@ class db_channel(db.Model):
         self.picture_profile = picture_profile
         self.picture_cover = picture_cover
         self.last_updated = last_updated
+        self.latest_upload = latest_upload
 
 class db_videos(db.Model):
     id = db.Column('id', db.Integer, primary_key = True)
@@ -167,7 +170,9 @@ def channels():
                 webpage_url = download_results['webpage_url'],
                 picture_profile = download_results['thumbnails'][18]['url'],
                 picture_cover = download_results['thumbnails'][15]['url'],
-                last_updated = current_time
+                last_updated = current_time,
+                latest_upload = download_results['entries'][0]['original_url']
+
             )
             db.session.add(db_entry)
             db.session.commit()
@@ -200,7 +205,6 @@ def videos():
         for args in query_args:
             if args == 'channels':
                 all_channels =  db.session.query(db_videos.channel).order_by(db_videos.channel).distinct().all()
-                print(all_channels)
                 return(jsonify(all_channels))
             elif args == 'search':
                 search_query = request.args[args]
@@ -237,6 +241,17 @@ def videos():
                     return(jsonify({'result' : 'success'}))
                 else:
                     return('Already downloaded')
+            elif args == 'latest':
+                query_channels = requests.get(os.environ.get("API_URL") + '/channels')
+                query_results = json.loads(query_channels.content)
+
+                for channel in query_results:
+                    channel_url = channel['original_url']
+                    channel_information = json.loads((requests.get(os.environ.get("API_URL") + '/channels?search=' + channel_url)).content)
+                    latest_upload = channel_information['latest_upload']
+                    requests.get(os.environ.get("API_URL") + '/videos?add=' + latest_upload)
+
+                return(jsonify({'result' : 'success'}))
 
 @app.route('/download_all_videos', methods=['GET'])
 @cross_origin()
