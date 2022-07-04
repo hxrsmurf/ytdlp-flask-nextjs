@@ -65,8 +65,9 @@ class db_videos(db.Model):
     upload_date = db.Column(db.String(100))
     webpage_url = db.Column(db.String(100))
     downloaded = db.Column(db.Boolean)
+    downdloaded_date = db.Column(db.String(100))
 
-    def __init__(self, channel, channel_id, description, duration, duration_string, fulltitle, video_id, like_count, original_url, thumbnail, title, upload_date, webpage_url, downloaded):
+    def __init__(self, channel, channel_id, description, duration, duration_string, fulltitle, video_id, like_count, original_url, thumbnail, title, upload_date, webpage_url, downloaded, downdloaded_date):
         self.channel = channel
         self.channel_id = channel_id
         self.description = description
@@ -81,6 +82,7 @@ class db_videos(db.Model):
         self.upload_date = upload_date
         self.webpage_url = webpage_url
         self.downloaded = downloaded
+        self.downdloaded_date = downdloaded_date
 
 db.create_all()
 
@@ -223,6 +225,9 @@ def channels():
 @app.route('/videos', methods=['GET'])
 @cross_origin()
 def videos():
+    now = datetime.datetime.now()
+    current_time = now.strftime('%Y-%m-%d %H:%M:%S')
+
     if not request.args:
         db_results = db_videos.query.all()
         all_videos = []
@@ -273,7 +278,8 @@ def videos():
                         title = download_results['title'],
                         upload_date = download_results['upload_date'],
                         webpage_url = download_results['webpage_url'],
-                        downloaded = False
+                        downloaded = False,
+                        downdloaded_date = current_time
                     )
 
                     db.session.add(db_entry)
