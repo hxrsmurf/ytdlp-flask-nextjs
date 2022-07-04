@@ -3,6 +3,7 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import { useEffect, useState } from 'react'
 import Router from 'next/router'
+import LoadingCircle from './LoadingCircle'
 
 export default function EntryForm({ type }) {
     const base_api = process.env.NEXT_PUBLIC_BASE_API_URL
@@ -26,12 +27,7 @@ export default function EntryForm({ type }) {
 
     return (
         <>
-            {loading ? <>
-                <button className="btn btn-primary" type="button" disabled>
-                    <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                    <span className="sr-only">Downloading...</span>
-                </button>
-            </> :
+            {loading ?  <LoadingCircle text='Downloading...'/>:
                 <Form>
                     <Form.Group className="mb-3">
                         <Form.Label>{type}</Form.Label>
