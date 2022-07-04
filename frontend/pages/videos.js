@@ -43,9 +43,10 @@ export default function videos({ results, result_all_channels }) {
     }
 
     const handleDownloadLatestChannel = async (event) => {
-        const query_url = (base_api_url + 'videos?latest&id=' + channelID)
+        const query_url = (base_api_url + 'videos?latest=5&id=' + channelID)
         setLoading(true)
         const request_channel_videos = await fetch(query_url)
+        handleDropdownClick()
         setLoading(false)
     }
 
