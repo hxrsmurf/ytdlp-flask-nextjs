@@ -155,37 +155,52 @@ def channels():
             all_channels.append(db_channel_information)
         return(jsonify(all_channels))
     else:
-        download_results = download(search, 1)
-        channel_exists = db.session.query(db_channel).filter_by(webpage_url=download_results['original_url']).all()
+        query_args = request.args
+        for args in query_args:
+            if args == 'latest':
+                desired_range = request.args[args]
+                if desired_range:
+                    desired_range = int(desired_range)
+                else:
+                    desired_range = 1
 
-        if not channel_exists:
-            db_entry = db_channel(
-                channel = download_results['channel'],
-                channel_follower_count = download_results['channel_follower_count'],
-                channel_id = download_results['channel_id'],
-                description = download_results['description'],
-                original_url = download_results['original_url'],
-                uploader = download_results['uploader'],
-                uploader_id = download_results['uploader_id'],
-                webpage_url = download_results['webpage_url'],
-                picture_profile = download_results['thumbnails'][18]['url'],
-                picture_cover = download_results['thumbnails'][15]['url'],
-                last_updated = current_time,
-                latest_upload = download_results['entries'][0]['original_url']
+                results = download(video=search, video_range=desired_range, download_confirm=True)
+                all_videos = []
+                for video in results['entries']:
+                    all_videos.append(video['original_url'])
+                return(jsonify(all_videos))
+            elif args == 'search':
+                download_results = download(search, 1)
+                channel_exists = db.session.query(db_channel).filter_by(webpage_url=download_results['original_url']).all()
 
-            )
-            db.session.add(db_entry)
-            db.session.commit()
+                if not channel_exists:
+                    db_entry = db_channel(
+                        channel = download_results['channel'],
+                        channel_follower_count = download_results['channel_follower_count'],
+                        channel_id = download_results['channel_id'],
+                        description = download_results['description'],
+                        original_url = download_results['original_url'],
+                        uploader = download_results['uploader'],
+                        uploader_id = download_results['uploader_id'],
+                        webpage_url = download_results['webpage_url'],
+                        picture_profile = download_results['thumbnails'][18]['url'],
+                        picture_cover = download_results['thumbnails'][15]['url'],
+                        last_updated = current_time,
+                        latest_upload = download_results['entries'][0]['original_url']
 
-        # Requery after add
-        channel_exists = db.session.query(db_channel).filter_by(webpage_url=download_results['original_url']).all()
+                    )
+                    db.session.add(db_entry)
+                    db.session.commit()
 
-        channel_information = {}
-        for db_results in channel_exists:
-            channel_information = vars(db_results)
-            channel_information.pop("_sa_instance_state")
+                # Requery after add
+                channel_exists = db.session.query(db_channel).filter_by(webpage_url=download_results['original_url']).all()
 
-        return(channel_information)
+                channel_information = {}
+                for db_results in channel_exists:
+                    channel_information = vars(db_results)
+                    channel_information.pop("_sa_instance_state")
+
+                return(channel_information)
 
 @app.route('/videos', methods=['GET'])
 @cross_origin()
@@ -217,7 +232,7 @@ def videos():
                 return(jsonify(all_channel_videos))
             elif args == 'add':
                 add_query = request.args[args]
-                download_results = download(add_query, 1)
+                download_results = download(video=add_query, video_range=1, download_confirm=False)
                 download_exists = db.session.query(db_videos).filter_by(video_id=download_results['id']).all()
                 if not download_exists:
                     db_entry = db_videos(
@@ -242,14 +257,25 @@ def videos():
                 else:
                     return('Already downloaded')
             elif args == 'latest':
-                query_channels = requests.get(os.environ.get("API_URL") + '/channels')
-                query_results = json.loads(query_channels.content)
+                for requested_args in request.args:
+                    if 'search' in requested_args:
+                        query_results = [{
+                            'original_url' : request.args[requested_args]
+                        }]
+                    else:
+                        query_channels = requests.get(os.environ.get("API_URL") + '/channels')
+                        query_results = json.loads(query_channels.content)
 
                 for channel in query_results:
                     channel_url = channel['original_url']
-                    channel_information = json.loads((requests.get(os.environ.get("API_URL") + '/channels?search=' + channel_url)).content)
-                    latest_upload = channel_information['latest_upload']
-                    requests.get(os.environ.get("API_URL") + '/videos?add=' + latest_upload)
+                    if request.args[args]:
+                        latest_query = f'latest={request.args[args]}'
+                    else:
+                        latest_query = 'latest'
+                    query_url = requests.get(os.environ.get("API_URL") + '/channels?' + latest_query + '&search=' + channel_url)
+                    latest_videos = json.loads(query_url.content)
+                    for video in latest_videos:
+                        requests.get(os.environ.get("API_URL") + '/videos?add=' + video)
 
                 return(jsonify({'result' : 'success'}))
 
