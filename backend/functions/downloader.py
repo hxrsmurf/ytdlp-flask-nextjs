@@ -1,11 +1,7 @@
 from yt_dlp import YoutubeDL
 from functions.backblaze_upload import b2_upload
 
-def download(video, video_range=1, download_confirm=True):
-
-    if video_range == 1:
-        download_confirm=False
-
+def download(video, video_range=1, download_confirm=False):
     def hook(d):
             if d['status'] == 'finished':
                 return(d['filename'])
@@ -14,7 +10,7 @@ def download(video, video_range=1, download_confirm=True):
         'outtmpl' : 'static/%(uploader)s/%(upload_date>%Y-%m-%d)s_%(id)s_%(title)s.%(ext)s',
         'progress_hooks' : [hook],
         #'daterange' : 'today-1year',
-        'download_archive': 'static/downloaded_videos.txt',
+        #'download_archive': 'static/downloaded_videos.txt',
         'windowsfilenames': True
     }
 
