@@ -11,9 +11,12 @@ import LoadingCircle from '../Components/LoadingCircle'
 
 export default function videos({ results, result_all_channels }) {
     const [channel, setChannel] = useState()
+    const [channelURL, setChannelURL] = useState()
     const [dropdownName, setDropdownName] = useState()
     const [newResults, setNewResults] = useState()
     const [loading, setLoading] = useState()
+
+    const base_api_url = process.env.NEXT_PUBLIC_BASE_API_URL
 
     const handleClick = async (event) => {
         window.open(event, '_blank')
@@ -21,6 +24,7 @@ export default function videos({ results, result_all_channels }) {
 
     const handleDropdownClick = async (event) => {
         setDropdownName(channel)
+        setChannelURL(channelURL)
         const request_channel_videos = await fetch(process.env.NEXT_PUBLIC_BASE_API_URL + '/videos?search=' + channel)
         const new_results = await request_channel_videos.json()
         setNewResults(new_results)
@@ -33,7 +37,7 @@ export default function videos({ results, result_all_channels }) {
         setNewResults(new_results)
     }
 
-    const handleQueryLatest = async (event) => {
+    const handleDownloadLatest = async (event) => {
         setLoading(true)
         const request_channel_videos = await fetch(process.env.NEXT_PUBLIC_BASE_API_URL + '/videos?latest')
         setLoading(false)
@@ -80,9 +84,9 @@ export default function videos({ results, result_all_channels }) {
                     {loading ? <LoadingCircle text='Downloading...'/> :
                         <Button
                             variant='info'
-                            onMouseDown={(e) => handleQueryLatest(e)}
+                            onMouseDown={(e) => handleDownloadLatest(e)}
                         >
-                            Query latest</Button>
+                            Download latest</Button>
                     }
                     </Col>
                 </Row>
@@ -101,7 +105,7 @@ export default function videos({ results, result_all_channels }) {
                                 />
                                 <Card.Header>
                                     <Row>
-                                        <Col lg>{result.channel} - {result.title}</Col>
+                                        <Col lg>{result.channel} - {result.title} - Uploaded: {result.upload_date}</Col>
                                         <Col md='auto'>
                                             <Button
                                                 href={result.original_url}
@@ -132,7 +136,7 @@ export default function videos({ results, result_all_channels }) {
                                 />
                                 <Card.Header>
                                     <Row>
-                                        <Col lg>{result.channel} - {result.title}</Col>
+                                    <Col lg>{result.channel} - {result.title} || Uploaded: {result.upload_date} - Likes: {result.like_count}</Col>
                                         <Col md='auto'>
                                             <Button
                                                 href={result.original_url}
