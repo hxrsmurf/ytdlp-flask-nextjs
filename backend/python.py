@@ -1,6 +1,7 @@
 import os
 import json
 from flask import Flask, jsonify, request, redirect
+from sqlalchemy import desc
 from yt_dlp import YoutubeDL
 from flask_cors import CORS, cross_origin
 from dotenv import load_dotenv
@@ -44,6 +45,37 @@ class db_channel(db.Model):
         self.picture_profile = picture_profile
         self.picture_cover = picture_cover
         self.last_updated = last_updated
+
+class db_videos(db.Model):
+    id = db.Column('id', db.Integer, primary_key = True)
+    channel = db.Column(db.String(100))
+    description = db.Column(db.String(100))
+    duration = db.Column(db.String(100))
+    duration_string = db.Column(db.String(100))
+    fulltitle = db.Column(db.String(100))
+    video_id = db.Column(db.String(100))
+    like_count = db.Column(db.String(100))
+    original_url = db.Column(db.String(100))
+    thumbnail = db.Column(db.String(100))
+    title = db.Column(db.String(100))
+    upload_date = db.Column(db.String(100))
+    webpage_url = db.Column(db.String(100))
+    downloaded = db.Column(db.Boolean)
+
+    def __init__(self, channel, description, duration, duration_string, fulltitle, video_id, like_count, original_url, thumbnail, title, upload_date, webpage_url, downloaded):
+        self.channel = channel
+        self.description = description
+        self.duration = duration
+        self.duration_string = duration_string
+        self.fulltitle = fulltitle
+        self.video_id = video_id
+        self.like_count = like_count
+        self.original_url = original_url
+        self.thumbnail = thumbnail
+        self.title = title
+        self.upload_date = upload_date
+        self.webpage_url = webpage_url
+        self.downloaded = downloaded
 
 db.create_all()
 
@@ -108,7 +140,6 @@ def query_records():
 @cross_origin()
 def channels():
     search = request.args.get('search', None)
-    info = request.args.get('info', None)
     now = datetime.datetime.now()
     current_time = now.strftime('%Y-%m-%d %H:%M:%S')
 
@@ -154,16 +185,58 @@ def channels():
 @app.route('/videos', methods=['GET'])
 @cross_origin()
 def videos():
-    search = request.args.get('search')
-    if search:
-        # http://127.0.0.1:5000/channels?search=https://www.youtube.com/c/aliensrock
+    if not request.args:
+        db_results = db_videos.query.all()
+        all_videos = []
 
-        handler_json_file('videos', search)
+        for row in db_results:
+            db_video_information = vars(row)
+            db_video_information.pop("_sa_instance_state")
+            all_videos.append(db_video_information)
 
-        return('Success')
+        return(jsonify(all_videos))
     else:
-        search = None
-        return(handler_json_file('videos', search))
+        query_args = request.args
+        for args in query_args:
+            if args == 'channels':
+                all_channels =  db.session.query(db_videos.channel).order_by(db_videos.channel).distinct().all()
+                print(all_channels)
+                return(jsonify(all_channels))
+            elif args == 'search':
+                search_query = request.args[args]
+                channel_videos = db.session.query(db_videos).filter_by(channel=search_query).all()
+                all_channel_videos = []
+                for videos in channel_videos:
+                    video_information = vars(videos)
+                    video_information.pop("_sa_instance_state")
+                    all_channel_videos.append(video_information)
+                return(jsonify(all_channel_videos))
+            elif args == 'add':
+                add_query = request.args[args]
+                download_results = download(add_query, 1)
+                download_exists = db.session.query(db_videos).filter_by(video_id=download_results['id']).all()
+                if not download_exists:
+                    db_entry = db_videos(
+                        channel = download_results['channel'],
+                        description = download_results['description'],
+                        duration = download_results['duration'],
+                        duration_string = download_results['duration_string'],
+                        fulltitle = download_results['fulltitle'],
+                        video_id = download_results['id'],
+                        like_count = download_results['like_count'],
+                        original_url = download_results['original_url'],
+                        thumbnail = download_results['thumbnail'],
+                        title = download_results['title'],
+                        upload_date = download_results['upload_date'],
+                        webpage_url = download_results['webpage_url'],
+                        downloaded = False
+                    )
+
+                    db.session.add(db_entry)
+                    db.session.commit()
+                    return(jsonify({'result' : 'success'}))
+                else:
+                    return('Already downloaded')
 
 @app.route('/download_all_videos', methods=['GET'])
 @cross_origin()

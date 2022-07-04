@@ -17,7 +17,7 @@ export default function EntryForm({ type }) {
         if (value.includes('/c/') || value.includes('/user/')){
             await fetch(base_api + 'channels?search=' + value)
         } else {
-            await fetch(base_api + 'videos?search=' + value)
+            await fetch(base_api + 'videos?add=' + value)
         }
 
         setLoading(false)
