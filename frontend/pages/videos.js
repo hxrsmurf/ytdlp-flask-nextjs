@@ -39,6 +39,7 @@ export default function videos({ results, result_all_channels }) {
     const handleDownloadLatest = async (event) => {
         setLoading(true)
         const request_channel_videos = await fetch(process.env.NEXT_PUBLIC_BASE_API_URL + '/videos?latest')
+        handleDropdownClick()
         setLoading(false)
     }
 
