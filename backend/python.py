@@ -185,7 +185,7 @@ def videos():
     current_time = now.strftime('%Y-%m-%d %H:%M:%S')
 
     if not request.args:
-        db_results = db_videos.query.order_by(desc(db_videos.upload_date), db_videos.downloaded_date).all()
+        db_results = db_videos.query.order_by(desc(db_videos.upload_date), db_videos.downloaded_date).limit(10)
         all_videos = []
 
         for row in db_results:
