@@ -4,6 +4,7 @@ from flask import Flask, jsonify, request, redirect
 from yt_dlp import YoutubeDL
 from flask_cors import CORS, cross_origin
 from dotenv import load_dotenv
+import datetime
 
 from flask_sqlalchemy import SQLAlchemy
 
@@ -20,11 +21,29 @@ db = SQLAlchemy(app)
 class db_channel(db.Model):
     id = db.Column('id', db.Integer, primary_key = True)
     channel = db.Column(db.String(100))
-    videos = db.Column(db.String(100))
+    channel_follower_count = db.Column(db.Integer)
+    channel_id = db.Column(db.String(100))
+    description = db.Column(db.String(100))
+    original_url = db.Column(db.String(100))
+    uploader = db.Column(db.String(100))
+    uploader_id = db.Column(db.String(100))
+    webpage_url = db.Column(db.String(100))
+    picture_profile = db.Column(db.String(100))
+    picture_cover = db.Column(db.String(100))
+    last_updated = db.Column(db.String(100))
 
-    def __init__(self, channel, videos=None):
+    def __init__(self, channel, channel_follower_count, channel_id, description, original_url, uploader, uploader_id, webpage_url, picture_profile, picture_cover, last_updated):
         self.channel = channel
-        self.videos = videos
+        self.channel_follower_count = channel_follower_count
+        self.channel_id = channel_id
+        self.description = description
+        self.original_url = original_url
+        self.uploader = uploader
+        self.uploader_id = uploader_id
+        self.webpage_url = webpage_url
+        self.picture_profile = picture_profile
+        self.picture_cover = picture_cover
+        self.last_updated = last_updated
 
 db.create_all()
 
@@ -88,29 +107,49 @@ def query_records():
 @app.route('/channels', methods=['GET'])
 @cross_origin()
 def channels():
-    search = request.args.get('search')
-    if not search:
+    search = request.args.get('search', None)
+    info = request.args.get('info', None)
+    now = datetime.datetime.now()
+    current_time = now.strftime('%Y-%m-%d %H:%M:%S')
+
+    if not request.args:
         db_results = db_channel.query.all()
-        all_db_results = []
-        for result in db_results:
-            all_db_results.append({
-                'id' : result.id,
-                'channel' : result.channel,
-                'videos' : result.videos
-            })
-        return(jsonify(all_db_results))
+        all_channels = []
+        for row in db_results:
+            db_channel_information = vars(row)
+            db_channel_information.pop("_sa_instance_state")
+            all_channels.append(db_channel_information)
+        return(jsonify(all_channels))
     else:
-        query_result = db.session.query(db_channel).filter_by(channel=search).all()
-        if not query_result:
-            db_entry = db_channel(search)
+        download_results = download(search, 1)
+        channel_exists = db.session.query(db_channel).filter_by(webpage_url=download_results['original_url']).all()
+
+        if not channel_exists:
+            db_entry = db_channel(
+                channel = download_results['channel'],
+                channel_follower_count = download_results['channel_follower_count'],
+                channel_id = download_results['channel_id'],
+                description = download_results['description'],
+                original_url = download_results['original_url'],
+                uploader = download_results['uploader'],
+                uploader_id = download_results['uploader_id'],
+                webpage_url = download_results['webpage_url'],
+                picture_profile = download_results['thumbnails'][18]['url'],
+                picture_cover = download_results['thumbnails'][15]['url'],
+                last_updated = current_time
+            )
             db.session.add(db_entry)
             db.session.commit()
-            print('Success')
-            return('Success')
-        else:
-            print('Record already exists')
-            return('Record already exists')
 
+        # Requery after add
+        channel_exists = db.session.query(db_channel).filter_by(webpage_url=download_results['original_url']).all()
+
+        channel_information = {}
+        for db_results in channel_exists:
+            channel_information = vars(db_results)
+            channel_information.pop("_sa_instance_state")
+
+        return(channel_information)
 
 @app.route('/videos', methods=['GET'])
 @cross_origin()
