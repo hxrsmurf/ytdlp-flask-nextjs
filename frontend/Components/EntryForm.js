@@ -26,7 +26,7 @@ export default function EntryForm({ type }) {
             {loading ? <>
                 <button className="btn btn-primary" type="button" disabled>
                     <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                    <span class="sr-only">Downloading...</span>
+                    <span className="sr-only">Downloading...</span>
                 </button>
             </> :
                 <Form>
