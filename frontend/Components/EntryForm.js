@@ -5,21 +5,18 @@ import { useEffect, useState } from 'react'
 import Router from 'next/router'
 
 export default function EntryForm({ type }) {
+    const base_api = process.env.NEXT_PUBLIC_BASE_API_URL
 
     const [value, setValue] = useState()
     const [loading, setLoading] = useState()
 
     const handleSubmit = async (event) => {
         event.preventDefault()
-        const base_url = 'http://127.0.0.1:5000/'
         setLoading(true)
-
         // If channel URL, then save to JSON file
         if (value.includes('/c/') || value.includes('/user/')){
-            await fetch('http://127.0.0.1:5000/sqlalchemy?channels=' + value)
+            await fetch(base_api + 'channels?search=' + value)
         }
-
-        await fetch('http://127.0.0.1:5000/download?url=' + value)
         setLoading(false)
         Router.reload(window.location.pathname)
     }

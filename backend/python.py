@@ -89,15 +89,27 @@ def query_records():
 @cross_origin()
 def channels():
     search = request.args.get('search')
-    if search:
-        # http://127.0.0.1:5000/channels?search=https://www.youtube.com/c/aliensrock
-
-        handler_json_file('channels', search)
-
-        return('Success')
+    if not search:
+        db_results = db_channel.query.all()
+        all_db_results = []
+        for result in db_results:
+            all_db_results.append({
+                'id' : result.id,
+                'channel' : result.channel,
+                'videos' : result.videos
+            })
+        return(jsonify(all_db_results))
     else:
-        search = None
-        return(handler_json_file('channels', search))
+        query_result = db.session.query(db_channel).filter_by(channel=search).all()
+        if not query_result:
+            db_entry = db_channel(search)
+            db.session.add(db_entry)
+            db.session.commit()
+            print('Success')
+            return('Success')
+        else:
+            print('Record already exists')
+            return('Record already exists')
 
 
 @app.route('/videos', methods=['GET'])

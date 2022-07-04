@@ -24,7 +24,7 @@ export default function channels({ results }) {
 }
 
 export async function getServerSideProps() {
-    const res = await fetch('http://127.0.0.1:5000/sqlalchemy?channels')
+    const res = await fetch(process.env.NEXT_PUBLIC_BASE_API_URL + 'channels')
     const results = await res.json()
     return {
         props: {
