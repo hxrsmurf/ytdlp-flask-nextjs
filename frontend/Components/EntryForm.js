@@ -16,7 +16,10 @@ export default function EntryForm({ type }) {
         // If channel URL, then save to JSON file
         if (value.includes('/c/') || value.includes('/user/')){
             await fetch(base_api + 'channels?search=' + value)
+        } else {
+            await fetch(base_api + 'videos?search=' + value)
         }
+
         setLoading(false)
         Router.reload(window.location.pathname)
     }
