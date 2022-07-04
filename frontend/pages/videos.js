@@ -8,6 +8,7 @@ import { Youtube, Download } from 'react-bootstrap-icons'
 import Dropdown from 'react-bootstrap/Dropdown'
 import { useState } from 'react'
 import LoadingCircle from '../Components/LoadingCircle'
+import { HandThumbsUp } from 'react-bootstrap-icons'
 
 export default function videos({ results, result_all_channels }) {
     const [channel, setChannel] = useState()
@@ -72,9 +73,9 @@ export default function videos({ results, result_all_channels }) {
                                             <Row
                                                 onMouseDown={(e) => handleDropdownClick(e)}
                                                 onMouseOver={(e) => {
-                                                        setChannel(e.target.textContent)
-                                                        setChannelID(e.target.nextSibling.textContent)
-                                                    }
+                                                    setChannel(e.target.textContent)
+                                                    setChannelID(e.target.nextSibling.textContent)
+                                                }
                                                 }
                                             >
                                                 <Col>{channel.channel}</Col>
@@ -134,7 +135,15 @@ export default function videos({ results, result_all_channels }) {
                                 />
                                 <Card.Header>
                                     <Row>
-                                        <Col lg>{result.channel} - {result.title} - Uploaded: {result.upload_date}</Col>
+                                        <Col lg>
+                                            <Row><div className='fw-bold'>{result.channel}</div></Row>
+                                            <Row><div>{result.title}</div></Row>
+                                            <Row>
+                                                <Col md='auto'>{result.view_count} views</Col>
+                                                <Col md='auto'>Uploaded: {result.upload_date}</Col>
+                                                <Col><HandThumbsUp />{result.like_count}</Col>
+                                            </Row>
+                                        </Col>
                                         <Col md='auto'>
                                             <Button
                                                 href={result.original_url}
@@ -165,7 +174,15 @@ export default function videos({ results, result_all_channels }) {
                                 />
                                 <Card.Header>
                                     <Row>
-                                        <Col lg>{result.channel} - {result.title} || Uploaded: {result.upload_date} - Likes: {result.like_count}</Col>
+                                        <Col lg>
+                                            <Row><div className='fw-bold'>{result.channel}</div></Row>
+                                            <Row><div>{result.title}</div></Row>
+                                            <Row>
+                                                <Col md='auto'>{result.view_count} views</Col>
+                                                <Col md='auto'>Uploaded: {result.upload_date}</Col>
+                                                <Col><HandThumbsUp />{result.like_count}</Col>
+                                            </Row>
+                                        </Col>
                                         <Col md='auto'>
                                             <Button
                                                 href={result.original_url}

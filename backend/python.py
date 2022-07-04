@@ -59,15 +59,16 @@ class db_videos(db.Model):
     fulltitle = db.Column(db.String(100))
     video_id = db.Column(db.String(100))
     like_count = db.Column(db.String(100))
+    view_count = db.Column(db.String(100))
     original_url = db.Column(db.String(100))
     thumbnail = db.Column(db.String(100))
     title = db.Column(db.String(100))
     upload_date = db.Column(db.String(100))
     webpage_url = db.Column(db.String(100))
     downloaded = db.Column(db.Boolean)
-    downdloaded_date = db.Column(db.String(100))
+    downloaded_date = db.Column(db.String(100))
 
-    def __init__(self, channel, channel_id, description, duration, duration_string, fulltitle, video_id, like_count, original_url, thumbnail, title, upload_date, webpage_url, downloaded, downdloaded_date):
+    def __init__(self, channel, channel_id, description, duration, duration_string, fulltitle, video_id, like_count, view_count, original_url, thumbnail, title, upload_date, webpage_url, downloaded, downloaded_date):
         self.channel = channel
         self.channel_id = channel_id
         self.description = description
@@ -76,13 +77,14 @@ class db_videos(db.Model):
         self.fulltitle = fulltitle
         self.video_id = video_id
         self.like_count = like_count
+        self.view_count = view_count
         self.original_url = original_url
         self.thumbnail = thumbnail
         self.title = title
         self.upload_date = upload_date
         self.webpage_url = webpage_url
         self.downloaded = downloaded
-        self.downdloaded_date = downdloaded_date
+        self.downloaded_date = downloaded_date
 
 db.create_all()
 
@@ -229,7 +231,7 @@ def videos():
     current_time = now.strftime('%Y-%m-%d %H:%M:%S')
 
     if not request.args:
-        db_results = db_videos.query.all()
+        db_results = db_videos.query.order_by(db_videos.upload_date, db_videos.downloaded_date).all()
         all_videos = []
 
         for row in db_results:
@@ -273,13 +275,14 @@ def videos():
                         fulltitle = download_results['fulltitle'],
                         video_id = download_results['id'],
                         like_count = download_results['like_count'],
+                        view_count = download_results['view_count'],
                         original_url = download_results['original_url'],
                         thumbnail = download_results['thumbnail'],
                         title = download_results['title'],
                         upload_date = download_results['upload_date'],
                         webpage_url = download_results['webpage_url'],
                         downloaded = False,
-                        downdloaded_date = current_time
+                        downloaded_date = current_time
                     )
 
                     db.session.add(db_entry)
