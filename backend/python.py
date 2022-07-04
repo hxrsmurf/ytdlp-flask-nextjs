@@ -52,6 +52,7 @@ class db_channel(db.Model):
 class db_videos(db.Model):
     id = db.Column('id', db.Integer, primary_key = True)
     channel = db.Column(db.String(100))
+    channel_id = db.Column(db.String(100))
     description = db.Column(db.String(100))
     duration = db.Column(db.String(100))
     duration_string = db.Column(db.String(100))
@@ -65,8 +66,9 @@ class db_videos(db.Model):
     webpage_url = db.Column(db.String(100))
     downloaded = db.Column(db.Boolean)
 
-    def __init__(self, channel, description, duration, duration_string, fulltitle, video_id, like_count, original_url, thumbnail, title, upload_date, webpage_url, downloaded):
+    def __init__(self, channel, channel_id, description, duration, duration_string, fulltitle, video_id, like_count, original_url, thumbnail, title, upload_date, webpage_url, downloaded):
         self.channel = channel
+        self.channel_id = channel_id
         self.description = description
         self.duration = duration
         self.duration_string = duration_string
@@ -104,11 +106,6 @@ def query_records():
                 'daterange' : 'today-1weeks',
                 'ignoreerrors' : True
             }
-
-            # http://127.0.0.1:5000/?video=https://www.youtube.com/watch?v=KjR0H8N94Ek
-            # http://127.0.0.1:5000/?video=https://www.youtube.com/playlist?list=PLIwiAebpd5CJiaj64YaRzbW5XhymIXS6V
-            # http://127.0.0.1:5000/?video=https://www.youtube.com/c/aliensrock
-
             with YoutubeDL(ytdl_opts) as ydl:
                 info = ydl.extract_info(video_url, download=True)
                 filename = ydl.prepare_filename(info)
@@ -179,6 +176,17 @@ def channels():
                             'url' : q.original_url
                         })
                     return(jsonify(channel_information))
+            elif args == 'id':
+                    channel_id = request.args[args]
+                    channel_information = []
+                    query = db.session.query(db_channel).filter_by(channel_id=channel_id)
+                    for q in query:
+                        channel_information.append({
+                            'channel' : q.channel,
+                            'channel_id' : q.channel_id,
+                            'url' : q.original_url
+                        })
+                    return(jsonify(channel_information))
             elif args == 'search':
                 download_results = download(search, 1)
                 channel_exists = db.session.query(db_channel).filter_by(webpage_url=download_results['original_url']).all()
@@ -229,7 +237,13 @@ def videos():
         query_args = request.args
         for args in query_args:
             if args == 'channels':
-                all_channels =  db.session.query(db_videos.channel).order_by(db_videos.channel).distinct().all()
+                db_query_all_channels =  db.session.query(db_videos.channel_id, db_videos.channel).order_by(db_videos.channel).distinct().all()
+                all_channels = []
+                for query in db_query_all_channels:
+                    all_channels.append({
+                        'channel' : query.channel,
+                        'channel_id' : query.channel_id
+                    })
                 return(jsonify(all_channels))
             elif args == 'search':
                 search_query = request.args[args]
@@ -247,6 +261,7 @@ def videos():
                 if not download_exists:
                     db_entry = db_videos(
                         channel = download_results['channel'],
+                        channel_id = download_results['channel_id'],
                         description = download_results['description'],
                         duration = download_results['duration'],
                         duration_string = download_results['duration_string'],
@@ -271,6 +286,18 @@ def videos():
                     if 'search' in requested_args:
                         query_results = [{
                             'original_url' : request.args[requested_args]
+                        }]
+                    elif 'name' in requested_args:
+                        channel_name = request.args[requested_args]
+                        request_channel_information = json.loads((requests.get(os.environ.get("API_URL") + '/channels?name=' + channel_name)).content)
+                        query_results = [{
+                            'original_url' : request_channel_information[0]['url']
+                        }]
+                    elif 'id' in requested_args:
+                        channel_id = request.args[requested_args]
+                        request_channel_information = json.loads((requests.get(os.environ.get("API_URL") + '/channels?id=' + channel_id)).content)
+                        query_results = [{
+                            'original_url' : request_channel_information[0]['url']
                         }]
                     else:
                         query_channels = requests.get(os.environ.get("API_URL") + '/channels')
