@@ -91,54 +91,8 @@ db.create_all()
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
 @app.route('/', methods=['GET'])
-def query_records():
-    if request.args:
-        video_url = request.args.get('video')
-
-        parse_video_url = video_url.split('/')
-
-        if not 'youtube.com' in parse_video_url[2]:
-            return json.dumps({'message': 'Not Youtube'}), 400, {'ContentType':'application/json'}
-        else:
-            def hook(d):
-                if d['status'] == 'finished':
-                    return(d['filename'])
-
-            ytdl_opts = {
-                'outtmpl' : 'static/%(uploader)s/%(title)s.%(ext)s',
-                'progress_hooks' : [hook],
-                'daterange' : 'today-1weeks',
-                'ignoreerrors' : True
-            }
-            with YoutubeDL(ytdl_opts) as ydl:
-                info = ydl.extract_info(video_url, download=True)
-                filename = ydl.prepare_filename(info)
-                filename = filename.replace('\\','/')
-
-                title, thumbnail, playlist = None, None, None
-
-                try:
-                    if not info['_type']:
-                        title = info['fulltitle']
-                        thumbnail = info['thumbnail']
-                        playlist = info['playlist']
-                except:
-                    thumbnail = None
-                    playlist = True
-                    title = info['title']
-
-                channel = info['channel']
-                description = info['description']
-                original_url = info['original_url']
-
-                handler_json(channel, description, title, thumbnail, playlist, original_url)
-
-                return redirect(f'http://127.0.0.1:5000/{filename}')
-
-    else:
-        with open('data.txt', 'r') as f:
-            data = json.loads(f.read())
-            return jsonify(data)
+def default_route():
+    return('Default')
 
 @app.route('/channels', methods=['GET'])
 @cross_origin()
@@ -325,70 +279,10 @@ def videos():
 
                 return(jsonify({'result' : 'success'}))
 
-@app.route('/download_all_videos', methods=['GET'])
-@cross_origin()
-def download_all_videos():
-    files = handler_downloader('data')
-    available_files = []
-
-    for file in files:
-        file_data = handler_json_file(file, input=None)
-        available_files.append({file:file_data})
-
-    # Bad way to iterate through the JSON and get the values.
-    for key, value in enumerate(available_files):
-        json_array = json.loads(json.dumps(value))
-        for key, value in json_array.items():
-            json_value = json.loads(value)
-            if len(json_value) >= 1:
-                for j in json_value:
-                    download(j)
-
-    return(jsonify(available_files))
-
-@app.route('/available_videos', methods=['GET'])
-def available_videos():
-    available_files = handler_downloader('static')
-    return(jsonify(available_files))
-
 @app.route('/download',methods=['GET'])
 def single_download():
     video = request.args.get('url')
     download(video)
     return ('Success')
-
-@app.route('/test_env_variables')
-def test():
-    API_url = os.environ.get("API_url")
-    return(API_url)
-
-@app.route('/sqlalchemy')
-def db_sqllite():
-    if request.args:
-        request_data = request.args.get('channels')
-        # http://127.0.0.1:5000/sqlalchemy?channels=test
-        if request_data:
-            query_result = db.session.query(db_channel).filter_by(channel=request_data).all()
-            if not query_result:
-                db_entry = db_channel(request_data)
-                db.session.add(db_entry)
-                db.session.commit()
-                return('Success')
-            else:
-                return('Record already exists')
-        else:
-            db_results = db_channel.query.all()
-            all_db_results = []
-
-            for result in db_results:
-                all_db_results.append({
-                    'id' : result.id,
-                    'channel' : result.channel,
-                    'videos' : result.videos
-                })
-
-            return(jsonify(all_db_results))
-    else:
-        return('Hello World')
 
 app.run()
