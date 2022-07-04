@@ -169,6 +169,16 @@ def channels():
                 for video in results['entries']:
                     all_videos.append(video['original_url'])
                 return(jsonify(all_videos))
+            elif args == 'name':
+                    channel_name = request.args[args]
+                    channel_information = []
+                    query = db.session.query(db_channel).filter_by(channel=channel_name)
+                    for q in query:
+                        channel_information.append({
+                            'channel' : q.channel,
+                            'url' : q.original_url
+                        })
+                    return(jsonify(channel_information))
             elif args == 'search':
                 download_results = download(search, 1)
                 channel_exists = db.session.query(db_channel).filter_by(webpage_url=download_results['original_url']).all()
