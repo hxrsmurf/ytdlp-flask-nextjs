@@ -140,9 +140,9 @@ export default function videos({ results, result_all_channels }) {
                                             <Row><div className='fw-bold'>{result.channel}</div></Row>
                                             <Row><div>{result.title}</div></Row>
                                             <Row>
-                                                <Col md='auto'>{result.view_count} views</Col>
-                                                <Col md='auto'>Uploaded: {result.upload_date}</Col>
-                                                <Col><HandThumbsUp />{result.like_count}</Col>
+                                                <Col md='auto'>
+                                                    {result.duration_string} minutes | {result.view_count} views | {result.upload_date} | {result.like_count}
+                                                </Col>
                                             </Row>
                                         </Col>
                                         <Col md='auto'>
@@ -179,9 +179,9 @@ export default function videos({ results, result_all_channels }) {
                                             <Row><div className='fw-bold'>{result.channel}</div></Row>
                                             <Row><div>{result.title}</div></Row>
                                             <Row>
-                                                <Col md='auto'>{result.view_count} views</Col>
-                                                <Col md='auto'>Uploaded: {result.upload_date}</Col>
-                                                <Col><HandThumbsUp />{result.like_count}</Col>
+                                                <Col md='auto'>
+                                                    {result.duration_string} minutes | {result.view_count} views | {result.upload_date} | {result.like_count}
+                                                </Col>
                                             </Row>
                                         </Col>
                                         <Col md='auto'>
