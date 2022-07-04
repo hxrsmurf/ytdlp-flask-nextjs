@@ -165,7 +165,7 @@ def channels():
                 else:
                     desired_range = 1
 
-                results = download(video=search, video_range=desired_range, download_confirm=True)
+                results = download(video=search, video_range=desired_range, download_confirm=False)
                 all_videos = []
                 for video in results['entries']:
                     all_videos.append(video['original_url'])
@@ -192,7 +192,7 @@ def channels():
                         })
                     return(jsonify(channel_information))
             elif args == 'search':
-                download_results = download(search, 1)
+                download_results = download(search, video_range=1, download_confirm=False)
                 channel_exists = db.session.query(db_channel).filter_by(webpage_url=download_results['original_url']).all()
 
                 if not channel_exists:
