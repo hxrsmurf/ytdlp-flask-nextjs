@@ -18,79 +18,15 @@ app = Flask(__name__)
 
 # SQLAlchemy
 app.config ['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///youtube.sqlite3'
-db = SQLAlchemy(app)
+
+from classes.shared import db
+
+db.init_app(app)
+db.app = app
 
 # Blueprints
-from blueprints.blueprint_testing import blueprint_testing_bp
-app.register_blueprint(blueprint_testing_bp)
-
-class db_channel(db.Model):
-    id = db.Column('id', db.Integer, primary_key = True)
-    channel = db.Column(db.String(100))
-    channel_follower_count = db.Column(db.Integer)
-    channel_id = db.Column(db.String(100))
-    description = db.Column(db.String(100))
-    original_url = db.Column(db.String(100))
-    uploader = db.Column(db.String(100))
-    uploader_id = db.Column(db.String(100))
-    webpage_url = db.Column(db.String(100))
-    picture_profile = db.Column(db.String(100))
-    picture_cover = db.Column(db.String(100))
-    last_updated = db.Column(db.String(100))
-    latest_upload = db.Column(db.String(100))
-
-    def __init__(self, channel, channel_follower_count, channel_id, description, original_url, uploader, uploader_id, webpage_url, picture_profile, picture_cover, last_updated, latest_upload):
-        self.channel = channel
-        self.channel_follower_count = channel_follower_count
-        self.channel_id = channel_id
-        self.description = description
-        self.original_url = original_url
-        self.uploader = uploader
-        self.uploader_id = uploader_id
-        self.webpage_url = webpage_url
-        self.picture_profile = picture_profile
-        self.picture_cover = picture_cover
-        self.last_updated = last_updated
-        self.latest_upload = latest_upload
-
-class db_videos(db.Model):
-    id = db.Column('id', db.Integer, primary_key = True)
-    channel = db.Column(db.String(100))
-    channel_id = db.Column(db.String(100))
-    description = db.Column(db.String(100))
-    duration = db.Column(db.String(100))
-    duration_string = db.Column(db.String(100))
-    fulltitle = db.Column(db.String(100))
-    video_id = db.Column(db.String(100))
-    like_count = db.Column(db.String(100))
-    view_count = db.Column(db.String(100))
-    original_url = db.Column(db.String(100))
-    thumbnail = db.Column(db.String(100))
-    title = db.Column(db.String(100))
-    upload_date = db.Column(db.String(100))
-    webpage_url = db.Column(db.String(100))
-    downloaded = db.Column(db.Boolean)
-    downloaded_date = db.Column(db.String(100))
-
-    def __init__(self, channel, channel_id, description, duration, duration_string, fulltitle, video_id, like_count, view_count, original_url, thumbnail, title, upload_date, webpage_url, downloaded, downloaded_date):
-        self.channel = channel
-        self.channel_id = channel_id
-        self.description = description
-        self.duration = duration
-        self.duration_string = duration_string
-        self.fulltitle = fulltitle
-        self.video_id = video_id
-        self.like_count = like_count
-        self.view_count = view_count
-        self.original_url = original_url
-        self.thumbnail = thumbnail
-        self.title = title
-        self.upload_date = upload_date
-        self.webpage_url = webpage_url
-        self.downloaded = downloaded
-        self.downloaded_date = downloaded_date
-
-db.create_all()
+from blueprints.videos import videos_bp
+app.register_blueprint(videos_bp)
 
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
