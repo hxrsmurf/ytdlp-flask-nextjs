@@ -48,7 +48,8 @@ export default function videos({ results, result_all_channels }) {
     }
 
     const handleDownloadLatestChannel = async (event) => {
-        const query_url = (base_api_url + 'videos?latest=5&id=' + channelID)
+        latest_range = 14
+        const query_url = (base_api_url + 'videos?latest='+ latest_range +'&id=' + channelID)
         setLoading(true)
         const request_channel_videos = await fetch(query_url)
         handleDropdownClick()
@@ -140,7 +141,7 @@ export default function videos({ results, result_all_channels }) {
                                     :
                                     <>
                                         <Button
-                                            variant='info'
+                                            variant='warning'
                                             onMouseDown={(e) => handleDownloadLatest(e)}
                                         >
                                             Download latest</Button>
