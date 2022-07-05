@@ -20,6 +20,10 @@ app = Flask(__name__)
 app.config ['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///youtube.sqlite3'
 db = SQLAlchemy(app)
 
+# Blueprints
+from blueprints.blueprint_testing import blueprint_testing_bp
+app.register_blueprint(blueprint_testing_bp)
+
 class db_channel(db.Model):
     id = db.Column('id', db.Integer, primary_key = True)
     channel = db.Column(db.String(100))
