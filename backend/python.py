@@ -123,6 +123,10 @@ def channels():
                 all_videos = []
                 for video in results['entries']:
                     all_videos.append(video['original_url'])
+
+                for video in all_videos:
+                    requests.get(os.environ.get("API_URL") + '/videos?add=' + video)
+
                 return(jsonify(all_videos))
             elif args == 'name':
                     channel_name = request.args[args]
@@ -226,7 +230,7 @@ def videos():
                     return('Error')
             elif args == 'search':
                 search_query = request.args[args]
-                channel_videos = db.session.query(db_videos).filter_by(channel=search_query).all()
+                channel_videos = db.session.query(db_videos).order_by(desc(db_videos.upload_date)).filter_by(channel=search_query).all()
                 all_channel_videos = []
                 for videos in channel_videos:
                     video_information = vars(videos)
