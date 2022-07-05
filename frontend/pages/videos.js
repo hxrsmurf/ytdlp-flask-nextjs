@@ -248,7 +248,7 @@ export default function videos({ results, result_all_channels }) {
 }
 
 export async function getServerSideProps() {
-    const res = await fetch('http://127.0.0.1:5000/videos')
+    const res = await fetch('http://127.0.0.1:5000/videos/')
     const results = await res.json()
 
     const request_all_channels = await fetch(process.env.NEXT_PUBLIC_BASE_API_URL + '/videos?channels')
