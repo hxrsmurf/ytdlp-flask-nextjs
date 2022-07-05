@@ -106,7 +106,7 @@ def channels():
     current_time = now.strftime('%Y-%m-%d %H:%M:%S')
 
     if not request.args:
-        db_results = db_channel.query.all()
+        db_results = db_channel.query.order_by(db_channel.channel).all()
         all_channels = []
         for row in db_results:
             db_channel_information = vars(row)
