@@ -30,6 +30,9 @@ def getVideoById(videoID):
                 .all()
     return(query)
 
+def getVideoByYouTubeId(youtubeId):
+    return(Videos.Videos.query.filter_by(video_id=youtubeId).first())
+
 def getColumns():
     query = Videos.Videos.query.with_entities(
                 Videos.Videos.id,
