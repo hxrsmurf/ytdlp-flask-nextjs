@@ -1,7 +1,7 @@
 import os
 import json
 from flask import Flask, jsonify, request, redirect
-from sqlalchemy import desc
+from sqlalchemy import collate, desc
 from yt_dlp import YoutubeDL
 from flask_cors import CORS, cross_origin
 from dotenv import load_dotenv
@@ -199,7 +199,7 @@ def videos():
         for args in query_args:
             if args == 'channels':
                 if not 'sync' in query_args:
-                    db_query_all_channels =  db.session.query(db_videos.channel_id, db_videos.channel).order_by(db_videos.channel).distinct().all()
+                    db_query_all_channels =  db.session.query(db_videos.channel_id, db_videos.channel).order_by(collate(db_videos.channel, 'NOCASE')).distinct().all()
                     all_channels = []
                     for query in db_query_all_channels:
                         all_channels.append({
