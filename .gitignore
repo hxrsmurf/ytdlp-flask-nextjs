@@ -4,3 +4,4 @@ backend/.env
 backend/youtube.sqlite3
 *.part
 backend/blueprints/__pycache__/*
+backend/classes/__pycache__/*
