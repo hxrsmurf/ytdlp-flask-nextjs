@@ -26,7 +26,9 @@ db.app = app
 
 # Blueprints
 from blueprints.videos import videos_bp
+from blueprints.download import download_bp
 app.register_blueprint(videos_bp)
+app.register_blueprint(download_bp)
 
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
@@ -240,11 +242,5 @@ def videos():
                         requests.get(os.environ.get("API_URL") + '/videos?add=' + video)
 
                 return(jsonify({'result' : 'success'}))
-
-@app.route('/download',methods=['GET'])
-def single_download():
-    video = request.args.get('url')
-    download(video)
-    return ('Success')
 
 app.run()
