@@ -14,8 +14,8 @@ def download(video, video_range=1, download_confirm=False):
         'windowsfilenames': True
     }
 
-    if '/c/' in video or '/user/' in video:
-        ytdl_opts['playlistend'] = video_range # Not sure how the python daterange works.
+    if '/c/' in video or '/user/' or '/channel/' in video:
+        ytdl_opts['playlistend'] = 1 # Not sure how the python daterange works.
 
     with YoutubeDL(ytdl_opts) as ydl:
         info = ydl.extract_info(video, download=download_confirm)
