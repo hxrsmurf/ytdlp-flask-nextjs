@@ -16,6 +16,8 @@ export default function videos({ results, result_all_channels }) {
     const [dropdownName, setDropdownName] = useState()
     const [newResults, setNewResults] = useState()
     const [loading, setLoading] = useState()
+    const [missingChannels, setMissingChannels] = useState()
+
 
     const base_api_url = process.env.NEXT_PUBLIC_BASE_API_URL
 
@@ -53,11 +55,37 @@ export default function videos({ results, result_all_channels }) {
         setLoading(false)
     }
 
+    // We have to do this because ytsearch yt-dlp is bad at finding channels by their ID.
+    const handleSyncChannels = async (event) => {
+        const query_url = (base_api_url + 'videos?channels&sync')
+        const request_channel_videos = await fetch(query_url)
+        const result_missing_channels = await request_channel_videos.json()
+        if (result_missing_channels.length > 0) {
+            setMissingChannels(result_missing_channels)
+        }
+    }
+
     return (
         <>
             <Container className='mt-5'>
                 <EntryForm type='Videos' />
             </Container>
+
+            {missingChannels ?
+                <>
+                    <Container className='mt-5'>
+                        Manually add these channels
+                        <ul>
+                            {missingChannels.map((channel, id) => (
+                                <>
+                                    <li key={id}>
+                                        <a href={channel.original_url} target="_blank">{channel.channel} - {channel.title}</a>
+                                    </li>
+                                </>
+                            ))}
+                        </ul>
+                    </Container>
+                </> : <></>}
 
             <Container className='mt-5'>
                 <Row>
@@ -70,6 +98,7 @@ export default function videos({ results, result_all_channels }) {
                                 {result_all_channels.map((channel, id) => (
                                     <>
                                         <Dropdown.Item
+                                            key={id}
                                         >
                                             <Row
                                                 onMouseDown={(e) => handleDropdownClick(e)}
@@ -120,6 +149,14 @@ export default function videos({ results, result_all_channels }) {
                             </>
                         }
                     </Col>
+                    <Col md='auto'>
+                        <Button
+                            variant='light'
+                            onMouseDown={(e) => handleSyncChannels(e)}
+                        >
+                            Sync Channels
+                        </Button>
+                    </Col>
                 </Row>
             </Container>
 
@@ -141,7 +178,7 @@ export default function videos({ results, result_all_channels }) {
                                             <Row><div>{result.title}</div></Row>
                                             <Row>
                                                 <Col md='auto'>
-                                                    {result.duration_string} minutes | {result.view_count} views | {result.upload_date} | {result.like_count}
+                                                    {result.duration_string} minutes | {result.view_count} views | {result.upload_date} | <HandThumbsUp/>{result.like_count}
                                                 </Col>
                                             </Row>
                                         </Col>

@@ -134,7 +134,7 @@ def channels():
                             'url' : q.original_url
                         })
                     return(jsonify(channel_information))
-            elif args == 'id':
+            elif args == 'id' or args =='channel_id':
                     channel_id = request.args[args]
                     channel_information = []
                     query = db.session.query(db_channel).filter_by(channel_id=channel_id)
@@ -198,14 +198,32 @@ def videos():
         query_args = request.args
         for args in query_args:
             if args == 'channels':
-                db_query_all_channels =  db.session.query(db_videos.channel_id, db_videos.channel).order_by(db_videos.channel).distinct().all()
-                all_channels = []
-                for query in db_query_all_channels:
-                    all_channels.append({
-                        'channel' : query.channel,
-                        'channel_id' : query.channel_id
-                    })
-                return(jsonify(all_channels))
+                if not 'sync' in query_args:
+                    db_query_all_channels =  db.session.query(db_videos.channel_id, db_videos.channel).order_by(db_videos.channel).distinct().all()
+                    all_channels = []
+                    for query in db_query_all_channels:
+                        all_channels.append({
+                            'channel' : query.channel,
+                            'channel_id' : query.channel_id
+                        })
+                    return(jsonify(all_channels))
+
+                # We have to do this because ytsearch yt-dlp is bad at finding channels by their ID.
+                elif 'sync' in query_args:
+                    db_query_all_channels =  db.session.query(db_videos.channel_id, db_videos.channel, db_videos.original_url, db_videos.title).order_by(db_videos.channel).distinct().all()
+                    missing_channels = []
+                    for channel in db_query_all_channels:
+                        db_query_check_channel_exists = db.session.query(db_channel.channel_id,db_channel.channel).filter_by(channel_id=channel.channel_id).all()
+                        if not db_query_check_channel_exists:
+                            missing_channels.append({
+                                'channel' : channel['channel'],
+                                'channel_id' : channel['channel_id'],
+                                'original_url' : channel['original_url'],
+                                'title' : channel['title']
+                            })
+                    return(jsonify(missing_channels))
+                else:
+                    return('Error')
             elif args == 'search':
                 search_query = request.args[args]
                 channel_videos = db.session.query(db_videos).filter_by(channel=search_query).all()
