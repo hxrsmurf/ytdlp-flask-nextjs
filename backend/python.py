@@ -224,10 +224,10 @@ def videos():
                         db_query_check_channel_exists = db.session.query(db_channel.channel_id,db_channel.channel).filter_by(channel_id=channel.channel_id).all()
                         if not db_query_check_channel_exists:
                             missing_channels.append({
-                                'channel' : channel['channel'],
-                                'channel_id' : channel['channel_id'],
-                                'original_url' : channel['original_url'],
-                                'title' : channel['title']
+                                'channel' : channel.channel,
+                                'channel_id' : channel.channel_id,
+                                'original_url' : channel.original_url,
+                                'title' : channel.title
                             })
                     return(jsonify(missing_channels))
                 else:
