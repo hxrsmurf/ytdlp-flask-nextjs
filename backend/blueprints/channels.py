@@ -14,8 +14,3 @@ def root():
             channelListArray.append(dict(zip(columns, result)))
 
     return(jsonify(channelListArray))
-
-@channels_bp.route('<int:videoID>', methods=['GET'])
-def blueprint_testing_page(videoID):
-    print(videoID)
-    return('Hello World')
