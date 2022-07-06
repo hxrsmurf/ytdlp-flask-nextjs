@@ -26,8 +26,11 @@ db.app = app
 
 # Blueprints
 from blueprints.videos import videos_bp
+from blueprints.channels import channels_bp
 from blueprints.download import download_bp
+
 app.register_blueprint(videos_bp)
+app.register_blueprint(channels_bp)
 app.register_blueprint(download_bp)
 
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
