@@ -27,7 +27,7 @@ export default function videos({ results, result_all_channels }) {
 
     const handleDropdownClick = async (event) => {
         setDropdownName(channel)
-        const request_channel_videos = await fetch(process.env.NEXT_PUBLIC_BASE_API_URL + 'search/videos/channel/' + channel)
+        const request_channel_videos = await fetch(process.env.NEXT_PUBLIC_BASE_API_URL + '/search/videos/channel/' + channel)
         const new_results = await request_channel_videos.json()
         setNewResults(new_results)
     }
@@ -248,10 +248,10 @@ export default function videos({ results, result_all_channels }) {
 }
 
 export async function getServerSideProps() {
-    const res = await fetch('http://127.0.0.1:5000/videos/')
+    const res = await fetch(process.env.NEXT_PUBLIC_BASE_API_URL + '/videos/')
     const results = await res.json()
 
-    const request_all_channels = await fetch(process.env.NEXT_PUBLIC_BASE_API_URL + '/videos?channels')
+    const request_all_channels = await fetch(process.env.NEXT_PUBLIC_BASE_API_URL + '/videos/unique/channel-name')
     const result_all_channels = await request_all_channels.json()
 
     return {

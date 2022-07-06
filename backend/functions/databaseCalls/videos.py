@@ -1,8 +1,12 @@
 from classes import Videos
 from sqlalchemy import func, desc, asc
 
-def getAllVideos():
-    query = Videos.Videos.query.with_entities(Videos.Videos.id, Videos.Videos.upload_date).order_by(Videos.Videos.upload_date.desc()).all()
+def getAllVideos(distinct=None):
+    if not distinct:
+        query = Videos.Videos.query.with_entities(Videos.Videos.id, Videos.Videos.upload_date).order_by(Videos.Videos.upload_date.desc()).all()
+    else:
+        query = Videos.Videos.query.with_entities(Videos.Videos.channel_id, Videos.Videos.channel).order_by(Videos.Videos.channel).distinct().all()
+
     return(query)
 
 def getVideoById(videoID):

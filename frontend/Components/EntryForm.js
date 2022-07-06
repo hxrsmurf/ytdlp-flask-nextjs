@@ -16,9 +16,9 @@ export default function EntryForm({ type }) {
         setLoading(true)
         // If channel URL, then save to JSON file
         if (value.includes('/c/') || value.includes('/user/') || value.includes('/channel/')){
-            await fetch(base_api + 'channels?search=' + value)
+            await fetch(base_api + '/channels/add?url=' + value)
         } else {
-            await fetch(base_api + 'download/search?url=' + value)
+            await fetch(base_api + '/download/search?url=' + value)
         }
 
         setLoading(false)
