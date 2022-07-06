@@ -1,5 +1,4 @@
 from yt_dlp import YoutubeDL
-from functions.backblaze_upload import b2_upload
 
 def download(video, video_range=2, download_confirm=False):
     def hook(d):
