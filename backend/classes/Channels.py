@@ -1,8 +1,8 @@
 from .shared import db
 
-class Channel(db.Model):
+class Channels(db.Model):
     id = db.Column('id', db.Integer, primary_key = True)
-    channel = db.Column(db.String(100))
+    channel_name = db.Column(db.String(100))
     channel_follower_count = db.Column(db.Integer)
     channel_id = db.Column(db.String(100))
     description = db.Column(db.String(100))
@@ -15,8 +15,8 @@ class Channel(db.Model):
     last_updated = db.Column(db.String(100))
     latest_upload = db.Column(db.String(100))
 
-    def __init__(self, channel, channel_follower_count, channel_id, description, original_url, uploader, uploader_id, webpage_url, picture_profile, picture_cover, last_updated, latest_upload):
-        self.channel = channel
+    def __init__(self, channel_name, channel_follower_count, channel_id, description, original_url, uploader, uploader_id, webpage_url, picture_profile, picture_cover, last_updated, latest_upload):
+        self.channel_name = channel_name
         self.channel_follower_count = channel_follower_count
         self.channel_id = channel_id
         self.description = description

@@ -18,7 +18,7 @@ export default function channels({ results }) {
             <Container className='mt-5'>
                 {results.map((result, id) => (
                     <Card style={{ width: '75' }} key={id} className='mt-5'>
-                        <Card.Header>{result.channel} - {result.original_url}</Card.Header>
+                        <Card.Header>{result.channel_name} - {result.original_url}</Card.Header>
                         <Card.Img
                             variant="top" src={result.picture_cover}
                             />
@@ -36,7 +36,7 @@ export default function channels({ results }) {
 }
 
 export async function getServerSideProps() {
-    const res = await fetch(process.env.NEXT_PUBLIC_BASE_API_URL + 'channels')
+    const res = await fetch(process.env.NEXT_PUBLIC_BASE_API_URL + 'channels/')
     const results = await res.json()
     return {
         props: {
