@@ -27,7 +27,7 @@ export default function videos({ results, result_all_channels }) {
 
     const handleDropdownClick = async (event) => {
         setDropdownName(channel)
-        const request_channel_videos = await fetch(process.env.NEXT_PUBLIC_BASE_API_URL + '/videos?search=' + channel)
+        const request_channel_videos = await fetch(process.env.NEXT_PUBLIC_BASE_API_URL + 'search/videos/channel/' + channel)
         const new_results = await request_channel_videos.json()
         setNewResults(new_results)
     }
