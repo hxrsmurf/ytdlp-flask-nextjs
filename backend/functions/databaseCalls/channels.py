@@ -1,4 +1,3 @@
-from numpy import var
 from classes import Channels
 from sqlalchemy import collate, func, desc, asc
 
