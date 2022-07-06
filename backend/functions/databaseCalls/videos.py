@@ -1,4 +1,3 @@
-from numpy import var
 from classes import Videos
 from sqlalchemy import func, desc, asc
 
