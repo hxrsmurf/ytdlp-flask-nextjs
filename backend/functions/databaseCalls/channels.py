@@ -27,6 +27,9 @@ def getChannelById(channelID):
 def getChannelByName(channelName):
     return(Channels.Channels.query.filter_by(channel_name=channelName).first())
 
+def getChannelByYouTubeId(youtubeId):
+    return(Channels.Channels.query.with_entities(Channels.Channels.original_url).filter_by(channel_id=youtubeId).first())
+
 def getColumns():
     query = Channels.Channels.query.with_entities(
                 Channels.Channels.channel_name,
