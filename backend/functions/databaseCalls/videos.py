@@ -37,8 +37,6 @@ def getVideoByYouTubeId(youtubeId):
     return(Videos.Videos.query.filter_by(video_id=youtubeId).first())
 
 def getVideoByChannelName(channelName):
-    print(channelName)
-    print(len(channelName))
     query = Videos.Videos.query.filter_by(channel=channelName).\
             with_entities(
                 Videos.Videos.id,

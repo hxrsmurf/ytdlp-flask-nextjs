@@ -6,7 +6,6 @@ search_bp = Blueprint('search', __name__, url_prefix='/search')
 
 @search_bp.route('/videos/channel/<string:channelName>', methods=['GET'])
 def root(channelName):
-    print(channelName)
     videoList = videos.getVideoByChannelName(channelName)
     videoListArray = []
     columns = videos.getColumns()
