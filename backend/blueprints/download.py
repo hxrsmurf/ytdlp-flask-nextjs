@@ -1,6 +1,10 @@
+import requests
+import os
+
 from flask import Blueprint, Flask, jsonify, request, redirect
 
 from functions.databaseCalls import videos
+from functions.databaseCalls import channels
 from functions.downloader import download
 from functions.utils import getCurrentTime
 
@@ -41,3 +45,17 @@ def root():
     else:
         print('There was another error.')
     return(jsonify(result_download_url))
+
+
+@download_bp.route('/latest', methods=['GET'])
+def latest():
+    channel_id = request.args['id']
+    range = int(request.args['range'])
+    query_channel = channels.getChannelByYouTubeId(channel_id)
+    channel_url = query_channel[0]
+    download_results = download(video=channel_url, video_range=range, download_confirm=False)
+    for entry in download_results['entries']:
+        video_url = entry['original_url']
+        requests.get(os.environ.get("API_URL") + '/download/search?url=' + video_url)
+
+    return(jsonify(download_results))
