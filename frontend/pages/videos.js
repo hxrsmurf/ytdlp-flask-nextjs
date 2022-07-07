@@ -58,7 +58,7 @@ export default function videos({ results, result_all_channels }) {
 
     // We have to do this because ytsearch yt-dlp is bad at finding channels by their ID.
     const handleSyncChannels = async (event) => {
-        const query_url = (base_api_url + 'videos?channels&sync')
+        const query_url = (base_api_url + '/videos/sync-channels')
         const request_channel_videos = await fetch(query_url)
         const result_missing_channels = await request_channel_videos.json()
         if (result_missing_channels.length > 0) {
