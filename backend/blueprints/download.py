@@ -51,11 +51,26 @@ def root():
 def latest():
     channel_id = request.args['id']
     range = int(request.args['range'])
-    query_channel = channels.getChannelByYouTubeId(channel_id)
-    channel_url = query_channel[0]
-    download_results = download(video=channel_url, video_range=range, download_confirm=False)
-    for entry in download_results['entries']:
-        video_url = entry['original_url']
-        requests.get(os.environ.get("API_URL") + '/download/search?url=' + video_url)
+
+    if channel_id == 'all':
+        query_channel = channels.getAllChannels()
+
+    elif channel_id:
+        query_channel = channels.getChannelByYouTubeId(channel_id)
+
+    else:
+        print('Error')
+        return('Error')
+
+    for channel in query_channel:
+        if channel_id == 'all':
+            channel_url = channel[2] # Channel Original URL
+        else:
+            channel_url = channel
+
+        download_results = download(video=channel_url, video_range=range, download_confirm=False)
+        for entry in download_results['entries']:
+            video_url = entry['original_url']
+            requests.get(os.environ.get("API_URL") + '/download/search?url=' + video_url)
 
     return(jsonify(download_results))

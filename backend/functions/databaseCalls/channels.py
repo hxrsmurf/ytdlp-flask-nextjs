@@ -2,7 +2,7 @@ from classes import Channels
 from sqlalchemy import collate, func, desc, asc
 
 def getAllChannels():
-    query = Channels.Channels.query.with_entities(Channels.Channels.id, Channels.Channels.channel_name).order_by(collate(Channels.Channels.channel_name, 'NOCASE')).all()
+    query = Channels.Channels.query.with_entities(Channels.Channels.id, Channels.Channels.channel_name, Channels.Channels.original_url).order_by(collate(Channels.Channels.channel_name, 'NOCASE')).all()
     return(query)
 
 def getChannelById(channelID):
