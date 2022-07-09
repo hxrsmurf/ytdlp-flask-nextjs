@@ -1,3 +1,4 @@
+import json
 import requests
 import os
 
@@ -24,24 +25,21 @@ def root():
 def latest():
     channel_id = request.args['id']
     range = int(request.args['range'])
+    query_channel = []
 
     if channel_id == 'all':
-        query_channel = channels.getAllChannels()
-
-    elif channel_id:
-        query_channel = channels.getChannelByYouTubeId(channel_id)
-
-    else:
-        print('Error')
-        return('Error')
+        all_channels = firebase.getAllChannels()
+        query = json.loads(all_channels.data)
+        for q in query:
+            channel_url = q['webpage_url']
+            query_channel.append(channel_url)
+    elif not channel_id == 'all':
+        single_channel = firebase.getChannel(channel_id)
+        query = json.loads(single_channel.data)
+        query_channel.append(query['webpage_url'])
 
     for channel in query_channel:
-        if channel_id == 'all':
-            channel_url = channel[2] # Channel Original URL
-        else:
-            channel_url = channel
-
-        download_results = download(video=channel_url, video_range=range, download_confirm=False)
+        download_results = download(video=channel, video_range=range, download_confirm=False)
         for entry in download_results['entries']:
             video_url = entry['original_url']
             requests.get(os.environ.get("API_URL") + '/download/search?url=' + video_url)

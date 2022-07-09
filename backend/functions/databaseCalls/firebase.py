@@ -43,7 +43,6 @@ def getChannel(information):
 
     doc = channels_ref.get()
     if doc.exists:
-        print(f'Document data: {doc.to_dict()}')
         return(jsonify(doc.to_dict()))
     else:
         return False
