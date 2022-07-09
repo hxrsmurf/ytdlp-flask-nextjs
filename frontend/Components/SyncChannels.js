@@ -2,8 +2,8 @@ import Button from "react-bootstrap/Button"
 export default function SyncChannels({ callback }) {
 
     // We have to do this because ytsearch yt-dlp is bad at finding channels by their ID.
-    const handleSyncChannels = async () => {
-        const query_url = (process.env.NEXT_PUBLIC_BASE_API_URL + '/videos/sync-channels')
+    const handleSyncChannels = async (e) => {
+        const query_url = (process.env.NEXT_PUBLIC_BASE_API_URL + 'videos/sync-channels')
         const request_channel_videos = await fetch(query_url)
         const result_missing_channels = await request_channel_videos.json()
 
@@ -20,7 +20,7 @@ export default function SyncChannels({ callback }) {
         <>
             <Button
                 variant='light'
-                onMouseDown={handleSyncChannels()}
+                onMouseDown={(e) => handleSyncChannels(e)}
             >
                 Sync Channels
             </Button>
