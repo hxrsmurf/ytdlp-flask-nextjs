@@ -1,5 +1,4 @@
 import Container from 'react-bootstrap/Container'
-import EntryForm from '../Components/EntryForm'
 import Card from 'react-bootstrap/Card'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
@@ -7,8 +6,11 @@ import Button from 'react-bootstrap/Button'
 import { Youtube, Download, HandThumbsUp, Dot } from 'react-bootstrap-icons'
 import Dropdown from 'react-bootstrap/Dropdown'
 import { useState } from 'react'
+
+import EntryForm from '../Components/EntryForm'
 import LoadingCircle from '../Components/LoadingCircle'
 import VideoCardList from '../Components/VideoCardList'
+import MissingChannels from '../Components/MissingChannels'
 
 export default function videos({ results, result_all_channels }) {
     const [channel, setChannel] = useState()
@@ -17,7 +19,6 @@ export default function videos({ results, result_all_channels }) {
     const [newResults, setNewResults] = useState()
     const [loading, setLoading] = useState()
     const [missingChannels, setMissingChannels] = useState()
-
 
     const base_api_url = process.env.NEXT_PUBLIC_BASE_API_URL
 
@@ -76,19 +77,11 @@ export default function videos({ results, result_all_channels }) {
 
             {missingChannels ?
                 <>
-                    <Container className='mt-5'>
-                        Manually add these channels
-                        <ul>
-                            {missingChannels.map((channel, id) => (
-                                <>
-                                    <li key={id}>
-                                        <a href={channel.original_url} target="_blank">{channel.channel} - {channel.title}</a>
-                                    </li>
-                                </>
-                            ))}
-                        </ul>
-                    </Container>
-                </> : <></>}
+                    <MissingChannels data={missingChannels} />
+                </>
+                :
+                <></>
+            }
 
             <Container className='mt-5'>
                 <Row>
