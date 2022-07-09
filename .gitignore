@@ -6,3 +6,4 @@ backend/youtube.sqlite3
 backend/blueprints/__pycache__/*
 backend/classes/__pycache__/*
 backend/functions/databaseCalls/__pycache__/*
+backend/serviceAccountKey.json
