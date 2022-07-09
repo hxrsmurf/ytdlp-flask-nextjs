@@ -95,7 +95,7 @@ export default function videos({ results, result_all_channels }) {
                                                 }
                                                 }
                                             >
-                                                <Col>{channel.channel}</Col>
+                                                <Col>{channel.channel_name}</Col>
                                                 <Col hidden>{channel.channel_id}</Col>
                                             </Row>
                                         </Dropdown.Item>
