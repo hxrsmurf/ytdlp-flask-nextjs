@@ -11,6 +11,7 @@ import EntryForm from '../Components/EntryForm'
 import LoadingCircle from '../Components/LoadingCircle'
 import VideoCardList from '../Components/VideoCardList'
 import MissingChannels from '../Components/MissingChannels'
+import SyncChannels from '../Components/SyncChannels'
 
 export default function videos({ results, result_all_channels }) {
     const [channel, setChannel] = useState()
@@ -57,16 +58,6 @@ export default function videos({ results, result_all_channels }) {
         const request_channel_videos = await fetch(query_url)
         handleDropdownClick()
         setLoading(false)
-    }
-
-    // We have to do this because ytsearch yt-dlp is bad at finding channels by their ID.
-    const handleSyncChannels = async (event) => {
-        const query_url = (base_api_url + '/videos/sync-channels')
-        const request_channel_videos = await fetch(query_url)
-        const result_missing_channels = await request_channel_videos.json()
-        if (result_missing_channels.length > 0) {
-            setMissingChannels(result_missing_channels)
-        }
     }
 
     return (
@@ -145,17 +136,13 @@ export default function videos({ results, result_all_channels }) {
                             </>
                         }
                     </Col>
+
                     <Col md='auto'>
-                        <Button
-                            variant='light'
-                            onMouseDown={(e) => handleSyncChannels(e)}
-                        >
-                            Sync Channels
-                        </Button>
+                        <SyncChannels callback={setMissingChannels}/>
                     </Col>
+
                 </Row>
             </Container>
-
 
             <Container className='mt-5'>
                 {newResults ?
