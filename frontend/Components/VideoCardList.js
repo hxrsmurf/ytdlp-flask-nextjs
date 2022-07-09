@@ -9,7 +9,7 @@ export default function VideoCardList({ data }) {
         <>
             <Row>
                 {data.map((result, id) => (
-                    <Col lg='3'>
+                    <Col lg='3' key={id}>
                         <Card key={id} className='mt-5'>
                             <Card.Img
                                 variant="top" src={result.thumbnail}
