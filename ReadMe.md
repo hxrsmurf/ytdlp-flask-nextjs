@@ -2,7 +2,7 @@
 
 This is just a pet project to learn more about [Python Flask](https://flask.palletsprojects.com/en/2.1.x/) and [NextJS](https://nextjs.org/).
 
-The backend is Python Flask and the frontend is NextJS.
+The backend is Python Flask and the frontend is NextJS. The database is [Firestore](https://cloud.google.com/firestore/).
 
 For now...
 - This just links the YouTube Video's URL which you can click on.
@@ -28,7 +28,7 @@ While YouTubeDL-Material & TubeArchivist are great projects, I wanted something 
 
 ## To Do
 
-- [ ] Migrate from SQLite to Serverless Database (DynamoDB, Firestore)
+- [X] [Using Firebase](https://github.com/hxrsmurf/ytdlp-flask-nextjs/pull/5) ~~Migrate from SQLite to Serverless Database (DynamoDB, Firestore)~~
 - [ ] Add download functionality to local storage and s3-compatible (BackBlaze B2)
 - [ ] Add CDN functionality via CloudFlare or NGINX to cache videos
 - [ ] Dockerize
