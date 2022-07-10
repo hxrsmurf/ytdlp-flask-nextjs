@@ -22,9 +22,11 @@ def addChannel(information, empty=False):
         })
         return(information)
     elif empty == False:
+        channel_name_lowercase = information['channel'].lower()
         channels_ref.set({
             'channel_id' : information['channel_id'],
             'channel_name' : information['channel'],
+            'channel_name_lowercase' : channel_name_lowercase,
             'channel_follower_count' : information['channel_follower_count'],
             'description' : information['description'],
             'original_url' : information['original_url'],
@@ -51,7 +53,7 @@ def getChannel(information):
 
 def getAllChannels():
     channels_ref = db.collection(u'channels')
-    query = channels_ref.order_by('channel_name')
+    query = channels_ref.order_by('channel_name_lowercase')
     ordered_channels = query.stream()
     result = []
     for channel in ordered_channels:
@@ -67,9 +69,11 @@ def addVideo(information):
     else:
         channel_ref = db.collection(u'channels').document(information['channel_id'])
         video_ref = channel_ref.collection('videos').document(information['id'])
+        channel_name_lowercase = information['channel'].lower()
         video_ref.set({
             'channel_id' : information['channel_id'],
             'channel' : information['channel'],
+            'channel_name_lowercase' : channel_name_lowercase,
             'description' : information['description'],
             'duration' : information['duration'],
             'duration_string' : information['duration_string'],
