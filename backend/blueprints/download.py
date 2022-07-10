@@ -42,7 +42,7 @@ def latest():
         query_channel.append(query['webpage_url'])
 
     def download_channel(channel_url):
-        download_result = download(video=channel, video_range=range, download_confirm=False)
+        download_result = download(video=channel_url, video_range=range, download_confirm=False)
         return download_result
 
     def download_video(video_url):
@@ -74,4 +74,4 @@ def latest():
 
         completed_videos = get_futures(video_threads)
 
-    return(jsonify({'available_videos': videos_in_range}, {'completed_videos' : completed_videos}))
+    return(jsonify({'videos_in_range': videos_in_range}, {'completed_videos' : completed_videos}))
