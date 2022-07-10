@@ -49,6 +49,16 @@ def latest():
         requests.get(os.environ.get("API_URL") + '/download/search?url=' + video_url)
         return(video_url)
 
+    def get_futures(thread, type=None):
+        result = []
+        for future in concurrent.futures.as_completed(thread):
+            if type == 'channel':
+                for f in future.result()['entries']:
+                    result.append(f['original_url'])
+            else:
+                result.append(future.result())
+        return result
+
     channel_threads = []
     video_threads = []
     completed_videos = []
@@ -57,13 +67,11 @@ def latest():
         for channel in query_channel:
             channel_threads.append(executor.submit(download_channel,channel))
 
-        for future_channel in concurrent.futures.as_completed(channel_threads):
-            results = future_channel.result()
-            for entry in results['entries']:
-                video_url = entry['original_url']
+        videos_in_range = get_futures(channel_threads, type='channel')
+
+        for video_url in videos_in_range:
                 video_threads.append(executor.submit(download_video, video_url))
 
-            for future_video in concurrent.futures.as_completed(video_threads):
-                completed_videos.append(future_video.result())
+        completed_videos = get_futures(video_threads)
 
-    return(jsonify(completed_videos))
+    return(jsonify({'available_videos': videos_in_range}, {'completed_videos' : completed_videos}))
