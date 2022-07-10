@@ -31,7 +31,7 @@ While YouTubeDL-Material & TubeArchivist are great projects, I wanted something 
 - [X] [Using Firebase](https://github.com/hxrsmurf/ytdlp-flask-nextjs/pull/5) ~~Migrate from SQLite to Serverless Database (DynamoDB, Firestore)~~
 - [ ] Add download functionality to local storage and s3-compatible (BackBlaze B2)
 - [ ] Add CDN functionality via CloudFlare or NGINX to cache videos
-- [ ] Dockerize
+- [X] Added basic docker support ~~Dockerize~~
 - [ ] CI/CD (?)
 - [ ] Add badge metrics for issues, license, etc.
 - [ ] Twilio integration (text the API to add channel)
