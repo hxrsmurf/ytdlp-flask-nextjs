@@ -9,7 +9,7 @@ def add_channel(channel):
 def get_latest(range):
     url = f'{API_URL}/download/latest?range={range}&id=all'
     requests.get(url)
-    print('Complete')
+    print('Completed latest')
 
 def recreate_channels(debug=True):
     x = 0
@@ -35,7 +35,7 @@ def recreate_channels(debug=True):
     for futures in concurrent.futures.as_completed(threads):
         print(futures.result())
 
-    print('Complete')
+    print('Completed recreate')
 
 
 API_URL = 'http://127.0.0.1:5000'
