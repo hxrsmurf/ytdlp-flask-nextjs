@@ -6,6 +6,8 @@ import json
 
 from functions.utils import getCurrentTime
 
+import concurrent.futures
+
 cred = credentials.Certificate("serviceAccountKey.json")
 firebase_admin.initialize_app(cred)
 
@@ -112,9 +114,13 @@ def getAllVideos():
 def getMissingVideos():
     channel_ref = db.collection(u'channels').where('empty', '==', True).stream()
     all_videos = []
-    for channel in channel_ref:
-        query = getAllVideosByChannel(channel.id)
-        for q in query:
-            all_videos.append(q)
+    all_videos_threads = []
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=None) as executor:
+        for channel in channel_ref:
+            all_videos_threads.append(executor.submit(getAllVideosByChannel, channel.id))
+
+        for future in concurrent.futures.as_completed(all_videos_threads):
+            all_videos.append(future.result())
 
     return(jsonify(all_videos))
