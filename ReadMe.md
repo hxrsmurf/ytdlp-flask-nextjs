@@ -34,3 +34,5 @@ While YouTubeDL-Material & TubeArchivist are great projects, I wanted something 
 - [ ] Dockerize
 - [ ] CI/CD (?)
 - [ ] Add badge metrics for issues, license, etc.
+- [ ] Twilio integration (text the API to add channel)
+- [ ] Web Browser extension like TubeArchivst
