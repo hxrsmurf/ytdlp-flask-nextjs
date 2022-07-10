@@ -1,0 +1,10 @@
+version: '3.3'
+services:
+  nextjs:
+    build:
+      context: .
+      args:
+        - NEXT_PUBLIC_BASE_API_URL=http://192.168.2.123:5000/
+        - NODE_ENV=production
+    ports:
+      - 3000:3000
