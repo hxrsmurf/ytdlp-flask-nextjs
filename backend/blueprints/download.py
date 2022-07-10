@@ -13,6 +13,8 @@ from functions.utils import getCurrentTime
 from classes.shared import db
 from classes import Videos
 
+import concurrent.futures
+
 download_bp = Blueprint('download', __name__, url_prefix='/download')
 
 @download_bp.route('/search', methods=['GET'])
@@ -26,6 +28,7 @@ def latest():
     channel_id = request.args['id']
     range = int(request.args['range'])
     query_channel = []
+    thread_workers = None
 
     if channel_id == 'all':
         all_channels = firebase.getAllChannels()
@@ -38,10 +41,29 @@ def latest():
         query = json.loads(single_channel.data)
         query_channel.append(query['webpage_url'])
 
-    for channel in query_channel:
-        download_results = download(video=channel, video_range=range, download_confirm=False)
-        for entry in download_results['entries']:
-            video_url = entry['original_url']
-            requests.get(os.environ.get("API_URL") + '/download/search?url=' + video_url)
+    def download_channel(channel_url):
+        download_result = download(video=channel, video_range=range, download_confirm=False)
+        return download_result
 
-    return(jsonify(download_results))
+    def download_video(video_url):
+        requests.get(os.environ.get("API_URL") + '/download/search?url=' + video_url)
+        return(video_url)
+
+    channel_threads = []
+    video_threads = []
+    completed_videos = []
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=thread_workers) as executor:
+        for channel in query_channel:
+            channel_threads.append(executor.submit(download_channel,channel))
+
+        for future_channel in concurrent.futures.as_completed(channel_threads):
+            results = future_channel.result()
+            for entry in results['entries']:
+                video_url = entry['original_url']
+                video_threads.append(executor.submit(download_video, video_url))
+
+            for future_video in concurrent.futures.as_completed(video_threads):
+                completed_videos.append(future_video.result())
+
+    return(jsonify(completed_videos))
