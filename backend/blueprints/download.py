@@ -13,6 +13,8 @@ from functions.utils import getCurrentTime
 from classes.shared import db
 from classes import Videos
 
+import concurrent.futures
+
 download_bp = Blueprint('download', __name__, url_prefix='/download')
 
 @download_bp.route('/search', methods=['GET'])
@@ -26,6 +28,7 @@ def latest():
     channel_id = request.args['id']
     range = int(request.args['range'])
     query_channel = []
+    thread_workers = None
 
     if channel_id == 'all':
         all_channels = firebase.getAllChannels()
@@ -38,10 +41,37 @@ def latest():
         query = json.loads(single_channel.data)
         query_channel.append(query['webpage_url'])
 
-    for channel in query_channel:
-        download_results = download(video=channel, video_range=range, download_confirm=False)
-        for entry in download_results['entries']:
-            video_url = entry['original_url']
-            requests.get(os.environ.get("API_URL") + '/download/search?url=' + video_url)
+    def download_channel(channel_url):
+        download_result = download(video=channel, video_range=range, download_confirm=False)
+        return download_result
 
-    return(jsonify(download_results))
+    def download_video(video_url):
+        requests.get(os.environ.get("API_URL") + '/download/search?url=' + video_url)
+        return(video_url)
+
+    def get_futures(thread, type=None):
+        result = []
+        for future in concurrent.futures.as_completed(thread):
+            if type == 'channel':
+                for f in future.result()['entries']:
+                    result.append(f['original_url'])
+            else:
+                result.append(future.result())
+        return result
+
+    channel_threads = []
+    video_threads = []
+    completed_videos = []
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=thread_workers) as executor:
+        for channel in query_channel:
+            channel_threads.append(executor.submit(download_channel,channel))
+
+        videos_in_range = get_futures(channel_threads, type='channel')
+
+        for video_url in videos_in_range:
+                video_threads.append(executor.submit(download_video, video_url))
+
+        completed_videos = get_futures(video_threads)
+
+    return(jsonify({'available_videos': videos_in_range}, {'completed_videos' : completed_videos}))
