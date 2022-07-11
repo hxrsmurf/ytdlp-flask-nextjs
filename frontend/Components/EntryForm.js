@@ -1,7 +1,6 @@
-
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Router from 'next/router'
 import LoadingCircle from './LoadingCircle'
 
@@ -14,9 +13,9 @@ export default function EntryForm({ type }) {
     const handleSubmit = async (event) => {
         event.preventDefault()
         setLoading(true)
-        // If channel URL, then save to JSON file
-        if (value.includes('/c/') || value.includes('/user/') || value.includes('/channel/')){
-            await fetch(base_api + '/channels/add?url=' + value)
+
+        if (value.includes('/c/') || value.includes('/user/') || value.includes('/channel/')) {
+            await fetch(base_api + '/mongo/channels/add?url=' + value)
         } else {
             await fetch(base_api + '/download/search?url=' + value)
         }
@@ -27,7 +26,7 @@ export default function EntryForm({ type }) {
 
     return (
         <>
-            {loading ?  <LoadingCircle text='Downloading...'/>:
+            {loading ? <LoadingCircle text='Downloading...' /> :
                 <Form>
                     <Form.Group className="mb-3">
                         <Form.Label>{type}</Form.Label>
