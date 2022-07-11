@@ -36,7 +36,7 @@ export default function channels({ results }) {
 }
 
 export async function getServerSideProps() {
-    const res = await fetch(process.env.NEXT_PUBLIC_BASE_API_URL + '/channels/')
+    const res = await fetch(process.env.NEXT_PUBLIC_BASE_API_URL + '/mongo/channels/')
     const results = await res.json()
     return {
         props: {
