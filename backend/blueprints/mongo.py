@@ -3,13 +3,13 @@ from flask import Blueprint, jsonify, request
 
 from functions.downloader import download
 from functions.utils import getCurrentTime
-from classes import Channels_mongo
+from classes import Mongo
 
 mongo_bp = Blueprint('mongo', __name__, url_prefix='/mongo')
 
 @mongo_bp.route('/channels/', methods=['GET'])
 def root():
-    query = Channels_mongo.Channels.objects()
+    query = Mongo.Channels.objects()
     query_json = json.loads(query.to_json())
     return(jsonify(query_json))
 
@@ -20,7 +20,7 @@ def add():
 
     channel_name_lowercase = download_result['channel'].lower()
 
-    query = Channels_mongo.Channels(
+    query = Mongo.Channels(
         channel_id = download_result['channel_id'],
         channel_name = download_result['channel'],
         channel_name_lowercase = channel_name_lowercase,
