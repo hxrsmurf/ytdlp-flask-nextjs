@@ -66,6 +66,9 @@ def add_videos():
     url = request.args['url']
     download_result = download(video=url, video_range=1, download_confirm=False)
 
+    if download_result == None:
+        return(f'Video error {url}')
+
     channel_name_lowercase = download_result['channel'].lower()
 
     query = Mongo.Videos(
