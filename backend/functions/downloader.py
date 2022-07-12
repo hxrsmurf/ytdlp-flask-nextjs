@@ -11,7 +11,8 @@ def download(video, video_range=2, download_confirm=False):
         #'daterange' : 'today-1year',
         #'download_archive': 'static/downloaded_videos.txt',
         'windowsfilenames': True,
-        'playlistend' : video_range
+        'playlistend' : video_range,
+        'ignoreerrors' : True
     }
 
     with YoutubeDL(ytdl_opts) as ydl:
