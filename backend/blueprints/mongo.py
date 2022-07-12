@@ -63,6 +63,22 @@ def get_videos_unique_channel():
 
     return(jsonify(query_array))
 
+@mongo_bp.route('/videos/sync-channels')
+def videos_sync_channels():
+    channel_videos = json.loads(get_videos_unique_channel().data)
+    channels = json.loads(get_channels().data)
+
+    available_channels = []
+    missing_channels = []
+
+    for channel in channels:
+        available_channels.append(channel['_id'])
+
+    for channel in channel_videos:
+        if not channel['channel_id'] in available_channels:
+            missing_channels.append(channel)
+    return(jsonify(missing_channels))
+
 @mongo_bp.route('/videos/add', methods=['GET'])
 def add_videos():
     url = request.args['url']
