@@ -109,3 +109,9 @@ def add_videos():
     query_json = json.loads(query.to_json())
 
     return({'download_results' : download_result, 'query_json' : query_json})
+
+@mongo_bp.route('/videos/search/<string:channel_id>', methods=['GET'])
+def search_videos(channel_id):
+    query = Mongo.Videos.objects(channel_id=channel_id)
+    query_json = json.loads(query.to_json())
+    return(jsonify(query_json))
