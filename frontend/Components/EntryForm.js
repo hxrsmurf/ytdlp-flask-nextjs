@@ -17,7 +17,7 @@ export default function EntryForm({ type }) {
         if (value.includes('/c/') || value.includes('/user/') || value.includes('/channel/')) {
             await fetch(base_api + '/mongo/channels/add?url=' + value)
         } else {
-            await fetch(base_api + '/download/search?url=' + value)
+            await fetch(base_api + '/mongo/videos/add?url=' + value)
         }
 
         setLoading(false)

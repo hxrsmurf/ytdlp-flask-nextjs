@@ -40,6 +40,12 @@ def add():
 
     return(json.loads(query.to_json()))
 
+@mongo_bp.route('/videos/', methods=['GET'])
+def get_videos():
+    query = Mongo.Videos.objects()
+    query_json = json.loads(query.to_json())
+    return(jsonify(query_json))
+
 @mongo_bp.route('/videos/add', methods=['GET'])
 def add_video():
     url = request.args['url']
@@ -68,6 +74,5 @@ def add_video():
     query.save()
 
     query_json = json.loads(query.to_json())
-    print(query_json)
 
     return({'download_results' : download_result, 'query_json' : query_json})
