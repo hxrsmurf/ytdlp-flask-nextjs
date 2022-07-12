@@ -8,13 +8,13 @@ from classes import Mongo
 mongo_bp = Blueprint('mongo', __name__, url_prefix='/mongo')
 
 @mongo_bp.route('/channels/', methods=['GET'])
-def root():
+def get_channels():
     query = Mongo.Channels.objects()
     query_json = json.loads(query.to_json())
     return(jsonify(query_json))
 
 @mongo_bp.route('/channels/add', methods=['GET'])
-def add():
+def add_channels():
     url = request.args['url']
     download_result = download(video=url, video_range=1, download_confirm=False)
 
@@ -47,7 +47,7 @@ def get_videos():
     return(jsonify(query_json))
 
 @mongo_bp.route('/videos/add', methods=['GET'])
-def add_video():
+def add_videos():
     url = request.args['url']
     download_result = download(video=url, video_range=1, download_confirm=False)
 
