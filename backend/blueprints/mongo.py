@@ -39,3 +39,35 @@ def add():
     query.save()
 
     return(json.loads(query.to_json()))
+
+@mongo_bp.route('/videos/add', methods=['GET'])
+def add_video():
+    url = request.args['url']
+    download_result = download(video=url, video_range=1, download_confirm=False)
+
+    channel_name_lowercase = download_result['channel'].lower()
+
+    query = Mongo.Videos(
+        channel_name = download_result['channel'],
+        channel_name_lowercase = channel_name_lowercase,
+        channel_id = download_result['channel_id'],
+        description = download_result['description'],
+        duration = download_result['duration'],
+        duration_string = download_result['duration_string'],
+        fulltitle = download_result['fulltitle'],
+        video_id = download_result['id'],
+        like_count = download_result['like_count'],
+        view_count = download_result['view_count'],
+        original_url = download_result['original_url'],
+        thumbnail = download_result['thumbnail'],
+        title = download_result['title'],
+        upload_date = download_result['upload_date'],
+        webpage_url = download_result['webpage_url']
+    )
+
+    query.save()
+
+    query_json = json.loads(query.to_json())
+    print(query_json)
+
+    return({'download_results' : download_result, 'query_json' : query_json})
