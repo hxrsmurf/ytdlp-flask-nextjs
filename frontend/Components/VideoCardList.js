@@ -5,6 +5,11 @@ import Col from 'react-bootstrap/Col'
 import { Youtube, Download, HandThumbsUp, Dot } from 'react-bootstrap-icons'
 
 export default function VideoCardList({ data }) {
+
+    const handleClick = async (event) => {
+        window.open(event, '_blank')
+    }
+
     return (
         <>
             <Row>

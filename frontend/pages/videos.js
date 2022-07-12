@@ -23,10 +23,6 @@ export default function videos({ results, result_all_channels }) {
 
     const base_api_url = process.env.NEXT_PUBLIC_BASE_API_URL
 
-    const handleClick = async (event) => {
-        window.open(event, '_blank')
-    }
-
     const handleDropdownClick = async (event) => {
         setDropdownName(channel)
         const request_channel_videos = await fetch(process.env.NEXT_PUBLIC_BASE_API_URL + '/mongo/videos/search/' + channelID)
