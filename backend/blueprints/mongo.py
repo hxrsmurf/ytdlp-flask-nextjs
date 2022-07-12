@@ -172,7 +172,10 @@ def download_latest():
         for future in concurrent.futures.as_completed(thread):
             if type == 'channel':
                 for f in future.result()['entries']:
-                    result.append(f['original_url'])
+                    if f == None:
+                        pass
+                    else:
+                        result.append(f['original_url'])
             else:
                 result.append(future.result())
         return result
