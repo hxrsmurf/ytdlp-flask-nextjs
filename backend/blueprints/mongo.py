@@ -12,7 +12,7 @@ mongo_bp = Blueprint('mongo', __name__, url_prefix='/mongo')
 
 @mongo_bp.route('/channels/', methods=['GET'])
 def get_channels():
-    query = Mongo.Channels.objects()
+    query = Mongo.Channels.objects().order_by('channel_name_lowercase')
     query_json = json.loads(query.to_json())
     return(jsonify(query_json))
 
