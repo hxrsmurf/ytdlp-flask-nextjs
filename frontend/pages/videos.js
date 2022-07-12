@@ -163,7 +163,7 @@ export async function getServerSideProps() {
     const res = await fetch(process.env.NEXT_PUBLIC_BASE_API_URL + '/mongo/videos/')
     const results = await res.json()
 
-    const request_all_channels = await fetch(process.env.NEXT_PUBLIC_BASE_API_URL + '/videos/unique/channel-name')
+    const request_all_channels = await fetch(process.env.NEXT_PUBLIC_BASE_API_URL + '/mongo/videos/unique/channel')
     const result_all_channels = await request_all_channels.json()
 
     return {

@@ -46,6 +46,23 @@ def get_videos():
     query_json = json.loads(query.to_json())
     return(jsonify(query_json))
 
+@mongo_bp.route('/videos/unique/channel', methods=['GET'])
+def get_videos_unique_channel():
+    query = Mongo.Videos.objects.aggregate([
+        { "$group" : {"_id" : {"channel_name" : "$channel_name", "channel_id" : "$channel_id"}}},
+        { "$sort" : {"channel_name_lowercase": -1}}
+    ])
+
+    query_array = []
+
+    for q in query:
+        query_array.append({
+            'channel_name' : q['_id']['channel_name'],
+            'channel_id' : q['_id']['channel_id'],
+            })
+
+    return(jsonify(query_array))
+
 @mongo_bp.route('/videos/add', methods=['GET'])
 def add_videos():
     url = request.args['url']
