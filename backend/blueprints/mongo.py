@@ -66,6 +66,9 @@ def add_videos():
     url = request.args['url']
     download_result = download(video=url, video_range=1, download_confirm=False)
 
+    if download_result == None:
+        return(f'Video error {url}')
+
     channel_name_lowercase = download_result['channel'].lower()
 
     query = Mongo.Videos(
@@ -169,7 +172,10 @@ def download_latest():
         for future in concurrent.futures.as_completed(thread):
             if type == 'channel':
                 for f in future.result()['entries']:
-                    result.append(f['original_url'])
+                    if f == None:
+                        pass
+                    else:
+                        result.append(f['original_url'])
             else:
                 result.append(future.result())
         return result
