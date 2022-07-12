@@ -95,8 +95,19 @@ def add_videos():
 @mongo_bp.route('/videos/unique/channel', methods=['GET'])
 def get_videos_unique_channel():
     query = Mongo.Videos.objects.aggregate([
-        { "$group" : {"_id" : {"channel_name" : "$channel_name", "channel_id" : "$channel_id"}}},
-        { "$sort" : {"channel_name_lowercase": -1}}
+        { "$group" :
+            {
+                "_id" : {
+                    "channel_name" : "$channel_name", "channel_id" : "$channel_id", "channel_name_lowercase" : "$channel_name_lowercase"
+                    },
+                "lowercase" : {
+                    "$push" : {
+                        "channel_name_lowercase" : "$channel_name_lowercase"
+                        }
+                    }
+            }
+        },
+        { "$sort" : {"lowercase": 1}}
     ])
 
     query_array = []
@@ -105,6 +116,7 @@ def get_videos_unique_channel():
         query_array.append({
             'channel_name' : q['_id']['channel_name'],
             'channel_id' : q['_id']['channel_id'],
+            'channel_name_lowercase' : q['_id']['channel_name_lowercase'],
             })
 
     return(jsonify(query_array))
