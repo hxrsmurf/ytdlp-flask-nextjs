@@ -36,3 +36,4 @@ While YouTubeDL-Material & TubeArchivist are great projects, I wanted something 
 - [ ] Add badge metrics for issues, license, etc.
 - [ ] Twilio integration (text the API to add channel)
 - [ ] Web Browser extension like TubeArchivst
+- [ ] Add database caching, maybe through Redis
