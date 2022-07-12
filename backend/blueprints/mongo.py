@@ -70,14 +70,20 @@ def videos_sync_channels():
 
     available_channels = []
     missing_channels = []
+    result_missing = []
 
     for channel in channels:
         available_channels.append(channel['_id'])
 
     for channel in channel_videos:
         if not channel['channel_id'] in available_channels:
-            missing_channels.append(channel)
-    return(jsonify(missing_channels))
+            missing_channels.append(json.loads(search_videos(channel['channel_id']).data))
+
+    for missing in missing_channels:
+        for m in missing:
+            result_missing.append(m)
+
+    return(jsonify(result_missing))
 
 @mongo_bp.route('/videos/add', methods=['GET'])
 def add_videos():
