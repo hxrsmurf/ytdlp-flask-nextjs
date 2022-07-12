@@ -13,6 +13,12 @@ def get_channels():
     query_json = json.loads(query.to_json())
     return(jsonify(query_json))
 
+@mongo_bp.route('/channels/search/<string:channel_id>', methods=['GET'])
+def search_channels(channel_id):
+    query = Mongo.Channels.objects(channel_id=channel_id)
+    query_json = json.loads(query.to_json())
+    return(jsonify(query_json))
+
 @mongo_bp.route('/channels/add', methods=['GET'])
 def add_channels():
     url = request.args['url']
