@@ -1,4 +1,7 @@
 import json
+import os
+import requests
+import concurrent.futures
 from flask import Blueprint, jsonify, request
 
 from functions.downloader import download
@@ -127,3 +130,51 @@ def search_videos(channel_id):
     query = Mongo.Videos.objects(channel_id=channel_id)
     query_json = json.loads(query.to_json())
     return(jsonify(query_json))
+
+@mongo_bp.route('/download/latest/', methods=['GET'])
+def download_latest():
+    channel_id = request.args['id']
+    range = int(request.args['range'])
+    query_channel = []
+
+    if not channel_id == 'all':
+        query_channel.append(json.loads(search_channels(channel_id).data)[0]['original_url'])
+    else:
+        all_channels = json.loads(get_channels().data)
+        for channel in all_channels:
+            query_channel.append(channel['original_url'])
+
+    def download_channel(channel_url):
+        download_result = download(video=channel_url, video_range=range, download_confirm=False)
+        return download_result
+
+    def download_video(video_url):
+        requests.get(os.environ.get("API_URL") + '/mongo/videos/add?url=' + video_url)
+        return(video_url)
+
+    def get_futures(thread, type=None):
+        result = []
+        for future in concurrent.futures.as_completed(thread):
+            if type == 'channel':
+                for f in future.result()['entries']:
+                    result.append(f['original_url'])
+            else:
+                result.append(future.result())
+        return result
+
+    channel_threads = []
+    video_threads = []
+    completed_videos = []
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=None) as executor:
+        for channel in query_channel:
+            channel_threads.append(executor.submit(download_channel,channel))
+
+        videos_in_range = get_futures(channel_threads, type='channel')
+
+        for video_url in videos_in_range:
+                video_threads.append(executor.submit(download_video, video_url))
+
+        completed_videos = get_futures(video_threads)
+
+    return(jsonify({'videos_in_range': videos_in_range}, {'completed_videos' : completed_videos}))

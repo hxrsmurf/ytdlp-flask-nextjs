@@ -44,7 +44,7 @@ export default function videos({ results, result_all_channels }) {
 
     const handleDownloadLatest = async (event) => {
         const latest_range = 1
-        const query_url = (base_api_url + '/download/latest?range=' + latest_range + '&id=' + 'all')
+        const query_url = (base_api_url + '/mongo/download/latest?range=' + latest_range + '&id=' + 'all')
         setLoading(true)
         const request_channel_videos = await fetch(query_url)
         handleDropdownClick()
@@ -53,7 +53,7 @@ export default function videos({ results, result_all_channels }) {
 
     const handleDownloadLatestChannel = async (event) => {
         const latest_range = 7
-        const query_url = (base_api_url + '/download/latest?range=' + latest_range + '&id=' + channelID)
+        const query_url = (base_api_url + '/mongo/download/latest?range=' + latest_range + '&id=' + channelID)
         setLoading(true)
         const request_channel_videos = await fetch(query_url)
         handleDropdownClick()
