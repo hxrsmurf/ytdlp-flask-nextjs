@@ -8,3 +8,4 @@ backend/classes/__pycache__/*
 backend/functions/databaseCalls/__pycache__/*
 backend/serviceAccountKey.json
 backend/__pycache__/*
+mongodb/docker-compose.yaml

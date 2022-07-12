@@ -29,7 +29,7 @@ export default function videos({ results, result_all_channels }) {
 
     const handleDropdownClick = async (event) => {
         setDropdownName(channel)
-        const request_channel_videos = await fetch(process.env.NEXT_PUBLIC_BASE_API_URL + '/search/videos/channel/' + channelID)
+        const request_channel_videos = await fetch(process.env.NEXT_PUBLIC_BASE_API_URL + '/mongo/videos/search/' + channelID)
         const new_results = await request_channel_videos.json()
         setNewResults(new_results)
     }
@@ -44,7 +44,7 @@ export default function videos({ results, result_all_channels }) {
 
     const handleDownloadLatest = async (event) => {
         const latest_range = 1
-        const query_url = (base_api_url + '/download/latest?range=' + latest_range + '&id=' + 'all')
+        const query_url = (base_api_url + '/mongo/download/latest?range=' + latest_range + '&id=' + 'all')
         setLoading(true)
         const request_channel_videos = await fetch(query_url)
         handleDropdownClick()
@@ -53,7 +53,7 @@ export default function videos({ results, result_all_channels }) {
 
     const handleDownloadLatestChannel = async (event) => {
         const latest_range = 7
-        const query_url = (base_api_url + '/download/latest?range=' + latest_range + '&id=' + channelID)
+        const query_url = (base_api_url + '/mongo/download/latest?range=' + latest_range + '&id=' + channelID)
         setLoading(true)
         const request_channel_videos = await fetch(query_url)
         handleDropdownClick()
@@ -160,10 +160,10 @@ export default function videos({ results, result_all_channels }) {
 }
 
 export async function getServerSideProps() {
-    const res = await fetch(process.env.NEXT_PUBLIC_BASE_API_URL + '/videos/')
+    const res = await fetch(process.env.NEXT_PUBLIC_BASE_API_URL + '/mongo/videos/')
     const results = await res.json()
 
-    const request_all_channels = await fetch(process.env.NEXT_PUBLIC_BASE_API_URL + '/videos/unique/channel-name')
+    const request_all_channels = await fetch(process.env.NEXT_PUBLIC_BASE_API_URL + '/mongo/videos/unique/channel')
     const result_all_channels = await request_all_channels.json()
 
     return {

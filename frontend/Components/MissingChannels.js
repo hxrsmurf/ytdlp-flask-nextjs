@@ -8,7 +8,7 @@ export default function MissingChannels({ data }) {
                     {data.map((channel, id) => (
                         <>
                             <li key={id}>
-                                <a href={channel.original_url} rel='noopener'>{channel.channel} - {channel.title}</a>
+                                <a href={channel.original_url} rel='noopener'>{channel.channel_name} - {channel.title}</a>
                             </li>
                         </>
                     ))}

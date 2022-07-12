@@ -2,12 +2,12 @@ import requests
 import concurrent.futures
 
 def add_channel(channel):
-    url = f'{API_URL}/channels/add?url={channel}'
+    url = f'{API_URL}/mongo/channels/add?url={channel}'
     requests.get(url)
     return(url)
 
 def get_latest(range):
-    url = f'{API_URL}/download/latest?range={range}&id=all'
+    url = f'{API_URL}/mongo/download/latest?range={range}&id=all'
     requests.get(url)
     print('Completed latest')
 
@@ -36,7 +36,6 @@ def recreate_channels(debug=True):
         print(futures.result())
 
     print('Completed recreate')
-
 
 API_URL = 'http://127.0.0.1:5000'
 #recreate_channels(debug=True)

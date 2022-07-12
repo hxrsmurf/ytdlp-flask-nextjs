@@ -18,10 +18,20 @@ app = Flask(__name__)
 
 # SQLAlchemy
 app.config ['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///youtube.sqlite3'
+app.config['MONGODB_SETTINGS'] = {
+    'db' : 'ytdlp',
+    'host' : '192.168.2.12',
+    'port':  27017,
+    'username' : os.environ.get("MONGODB_USER"),
+    'password' : os.environ.get("MONGODB_PASSWORD"),
+    'authentication_source' : 'admin'
+}
 
 from classes.shared import db
+from classes.shared import mongo_db
 
 db.init_app(app)
+mongo_db.init_app(app)
 db.app = app
 
 # Blueprints
@@ -29,11 +39,13 @@ from blueprints.videos import videos_bp
 from blueprints.channels import channels_bp
 from blueprints.download import download_bp
 from blueprints.search import search_bp
+from blueprints.mongo import mongo_bp
 
 app.register_blueprint(videos_bp)
 app.register_blueprint(channels_bp)
 app.register_blueprint(download_bp)
 app.register_blueprint(search_bp)
+app.register_blueprint(mongo_bp)
 
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
