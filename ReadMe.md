@@ -16,6 +16,9 @@ This is heavily based on / inspired by the below GitHub Repos.
 - https://github.com/ytdl-org/youtube-dl
 - https://gitlab.com/osp-group/flask-nginx-rtmp-manager
 - https://github.com/tubearchivist/tubearchivist
+- https://www.reddit.com/r/selfhosted/
+- https://www.reddit.com/r/homelab/
+- https://www.reddit.com/r/DataHoarder/
 
 ## Why?
 
