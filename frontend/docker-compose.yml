@@ -4,7 +4,7 @@ services:
     build:
       context: .
       args:
-        - NEXT_PUBLIC_BASE_API_URL=http://192.168.2.123:5000/
+        - NEXT_PUBLIC_BASE_API_URL=https://api.example.com
         - NODE_ENV=production
     ports:
       - 3000:3000
