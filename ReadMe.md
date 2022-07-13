@@ -42,3 +42,4 @@ While YouTubeDL-Material & TubeArchivist are great projects, I wanted something 
 - [ ] Twilio integration (text the API to add channel)
 - [ ] Web Browser extension like TubeArchivst
 - [ ] Add database caching, maybe through Redis
+- [ ] HLS or MPEG-DASH conversion (probably HLS)
