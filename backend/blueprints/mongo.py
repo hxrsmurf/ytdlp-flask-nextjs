@@ -6,6 +6,7 @@ from flask import Blueprint, jsonify, request
 
 from functions.downloader import download
 from functions.utils import getCurrentTime
+from functions.backblaze_upload import b2_upload
 from classes import Mongo
 
 mongo_bp = Blueprint('mongo', __name__, url_prefix='/mongo')
@@ -196,3 +197,32 @@ def download_latest():
         completed_videos = get_futures(video_threads)
 
     return(jsonify({'videos_in_range': videos_in_range}, {'completed_videos' : completed_videos}))
+
+@mongo_bp.route('/download/channel/cover/<string:channel_id>', methods=['GET'])
+def download_channel_cover(channel_id):
+    photo_cover_output_filename = f'{channel_id}.jpg'
+    photo_cover_output_folder = 'channel_photo_cover'
+
+    photo_cover_url = json.loads(search_channels(channel_id).data)[0]['picture_cover']
+    cdn_photo_cover_url = f'{os.environ.get("CDN_URL")}/{os.environ.get("B2_BUCKET")}/channel_photo_cover/{photo_cover_output_filename}'
+    photo_cover_request = requests.get(photo_cover_url)
+    cdn_photo_cover_request = requests.get(cdn_photo_cover_url)
+
+    # If on CDN
+    if cdn_photo_cover_request.status_code == 200:
+        return(cdn_photo_cover_url)
+    else:
+        if photo_cover_request.status_code == 200:
+            with open(photo_cover_output_filename, 'wb') as file:
+                file.write(photo_cover_request.content)
+
+            b2_upload(file=photo_cover_output_filename, folder=photo_cover_output_folder)
+
+            Mongo.Channels.objects(channel_id=channel_id).update_one(set__cdn_photo_cover=cdn_photo_cover_url)
+
+            if os.path.exists(photo_cover_output_filename):
+                os.remove(photo_cover_output_filename)
+
+            return(cdn_photo_cover_url)
+        else:
+            return(photo_cover_url)

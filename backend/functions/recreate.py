@@ -1,5 +1,6 @@
 import requests
 import concurrent.futures
+import json
 
 def add_channel(channel):
     url = f'{API_URL}/mongo/channels/add?url={channel}'
@@ -37,6 +38,35 @@ def recreate_channels(debug=True):
 
     print('Completed recreate')
 
+def get_channel_ids(API_URL):
+    result = requests.get(f'{API_URL}/mongo/channels/')
+    json_result = json.loads(result.content)
+    channel_ids = []
+    for channel in json_result:
+        channel_ids.append(channel['_id'])
+
+    return(channel_ids)
+
+def download_photo_cover(channel_ids):
+    threads = []
+
+    def download(url):
+        try:
+            requests.get(url)
+            return(f'Success for {url}')
+        except:
+            return(f'Error for {url}')
+    with concurrent.futures.ThreadPoolExecutor(max_workers=None) as executor:
+        for id in channel_ids:
+            url = f'{API_URL}/mongo/download/channel/cover/{id}'
+            threads.append(executor.submit(download,url))
+
+    for futures in concurrent.futures.as_completed(threads):
+        print(futures.result())
+
 API_URL = 'http://127.0.0.1:5000'
 #recreate_channels(debug=True)
 #get_latest(1)
+
+#channel_ids = get_channel_ids(API_URL)
+#download_photo_cover(channel_ids)
