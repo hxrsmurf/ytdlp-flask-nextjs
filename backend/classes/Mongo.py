@@ -12,6 +12,7 @@ class Channels(mongo_db.Document):
     webpage_url = mongo_db.StringField()
     picture_profile = mongo_db.StringField()
     picture_cover = mongo_db.StringField()
+    cdn_photo_cover = mongo_db.StringField()
     last_updated = mongo_db.StringField()
     latest_upload = mongo_db.StringField()
 

@@ -215,7 +215,11 @@ def download_channel_cover(channel_id):
         if photo_cover_request.status_code == 200:
             with open(photo_cover_output_filename, 'wb') as file:
                 file.write(photo_cover_request.content)
+
             b2_upload(file=photo_cover_output_filename, folder=photo_cover_output_folder)
+
+            Mongo.Channels.objects(channel_id=channel_id).update_one(set__cdn_photo_cover=cdn_photo_cover_url)
+
             return(cdn_photo_cover_url)
         else:
             return(photo_cover_url)
