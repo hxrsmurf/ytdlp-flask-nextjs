@@ -147,7 +147,7 @@ def videos_sync_channels():
 
     return(jsonify(result_missing))
 
-@mongo_bp.route('/download/latest/', methods=['GET'])
+@mongo_bp.route('/download/latest', methods=['GET'])
 def download_latest():
     channel_id = request.args['id']
     range = int(request.args['range'])
