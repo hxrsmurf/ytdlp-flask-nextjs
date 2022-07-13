@@ -6,6 +6,7 @@ from flask import Blueprint, jsonify, request
 
 from functions.downloader import download
 from functions.utils import getCurrentTime
+from functions.backblaze_upload import b2_upload
 from classes import Mongo
 
 mongo_bp = Blueprint('mongo', __name__, url_prefix='/mongo')
@@ -205,5 +206,5 @@ def download_channel_cover(channel_id):
     if photo_cover_request.status_code == 200:
         with open(photo_cover_output_filename, 'wb') as file:
             file.write(photo_cover_request.content)
-
+    result = b2_upload(file=photo_cover_output_filename, folder='channel_photo_cover')
     return(photo_cover_output_filename)
