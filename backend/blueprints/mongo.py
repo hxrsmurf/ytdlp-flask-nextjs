@@ -220,6 +220,9 @@ def download_channel_cover(channel_id):
 
             Mongo.Channels.objects(channel_id=channel_id).update_one(set__cdn_photo_cover=cdn_photo_cover_url)
 
+            if os.path.exists(photo_cover_output_filename):
+                os.remove(photo_cover_output_filename)
+
             return(cdn_photo_cover_url)
         else:
             return(photo_cover_url)
