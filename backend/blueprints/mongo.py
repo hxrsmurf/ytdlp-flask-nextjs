@@ -196,3 +196,14 @@ def download_latest():
         completed_videos = get_futures(video_threads)
 
     return(jsonify({'videos_in_range': videos_in_range}, {'completed_videos' : completed_videos}))
+
+@mongo_bp.route('/download/channel/cover/<string:channel_id>', methods=['GET'])
+def download_channel_cover(channel_id):
+    photo_cover_url = json.loads(search_channels(channel_id).data)[0]['picture_cover']
+    photo_cover_request = requests.get(photo_cover_url)
+    photo_cover_output_filename = f'{channel_id}.jpg'
+    if photo_cover_request.status_code == 200:
+        with open(photo_cover_output_filename, 'wb') as file:
+            file.write(photo_cover_request.content)
+
+    return(photo_cover_output_filename)
