@@ -20,7 +20,7 @@ export default function channels({ results }) {
                     <Card style={{ width: '75' }} key={id} className='mt-5'>
                         <Card.Header>{result.channel_name} - {result.original_url}</Card.Header>
                         <Card.Img
-                            variant="top" src={result.picture_cover}
+                            variant="top" src={result.cdn_photo_cover}
                             />
                         <Card.ImgOverlay
                             onClick={(e)=> handleClick(result.original_url)}
