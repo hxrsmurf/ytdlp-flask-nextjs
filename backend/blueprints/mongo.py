@@ -200,11 +200,22 @@ def download_latest():
 
 @mongo_bp.route('/download/channel/cover/<string:channel_id>', methods=['GET'])
 def download_channel_cover(channel_id):
-    photo_cover_url = json.loads(search_channels(channel_id).data)[0]['picture_cover']
-    photo_cover_request = requests.get(photo_cover_url)
     photo_cover_output_filename = f'{channel_id}.jpg'
-    if photo_cover_request.status_code == 200:
-        with open(photo_cover_output_filename, 'wb') as file:
-            file.write(photo_cover_request.content)
-    result = b2_upload(file=photo_cover_output_filename, folder='channel_photo_cover')
-    return(photo_cover_output_filename)
+    photo_cover_output_folder = 'channel_photo_cover'
+
+    photo_cover_url = json.loads(search_channels(channel_id).data)[0]['picture_cover']
+    cdn_photo_cover_url = f'{os.environ.get("CDN_URL")}/{os.environ.get("B2_BUCKET")}/channel_photo_cover/{photo_cover_output_filename}'
+    photo_cover_request = requests.get(photo_cover_url)
+    cdn_photo_cover_request = requests.get(cdn_photo_cover_url)
+
+    # If on CDN
+    if cdn_photo_cover_request.status_code == 200:
+        return(cdn_photo_cover_url)
+    else:
+        if photo_cover_request.status_code == 200:
+            with open(photo_cover_output_filename, 'wb') as file:
+                file.write(photo_cover_request.content)
+            b2_upload(file=photo_cover_output_filename, folder=photo_cover_output_folder)
+            return(cdn_photo_cover_url)
+        else:
+            return(photo_cover_url)
