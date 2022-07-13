@@ -52,7 +52,7 @@ def add_channels():
 
 @mongo_bp.route('/videos/', methods=['GET'])
 def get_videos():
-    query = Mongo.Videos.objects()
+    query = Mongo.Videos.objects().order_by('-upload_date')
     query_json = json.loads(query.to_json())
     return(jsonify(query_json))
 
