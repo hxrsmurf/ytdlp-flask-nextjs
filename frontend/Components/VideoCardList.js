@@ -12,25 +12,23 @@ export default function VideoCardList({ data }) {
 
     return (
         <>
-            <Row>
+            <Row style={{ height: '150px' }}>
                 {data.map((result, id) => (
-                    <Col lg='3' key={id}>
-                        <Card key={id} className='mt-5'>
+                    <Col lg='4' key={id} style={{ width: '260px', height: '400px' }} className='mt-5'>
+                        <Card key={id}>
                             <Card.Img
                                 variant="top" src={result.thumbnail}
                                 onClick={(e) => handleClick(result.original_url)}
-                                style={{ cursor: "pointer" }}
+                                style={{ cursor: "pointer", height: '150px', width: '100%' }}
                             />
-                            <Card.Header>
+                            <Card.Header style={{ height: '240px', fontSize: '.9rem' }}>
                                 <Row>
-                                    <Row><div className='fw-bold'>{result.channel}</div></Row>
-                                    <Row><div>{result.title}</div></Row>
-                                    <Row className='mt-2'><div>{result.duration_string} minutes<Dot />{result.view_count} Views</div></Row>
-                                    <Row className='mt-1'>
-                                        <div><HandThumbsUp /> {result.like_count}<Dot />{result.upload_date}</div>
-                                    </Row>
+                                    <Row><div style={{ height: '40px', overflow: 'hidden', textOverflow: 'ellipsis' }}>{result.title}</div></Row>
+                                    <Row className='mt-3'><div>{result.channel_name}</div></Row>
+                                    <Row className='mt-3'><div>{result.view_count} Views<Dot />{result.upload_date}</div></Row>
+                                    <Row className='mt-3'><div>{result.duration_string} minutes<Dot /><HandThumbsUp /> {result.like_count}</div></Row>
                                     <Row>
-                                        <div className='mt-3'>
+                                        <div className='mt-4'>
                                             <Row>
                                                 <Col md='auto'>
                                                     <Button
