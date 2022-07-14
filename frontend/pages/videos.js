@@ -156,7 +156,7 @@ export default function videos({ results, result_all_channels }) {
 }
 
 export async function getServerSideProps() {
-    const res = await fetch(process.env.NEXT_PUBLIC_BASE_API_URL + '/mongo/videos/')
+    const res = await fetch(process.env.NEXT_PUBLIC_BASE_API_URL + '/mongo/videos')
     const results = await res.json()
 
     const request_all_channels = await fetch(process.env.NEXT_PUBLIC_BASE_API_URL + '/mongo/videos/unique/channel')

@@ -50,9 +50,14 @@ def add_channels():
 
     return(json.loads(query.to_json()))
 
-@mongo_bp.route('/videos/', methods=['GET'])
+@mongo_bp.route('/videos', methods=['GET'])
 def get_videos():
-    query = Mongo.Videos.objects().order_by('-upload_date')
+    if len(request.args) == 0:
+        limit = slice(0,25)
+    else:
+        limit = slice(0,int(request.args['limit']))
+
+    query = Mongo.Videos.objects().order_by('-upload_date')[limit]
     query_json = json.loads(query.to_json())
     return(jsonify(query_json))
 
