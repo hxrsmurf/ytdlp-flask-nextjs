@@ -33,7 +33,7 @@ export default function videos({ results, result_all_channels }) {
     const handleResetFilter = async (event) => {
         setDropdownName()
         setChannel()
-        const request_channel_videos = await fetch(process.env.NEXT_PUBLIC_BASE_API_URL + '/videos')
+        const request_channel_videos = await fetch(process.env.NEXT_PUBLIC_BASE_API_URL + '/mongo/videos')
         const new_results = await request_channel_videos.json()
         setNewResults(new_results)
     }
