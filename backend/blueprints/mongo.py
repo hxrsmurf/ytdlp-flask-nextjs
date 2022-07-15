@@ -53,6 +53,16 @@ def add_channels():
 
     return(json.loads(query.to_json()))
 
+@mongo_bp.route('/channels/cover-photo-missing', methods=['GET'])
+def get_channels_cover_photo_missing():
+    query = Mongo.Channels.objects(cdn_photo_cover=None)
+    query_json = json.loads(query.to_json())
+    for q in query_json:
+        channel_id = q['_id']
+        result_download_cover_photo = download_channel_cover(channel_id)
+        Mongo.Channels.objects(channel_id=channel_id).update_one(set__cdn_photo_cover=result_download_cover_photo)
+    return(jsonify(query_json))
+
 @mongo_bp.route('/videos', methods=['GET'])
 def get_videos():
     if len(request.args) == 0:
