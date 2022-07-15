@@ -43,3 +43,4 @@ While YouTubeDL-Material & TubeArchivist are great projects, I wanted something 
 - [ ] Web Browser extension like TubeArchivst
 - [ ] Add database caching, maybe through Redis
 - [ ] HLS or MPEG-DASH conversion (probably HLS)
+- [ ] Secure Python Flask backend with API keys or something
