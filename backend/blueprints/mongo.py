@@ -30,6 +30,8 @@ def add_channels():
     channel_id = download_result['channel_id']
     channel_name_lowercase = download_result['channel'].lower()
 
+    result_download_cover_photo = download_channel_cover(channel_id)
+
     query = Mongo.Channels(
         channel_id = channel_id,
         channel_name = download_result['channel'],
@@ -43,12 +45,11 @@ def add_channels():
         picture_profile = download_result['thumbnails'][18]['url'],
         picture_cover = download_result['thumbnails'][15]['url'],
         last_updated = getCurrentTime(),
-        latest_upload = download_result['entries'][0]['original_url']
+        latest_upload = download_result['entries'][0]['original_url'],
+        cdn_photo_cover = result_download_cover_photo
     )
 
     query.save()
-
-    download_channel_cover(channel_id)
 
     return(json.loads(query.to_json()))
 
