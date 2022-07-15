@@ -27,11 +27,11 @@ def search_channels(channel_id):
 def add_channels():
     url = request.args['url']
     download_result = download(video=url, video_range=1, download_confirm=False)
-
+    channel_id = download_result['channel_id']
     channel_name_lowercase = download_result['channel'].lower()
 
     query = Mongo.Channels(
-        channel_id = download_result['channel_id'],
+        channel_id = channel_id,
         channel_name = download_result['channel'],
         channel_name_lowercase = channel_name_lowercase,
         channel_follower_count = download_result['channel_follower_count'],
@@ -47,6 +47,8 @@ def add_channels():
     )
 
     query.save()
+
+    download_channel_cover(channel_id)
 
     return(json.loads(query.to_json()))
 
