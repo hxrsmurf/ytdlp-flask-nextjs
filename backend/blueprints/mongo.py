@@ -56,7 +56,8 @@ def get_channels_cover_photo_missing():
     query_json = json.loads(query.to_json())
     for q in query_json:
         channel_id = q['_id']
-        download_channel_cover(channel_id)
+        result_download_cover_photo = download_channel_cover(channel_id)
+        Mongo.Channels.objects(channel_id=channel_id).update_one(set__cdn_photo_cover=result_download_cover_photo)
     return(jsonify(query_json))
 
 @mongo_bp.route('/videos', methods=['GET'])
