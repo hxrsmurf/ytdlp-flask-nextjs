@@ -15,6 +15,7 @@ class Channels(mongo_db.Document):
     cdn_photo_cover = mongo_db.StringField()
     last_updated = mongo_db.StringField()
     latest_upload = mongo_db.StringField()
+    cdn_photo_cover = mongo_db.StringField()
 
 class Videos(mongo_db.Document):
     channel_name = mongo_db.StringField()
