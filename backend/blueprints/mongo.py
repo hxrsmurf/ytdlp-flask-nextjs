@@ -75,7 +75,7 @@ def get_videos():
 
 @mongo_bp.route('/videos/search/<string:channel_id>', methods=['GET'])
 def search_videos(channel_id):
-    query = Mongo.Videos.objects(channel_id=channel_id)
+    query = Mongo.Videos.objects(channel_id=channel_id).order_by('-upload_date')
     query_json = json.loads(query.to_json())
     return(jsonify(query_json))
 
