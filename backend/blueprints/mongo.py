@@ -243,3 +243,10 @@ def download_channel_cover(channel_id):
             return(cdn_photo_cover_url)
         else:
             return(photo_cover_url)
+
+@mongo_bp.route('/download/video/<string:video_id>', methods=['GET'])
+def download_video_by_id(video_id):
+    query = Mongo.Videos.objects(video_id=video_id)
+    query_json = json.loads(query.to_json())[0]
+    print(query_json['original_url'])
+    return(jsonify(query_json))

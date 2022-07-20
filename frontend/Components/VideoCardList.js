@@ -10,6 +10,10 @@ export default function VideoCardList({ data }) {
         window.open(event, '_blank')
     }
 
+    const handleDownloadClick = async (event) => {
+        console.log(event)
+    }
+
     return (
         <>
             <Row style={{ height: '150px' }}>
@@ -40,7 +44,9 @@ export default function VideoCardList({ data }) {
                                                 </Col>
                                                 <Col md='auto'>
                                                     <Button
-                                                        variant='secondary'>
+                                                        variant='secondary'
+                                                        onMouseDown={() => handleDownloadClick(result._id)}
+                                                        >
                                                         <Download size={20} />
                                                     </Button>
                                                 </Col>
