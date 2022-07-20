@@ -248,5 +248,6 @@ def download_channel_cover(channel_id):
 def download_video_by_id(video_id):
     query = Mongo.Videos.objects(video_id=video_id)
     query_json = json.loads(query.to_json())[0]
-    print(query_json['original_url'])
-    return(jsonify(query_json))
+    original_url = query_json['original_url']
+    downloaded_file = download(video=original_url, video_range=1, download_confirm=True)
+    return(downloaded_file)
