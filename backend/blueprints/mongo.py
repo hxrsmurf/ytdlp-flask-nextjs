@@ -248,6 +248,24 @@ def download_channel_cover(channel_id):
 def download_video_by_id(video_id):
     query = Mongo.Videos.objects(video_id=video_id)
     query_json = json.loads(query.to_json())[0]
+
     original_url = query_json['original_url']
-    downloaded_file = download(video=original_url, video_range=1, download_confirm=True)
-    return(downloaded_file)
+
+    video_file_name = f'{video_id}.mp4'
+    video_folder = 'videos'
+    cdn_video_url = f'{os.environ.get("CDN_URL")}/{os.environ.get("B2_BUCKET")}/{video_folder}/{video_file_name}'
+    cdn_video_request = requests.get(cdn_video_url)
+
+    # If on CDN
+    if cdn_video_request.status_code == 200:
+        return(cdn_video_url)
+    else:
+        downloaded_file = download(video=original_url, video_range=1, download_confirm=True)
+        b2_upload(file=video_file_name, folder=video_folder)
+
+        Mongo.Videos.objects(video_id=video_id).update_one(set__cdn_video=cdn_video_url)
+
+        if os.path.exists(video_file_name):
+            os.remove(video_file_name)
+
+        return(cdn_video_url)
