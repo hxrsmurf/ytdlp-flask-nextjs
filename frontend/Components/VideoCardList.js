@@ -62,7 +62,7 @@ export default function VideoCardList({ data }) {
                                                             >
                                                                 <PlayFill size={20} />
                                                             </Button>
-                                                            <VideoPlayer show={modalShow} data={cdnVideo} onHide={() => setModalShow(false)}/>
+                                                            {cdnVideo ? <><VideoPlayer show={modalShow} data={cdnVideo} onHide={() => setModalShow(false)}/></> : <></>}
                                                         </>
                                                         :
                                                         <>

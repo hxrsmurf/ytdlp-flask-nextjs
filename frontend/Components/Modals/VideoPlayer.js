@@ -1,6 +1,8 @@
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 
+import videojs from 'video.js'
+
 export default function VideoPlayer(props) {
     const title = props.data.title
     const video_url = props.data.cdn_video
@@ -25,7 +27,15 @@ export default function VideoPlayer(props) {
             <Modal.Body>
                 <h4>{channel_name}</h4>
                 <p>
-                    {description}
+                    <video
+                        class='video-js'
+                        controls
+                        preload='auto'
+                        fluid
+                        userActions="{'hotkeys': true}"
+                    >
+                        <source src={video_url} type="video/mp4"/>
+                    </video>
                 </p>
             </Modal.Body>
             <Modal.Footer>
