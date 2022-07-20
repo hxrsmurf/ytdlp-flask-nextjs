@@ -250,17 +250,22 @@ def download_video_by_id(video_id):
     query_json = json.loads(query.to_json())[0]
 
     original_url = query_json['original_url']
-    query_cdn_video_url = query_json['cdn_video']
 
     video_file_name = f'{video_id}.mp4'
     video_folder = 'videos'
     cdn_video_url = f'{os.environ.get("CDN_URL")}/{os.environ.get("B2_BUCKET")}/{video_folder}/{video_file_name}'
+
+    try:
+        query_cdn_video_url = query_json['cdn_video']
+        if query_cdn_video_url == cdn_video_url:
+            print('Already uploaded to Backblaze.')
+            return(query_cdn_video_url)
+    except:
+        pass
+
+    print(cdn_video_url)
+
     cdn_video_request = requests.get(cdn_video_url)
-
-    print(query_cdn_video_url)
-
-    if query_cdn_video_url == cdn_video_url:
-        return(query_cdn_video_url)
 
     # If on CDN
     if cdn_video_request.status_code == 200:
