@@ -11,7 +11,8 @@ export default function VideoCardList({ data }) {
     }
 
     const handleDownloadClick = async (event) => {
-        console.log(event)
+        const query_url = (process.env.NEXT_PUBLIC_BASE_API_URL + '/mongo/download/video/' + event)
+        fetch(query_url)
     }
 
     return (
