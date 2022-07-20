@@ -3,8 +3,12 @@ import Row from 'react-bootstrap/Row'
 import Button from 'react-bootstrap/Button'
 import Col from 'react-bootstrap/Col'
 import { Youtube, Download, HandThumbsUp, Dot, PlayFill } from 'react-bootstrap-icons'
+import VideoPlayer from './Modals/VideoPlayer'
+import { useState } from 'react'
 
 export default function VideoCardList({ data }) {
+    const [cdnVideo, setCDNVideo] = useState()
+    const [modalShow, setModalShow] = useState()
 
     const handleClick = async (event) => {
         window.open(event, '_blank')
@@ -17,6 +21,8 @@ export default function VideoCardList({ data }) {
 
     const handlePlayCDNVideo = async (event) => {
         console.log(event)
+        setCDNVideo(event)
+        setModalShow(true)
     }
 
     return (
@@ -52,10 +58,11 @@ export default function VideoCardList({ data }) {
                                                         <>
                                                             <Button
                                                                 variant='outline-secondary'
-                                                                onMouseDown={() => handlePlayCDNVideo(result.cdn_video)}
+                                                                onMouseDown={() => handlePlayCDNVideo(result)}
                                                             >
                                                                 <PlayFill size={20} />
                                                             </Button>
+                                                            <VideoPlayer show={modalShow} data={cdnVideo} onHide={() => setModalShow(false)}/>
                                                         </>
                                                         :
                                                         <>
