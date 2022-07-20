@@ -33,3 +33,4 @@ class Videos(mongo_db.Document):
     title = mongo_db.StringField()
     upload_date = mongo_db.StringField()
     webpage_url = mongo_db.StringField()
+    cdn_video = mongo_db.StringField()
