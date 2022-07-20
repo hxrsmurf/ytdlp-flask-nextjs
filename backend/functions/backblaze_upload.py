@@ -21,4 +21,5 @@ def b2_upload(file, folder):
             local_file=file,
             file_name=b2_destination
         )
+    print('Successfully uploaded to BackBlaze')
     return(result)
