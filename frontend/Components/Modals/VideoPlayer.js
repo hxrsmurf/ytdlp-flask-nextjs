@@ -1,7 +1,7 @@
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
-
-import videojs from 'video.js'
+import Container from 'react-bootstrap/Container';
+import { Dot, HandThumbsUp } from 'react-bootstrap-icons';
 
 export default function VideoPlayer(props) {
     const title = props.data.title
@@ -15,9 +15,8 @@ export default function VideoPlayer(props) {
     return (
         <Modal
             {...props}
-            size="lg"
             aria-labelledby="contained-modal-title-vcenter"
-            centered
+            fullscreen
         >
             <Modal.Header closeButton>
                 <Modal.Title id="contained-modal-title-vcenter">
@@ -26,19 +25,20 @@ export default function VideoPlayer(props) {
             </Modal.Header>
             <Modal.Body>
                 <h4>{channel_name}</h4>
-                <p>
+                <Container>
                     <video
-                        class='video-js'
                         controls
                         preload='auto'
-                        fluid
-                        userActions="{'hotkeys': true}"
-                    >
+                        userActions='{"hotkeys": true}'
+                        width='1024px'
+                        height='640px'
+                        >
                         <source src={video_url} type="video/mp4"/>
                     </video>
-                </p>
+                </Container>
             </Modal.Body>
             <Modal.Footer>
+                <HandThumbsUp/> {like_count}<Dot/>{view_count} views
                 <Button onClick={props.onHide}>Close</Button>
             </Modal.Footer>
         </Modal>
