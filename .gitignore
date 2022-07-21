@@ -10,3 +10,4 @@ backend/serviceAccountKey.json
 backend/__pycache__/*
 mongodb/docker-compose.yaml
 backend/*.jpg
+alpine-cron/cronjobs

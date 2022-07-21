@@ -1,0 +1,2 @@
+0 0 * * * curl -L https://api.youtube.com/mongo/download/latest?range=1\&id=all >/dev/null
+##
