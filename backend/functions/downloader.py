@@ -6,7 +6,8 @@ def download(video, video_range=2, download_confirm=False):
                 return(d['filename'])
 
     ytdl_opts = {
-        'outtmpl' : 'static/%(uploader)s/%(upload_date>%Y-%m-%d)s_%(id)s_%(title)s.%(ext)s',
+        #'outtmpl' : 'static/%(uploader)s/%(upload_date>%Y-%m-%d)s_%(id)s_%(title)s.%(ext)s',
+        'outtmpl' : '%(id)s.%(ext)s',
         'progress_hooks' : [hook],
         #'daterange' : 'today-1year',
         #'download_archive': 'static/downloaded_videos.txt',

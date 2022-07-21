@@ -164,6 +164,12 @@ def videos_sync_channels():
 
     return(jsonify(result_missing))
 
+@mongo_bp.route('/videos/downloaded')
+def videos_already_downloaded():
+    query = Mongo.Videos.objects(cdn_video__contains='https').order_by('-upload_date')
+    query_json = json.loads(query.to_json())
+    return(jsonify(query_json))
+
 @mongo_bp.route('/download/latest', methods=['GET'])
 def download_latest():
     channel_id = request.args['id']
@@ -243,3 +249,40 @@ def download_channel_cover(channel_id):
             return(cdn_photo_cover_url)
         else:
             return(photo_cover_url)
+
+@mongo_bp.route('/download/video/<string:video_id>', methods=['GET'])
+def download_video_by_id(video_id):
+    query = Mongo.Videos.objects(video_id=video_id)
+    query_json = json.loads(query.to_json())[0]
+
+    original_url = query_json['original_url']
+
+    video_file_name = f'{video_id}.mp4'
+    video_folder = 'videos'
+    cdn_video_url = f'{os.environ.get("CDN_URL")}/{os.environ.get("B2_BUCKET")}/{video_folder}/{video_file_name}'
+
+    try:
+        query_cdn_video_url = query_json['cdn_video']
+        if query_cdn_video_url == cdn_video_url:
+            print('Already uploaded to Backblaze.')
+            return(query_cdn_video_url)
+    except:
+        pass
+
+    print(cdn_video_url)
+
+    cdn_video_request = requests.get(cdn_video_url)
+
+    # If on CDN
+    if cdn_video_request.status_code == 200:
+        return(cdn_video_url)
+    else:
+        downloaded_file = download(video=original_url, video_range=1, download_confirm=True)
+        b2_upload(file=video_file_name, folder=video_folder)
+
+        Mongo.Videos.objects(video_id=video_id).update_one(set__cdn_video=cdn_video_url)
+
+        if os.path.exists(video_file_name):
+            os.remove(video_file_name)
+
+        return(cdn_video_url)

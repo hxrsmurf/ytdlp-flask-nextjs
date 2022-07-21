@@ -2,12 +2,27 @@ import Card from 'react-bootstrap/Card'
 import Row from 'react-bootstrap/Row'
 import Button from 'react-bootstrap/Button'
 import Col from 'react-bootstrap/Col'
-import { Youtube, Download, HandThumbsUp, Dot } from 'react-bootstrap-icons'
+import { Youtube, Download, HandThumbsUp, Dot, PlayFill } from 'react-bootstrap-icons'
+import VideoPlayer from './Modals/VideoPlayer'
+import { useState } from 'react'
 
 export default function VideoCardList({ data }) {
+    const [cdnVideo, setCDNVideo] = useState()
+    const [modalShow, setModalShow] = useState()
 
     const handleClick = async (event) => {
         window.open(event, '_blank')
+    }
+
+    const handleDownloadClick = async (event) => {
+        const query_url = (process.env.NEXT_PUBLIC_BASE_API_URL + '/mongo/download/video/' + event)
+        fetch(query_url)
+    }
+
+    const handlePlayCDNVideo = async (event) => {
+        console.log(event)
+        setCDNVideo(event)
+        setModalShow(true)
     }
 
     return (
@@ -39,10 +54,25 @@ export default function VideoCardList({ data }) {
                                                     </Button>
                                                 </Col>
                                                 <Col md='auto'>
-                                                    <Button
-                                                        variant='secondary'>
-                                                        <Download size={20} />
-                                                    </Button>
+                                                    {result.cdn_video ?
+                                                        <>
+                                                            <Button
+                                                                variant='outline-secondary'
+                                                                onMouseDown={() => handlePlayCDNVideo(result)}
+                                                            >
+                                                                <PlayFill size={20} />
+                                                            </Button>
+                                                            {cdnVideo ? <><VideoPlayer show={modalShow} data={cdnVideo} onHide={() => setModalShow(false)}/></> : <></>}
+                                                        </>
+                                                        :
+                                                        <>
+                                                            <Button
+                                                                variant='outline-secondary'
+                                                                onMouseDown={() => handleDownloadClick(result._id)}
+                                                            >
+                                                                <Download size={20} />
+                                                            </Button>
+                                                        </>}
                                                 </Col>
                                             </Row>
                                         </div>
