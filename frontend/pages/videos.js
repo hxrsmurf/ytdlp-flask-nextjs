@@ -54,6 +54,12 @@ export default function videos({ results, result_all_channels }) {
         setTimeout(() => setLoading(false), 1000);
     }
 
+    const handleShowDownloadedVideos = async (event) => {
+        const request = await fetch(base_api_url + '/mongo/videos/downloaded')
+        const results = await request.json()
+        setNewResults(results)
+    }
+
     return (
         <>
             <Container className='mt-5'>
@@ -105,6 +111,13 @@ export default function videos({ results, result_all_channels }) {
                             onMouseDown={(e) => handleResetFilter(e)}
                         >
                             Reset</Button>
+                    </Col>
+                    <Col md='auto'>
+                        <Button
+                            variant='info'
+                            onMouseDown={(e) => handleShowDownloadedVideos(e)}
+                        >
+                            Show Downloaded</Button>
                     </Col>
                     <Col md='auto'>
                         {loading ? <LoadingCircle text='Downloading...' />

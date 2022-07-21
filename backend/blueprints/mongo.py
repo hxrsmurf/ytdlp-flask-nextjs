@@ -164,6 +164,12 @@ def videos_sync_channels():
 
     return(jsonify(result_missing))
 
+@mongo_bp.route('/videos/downloaded')
+def videos_already_downloaded():
+    query = Mongo.Videos.objects(cdn_video__contains='https').order_by('-upload_date')
+    query_json = json.loads(query.to_json())
+    return(jsonify(query_json))
+
 @mongo_bp.route('/download/latest', methods=['GET'])
 def download_latest():
     channel_id = request.args['id']
