@@ -104,7 +104,8 @@ def add_videos():
         thumbnail = download_result['thumbnail'],
         title = download_result['title'],
         upload_date = download_result['upload_date'],
-        webpage_url = download_result['webpage_url']
+        webpage_url = download_result['webpage_url'],
+        watched = False
     )
 
     query.save()
