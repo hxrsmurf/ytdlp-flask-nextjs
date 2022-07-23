@@ -69,7 +69,7 @@ def get_videos():
     else:
         limit = slice(0,int(request.args['limit']))
 
-    query = Mongo.Videos.objects().order_by('-upload_date')[limit]
+    query = Mongo.Videos.objects(watched=False).order_by('-upload_date')[limit]
     query_json = json.loads(query.to_json())
     return(jsonify(query_json))
 
