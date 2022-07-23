@@ -13,3 +13,5 @@ backend/*.jpg
 alpine-cron/cronjobs
 mongodb/data/*
 alpine-cron/credentials.txt
+alpine-cron/backup.sh
+alpine-cron/docker-compose.yaml
