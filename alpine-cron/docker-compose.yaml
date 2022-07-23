@@ -3,3 +3,6 @@ services:
   cron:
     build:
       context: .
+      args:
+        - B2_APPLICATION_KEY_ID=
+        - B2_APPLICATION_KEY=
