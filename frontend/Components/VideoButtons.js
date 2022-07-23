@@ -13,10 +13,6 @@ export default function VideoButtons(props) {
     const [cdnVideo, setCDNVideo] = useState()
     const [modalShow, setModalShow] = useState()
 
-    const handleClick = async (event) => {
-        window.open(event, '_blank')
-    }
-
     const handleDownloadClick = async (event) => {
         const query_url = (process.env.NEXT_PUBLIC_BASE_API_URL + '/mongo/download/video/' + event)
         fetch(query_url)
