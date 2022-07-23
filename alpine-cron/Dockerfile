@@ -1,4 +1,9 @@
-FROM hxrsmurf/python-alpine-b2
+FROM python:alpine AS builder
+
+RUN apk add --no-cache curl mongodb-tools py3-pip
+RUN pip install b2
+
+FROM builder
 
 ARG B2_APPLICATION_KEY_ID
 ARG B2_APPLICATION_KEY
