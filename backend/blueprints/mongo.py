@@ -165,6 +165,22 @@ def videos_sync_channels():
 
     return(jsonify(result_missing))
 
+@mongo_bp.route('/videos/sync/watched')
+def videos_sync_watched():
+    # This was a one-time deal to update the database.
+    # query = Mongo.Videos.objects(watched__ne='True').order_by('-upload_date')
+
+    query = Mongo.Videos.objects(watched='').order_by('-upload_date')
+    query_json = json.loads(query.to_json())
+
+    try:
+        for q in query_json:
+            print(q)
+            videos_mark_unwatched(q['_id'])
+        return('Success')
+    except Exception as e:
+        return(f'Error because {e}')
+
 @mongo_bp.route('/videos/downloaded')
 def videos_already_downloaded():
     query = Mongo.Videos.objects(cdn_video__contains='https').order_by('-upload_date')
