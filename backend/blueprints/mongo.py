@@ -189,6 +189,18 @@ def videos_mark_unwatched(video_id):
         print('Error')
         return Response('Error', status=500)
 
+@mongo_bp.route('/videos/watched')
+def videos_view_watched():
+    query = Mongo.Videos.objects(watched=True).order_by('-upload_date')
+    query_json = json.loads(query.to_json())
+    return(jsonify(query_json))
+
+@mongo_bp.route('/videos/unwatched')
+def videos_view_unwatched():
+    query = Mongo.Videos.objects(watched=False).order_by('-upload_date')
+    query_json = json.loads(query.to_json())
+    return(jsonify(query_json))
+
 @mongo_bp.route('/download/latest', methods=['GET'])
 def download_latest():
     channel_id = request.args['id']
