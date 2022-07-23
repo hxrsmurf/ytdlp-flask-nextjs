@@ -1,0 +1,50 @@
+version: '3.3'
+
+services:
+  flask:
+    build:
+      context: backend
+    ports:
+      - 5000:5000
+
+  nextjs:
+    build:
+      context: frontend
+      args:
+        - NEXT_PUBLIC_BASE_API_URL=https://APIURL
+    ports:
+      - 3000:3000
+
+  cron:
+    build:
+      context: alpine-cron
+      args:
+        - B2_APPLICATION_KEY_ID=
+        - B2_APPLICATION_KEY=
+
+  mongo:
+      image: mongo
+      environment:
+          - MONGO_INITDB_ROOT_USERNAME=
+          - MONGO_INITDB_ROOT_PASSWORD=
+          - MONGO_INITDB_DATABASE=
+      ports:
+        - "27017:27017"
+      volumes:
+        - ./mongodb/data:/data/db
+
+  mongo-express:
+      image: mongo-express
+      environment:
+          - ME_CONFIG_MONGODB_SERVER=mongo
+          - ME_CONFIG_MONGODB_PORT=27017
+          - ME_CONFIG_MONGODB_ENABLE_ADMIN=True
+          - ME_CONFIG_MONGODB_AUTH_DATABASE=admin
+          - ME_CONFIG_MONGODB_AUTH_USERNAME=
+          - ME_CONFIG_MONGODB_AUTH_PASSWORD=
+          - ME_CONFIG_BASICAUTH_USERNAME=
+          - ME_CONFIG_BASICAUTH_PASSWORD=
+      depends_on:
+          - mongo
+      ports:
+        - "8888:8081"
