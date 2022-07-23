@@ -11,6 +11,8 @@ services:
             - MONGO_INITDB_DATABASE=project
         ports:
           - "27017:27017"
+        volumes:
+          - ./data:/data/db
     mongo-express:
         image: mongo-express
         environment:

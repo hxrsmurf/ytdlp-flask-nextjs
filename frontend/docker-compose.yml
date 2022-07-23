@@ -4,7 +4,7 @@ services:
     build:
       context: .
       args:
-        - NEXT_PUBLIC_BASE_API_URL=https://api.example.com
+        - NEXT_PUBLIC_BASE_API_URL=https://api.youtube.hxrsmurf.info
         - NODE_ENV=production
     ports:
       - 3000:3000
