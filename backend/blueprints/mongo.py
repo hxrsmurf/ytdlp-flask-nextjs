@@ -170,10 +170,20 @@ def videos_already_downloaded():
     query_json = json.loads(query.to_json())
     return(jsonify(query_json))
 
+# Could probably boolean the watched URL, but opting to do this for now.
 @mongo_bp.route('/videos/<string:video_id>/watched')
 def videos_mark_watched(video_id):
     try:
         Mongo.Videos.objects(video_id=video_id).update_one(watched=True)
+        return('Success')
+    except:
+        print('Error')
+        return Response('Error', status=500)
+
+@mongo_bp.route('/videos/<string:video_id>/unwatched')
+def videos_mark_unwatched(video_id):
+    try:
+        Mongo.Videos.objects(video_id=video_id).update_one(watched=False)
         return('Success')
     except:
         print('Error')

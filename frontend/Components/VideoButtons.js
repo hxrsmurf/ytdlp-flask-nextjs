@@ -32,6 +32,11 @@ export default function VideoButtons(props) {
         const result =  await fetch(query_url)
     }
 
+    const handleUnwatchedClick = async (event) => {
+        const query_url = (process.env.NEXT_PUBLIC_BASE_API_URL + '/mongo/videos/' + event + '/unwatched')
+        const result =  await fetch(query_url)
+    }
+
     return (
         <>
             <div className='mt-4'>
@@ -75,7 +80,10 @@ export default function VideoButtons(props) {
                     <Col md='auto'>
                         {result.watched ?
                         <>
-                            <Button variant='outline-secondary'>
+                            <Button
+                                variant='outline-secondary'
+                                onMouseDown={() => handleUnwatchedClick(result._id)}
+                            >
                                 <DisplayFill size={15}/>
                             </Button>
                         </>
