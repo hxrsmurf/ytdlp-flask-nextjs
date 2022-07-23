@@ -27,6 +27,11 @@ export default function VideoButtons(props) {
         setModalShow(true)
     }
 
+    const handleWatchedClick = async (event) => {
+        const query_url = (process.env.NEXT_PUBLIC_BASE_API_URL + '/mongo/videos/' + event + '/watched')
+        const result =  await fetch(query_url)
+    }
+
     return (
         <>
             <div className='mt-4'>
@@ -76,7 +81,10 @@ export default function VideoButtons(props) {
                         </>
                         :
                         <>
-                            <Button variant='outline-secondary'>
+                            <Button
+                                variant='outline-secondary'
+                                onMouseDown={() => handleWatchedClick(result._id)}
+                            >
                                 <Display size={15}/>
                             </Button>
                         </>

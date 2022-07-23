@@ -2,7 +2,7 @@ import json
 import os
 import requests
 import concurrent.futures
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, Response
 
 from functions.downloader import download
 from functions.utils import getCurrentTime
@@ -169,6 +169,15 @@ def videos_already_downloaded():
     query = Mongo.Videos.objects(cdn_video__contains='https').order_by('-upload_date')
     query_json = json.loads(query.to_json())
     return(jsonify(query_json))
+
+@mongo_bp.route('/videos/<string:video_id>/watched')
+def videos_mark_watched(video_id):
+    try:
+        Mongo.Videos.objects(video_id=video_id).update_one(watched=True)
+        return('Success')
+    except:
+        print('Error')
+        return Response('Error', status=500)
 
 @mongo_bp.route('/download/latest', methods=['GET'])
 def download_latest():
