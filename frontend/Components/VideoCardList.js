@@ -7,6 +7,11 @@ import Card from 'react-bootstrap/Card'
 import VideoButtons from './VideoButtons'
 
 export default function VideoCardList({ data }) {
+
+    const handleClick = async (event) => {
+        window.open(event, '_blank')
+    }
+
     return (
         <>
             <Row style={{ height: '150px' }}>
