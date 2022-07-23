@@ -1,6 +1,6 @@
 FROM python:alpine AS builder
 
-RUN apk add --no-cache curl mongodb-tools py3-pip
+RUN apk add --no-cache mongodb-tools py3-pip
 RUN pip install b2
 RUN mkdir /tmp/backups
 
