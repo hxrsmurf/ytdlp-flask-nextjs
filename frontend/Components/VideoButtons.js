@@ -1,9 +1,9 @@
-import { Youtube, Download, HandThumbsUp, Dot, PlayFill } from 'react-bootstrap-icons'
+import { Youtube, Download, PlayFill } from 'react-bootstrap-icons'
 import { useState } from 'react'
 
-import Button from 'react-bootstrap/Button'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+import Button from 'react-bootstrap/Button'
 
 import VideoPlayer from './Modals/VideoPlayer'
 
