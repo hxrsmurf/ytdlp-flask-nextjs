@@ -1,2 +1,3 @@
-0 0 * * * curl -L https://api.youtube.com/mongo/download/latest?range=1\&id=all >/dev/null
-##
+0 0/4 * * * curl -L https://api.youtube.com/mongo/download/latest?range=1\&id=all > /dev/null
+0 0/4 * * * * /root/backup.sh > /dev/null
+#
