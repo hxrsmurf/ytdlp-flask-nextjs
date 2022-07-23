@@ -20,6 +20,7 @@ export default function videos({ results, result_all_channels }) {
     const [newResults, setNewResults] = useState()
     const [loading, setLoading] = useState()
     const [missingChannels, setMissingChannels] = useState()
+    const [showWatchedButton, setShowWatchedButton] = useState()
 
     const base_api_url = process.env.NEXT_PUBLIC_BASE_API_URL
 
@@ -57,6 +58,20 @@ export default function videos({ results, result_all_channels }) {
     const handleShowDownloadedVideos = async (event) => {
         const request = await fetch(base_api_url + '/mongo/videos/downloaded')
         const results = await request.json()
+        setNewResults(results)
+    }
+
+    const handleShowWatched = async (event) => {
+        const request = await fetch(base_api_url + '/mongo/videos/watched')
+        const results = await request.json()
+        setShowWatchedButton(false)
+        setNewResults(results)
+    }
+
+    const handleShowUnWatched = async (event) => {
+        const request = await fetch(base_api_url + '/mongo/videos/unwatched')
+        const results = await request.json()
+        setShowWatchedButton(true)
         setNewResults(results)
     }
 
@@ -118,6 +133,28 @@ export default function videos({ results, result_all_channels }) {
                             onMouseDown={(e) => handleShowDownloadedVideos(e)}
                         >
                             Show Downloaded</Button>
+                    </Col>
+                    <Col md='auto'>
+                        {showWatchedButton ?
+                        <>
+                            <Button
+                                variant='secondary'
+                                onMouseDown={(e) => handleShowWatched(e)}
+                            >
+                                Show Watched
+                            </Button>
+                        </>
+                        :
+                        <>
+                            <Button
+                                variant='secondary'
+                                onMouseDown={(e) => handleShowUnWatched(e)}
+                            >
+                                Show Unwatched
+                            </Button>
+                        </>
+                        }
+
                     </Col>
                     <Col md='auto'>
                         {loading ? <LoadingCircle text='Downloading...' />

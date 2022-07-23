@@ -2,7 +2,7 @@ import json
 import os
 import requests
 import concurrent.futures
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, Response
 
 from functions.downloader import download
 from functions.utils import getCurrentTime
@@ -104,7 +104,8 @@ def add_videos():
         thumbnail = download_result['thumbnail'],
         title = download_result['title'],
         upload_date = download_result['upload_date'],
-        webpage_url = download_result['webpage_url']
+        webpage_url = download_result['webpage_url'],
+        watched = False
     )
 
     query.save()
@@ -164,9 +165,58 @@ def videos_sync_channels():
 
     return(jsonify(result_missing))
 
+@mongo_bp.route('/videos/sync/watched')
+def videos_sync_watched():
+    # This was a one-time deal to update the database.
+    # query = Mongo.Videos.objects(watched__ne='True').order_by('-upload_date')
+
+    query = Mongo.Videos.objects(watched='').order_by('-upload_date')
+    query_json = json.loads(query.to_json())
+
+    try:
+        for q in query_json:
+            print(q)
+            videos_mark_unwatched(q['_id'])
+        return('Success')
+    except Exception as e:
+        return(f'Error because {e}')
+
 @mongo_bp.route('/videos/downloaded')
 def videos_already_downloaded():
     query = Mongo.Videos.objects(cdn_video__contains='https').order_by('-upload_date')
+    query_json = json.loads(query.to_json())
+    return(jsonify(query_json))
+
+# Could probably boolean the watched URL, but opting to do this for now.
+@mongo_bp.route('/videos/<string:video_id>/watched')
+def videos_mark_watched(video_id):
+    try:
+        Mongo.Videos.objects(video_id=video_id).update_one(watched=True)
+        return('Success')
+    except:
+        print('Error')
+        return Response('Error', status=500)
+
+@mongo_bp.route('/videos/<string:video_id>/unwatched')
+def videos_mark_unwatched(video_id):
+    try:
+        Mongo.Videos.objects(video_id=video_id).update_one(watched=False)
+        return('Success')
+    except:
+        print('Error')
+        return Response('Error', status=500)
+
+@mongo_bp.route('/videos/watched')
+def videos_view_watched():
+    limit = slice(0,25)
+    query = Mongo.Videos.objects(watched=True).order_by('-upload_date')[limit]
+    query_json = json.loads(query.to_json())
+    return(jsonify(query_json))
+
+@mongo_bp.route('/videos/unwatched')
+def videos_view_unwatched():
+    limit = slice(0,25)
+    query = Mongo.Videos.objects(watched__ne=True).order_by('-upload_date')[limit]
     query_json = json.loads(query.to_json())
     return(jsonify(query_json))
 

@@ -1,4 +1,4 @@
-import { Youtube, Download, PlayFill } from 'react-bootstrap-icons'
+import { Youtube, Download, PlayFill, Display, DisplayFill } from 'react-bootstrap-icons'
 import { useState } from 'react'
 
 import Row from 'react-bootstrap/Row'
@@ -27,6 +27,16 @@ export default function VideoButtons(props) {
         setModalShow(true)
     }
 
+    const handleWatchedClick = async (event) => {
+        const query_url = (process.env.NEXT_PUBLIC_BASE_API_URL + '/mongo/videos/' + event + '/watched')
+        const result =  await fetch(query_url)
+    }
+
+    const handleUnwatchedClick = async (event) => {
+        const query_url = (process.env.NEXT_PUBLIC_BASE_API_URL + '/mongo/videos/' + event + '/unwatched')
+        const result =  await fetch(query_url)
+    }
+
     return (
         <>
             <div className='mt-4'>
@@ -36,7 +46,7 @@ export default function VideoButtons(props) {
                             href={result.original_url}
                             target="_blank"
                             variant='outline-danger'>
-                            <Youtube size={20} />
+                            <Youtube size={15} />
                         </Button>
                     </Col>
                     <Col md='auto'>
@@ -46,7 +56,7 @@ export default function VideoButtons(props) {
                                     variant='outline-secondary'
                                     onMouseDown={() => handlePlayCDNVideo(result)}
                                 >
-                                    <PlayFill size={20} />
+                                    <PlayFill size={15} />
                                 </Button>
                                 {
                                     cdnVideo ?
@@ -63,9 +73,30 @@ export default function VideoButtons(props) {
                                     variant='outline-secondary'
                                     onMouseDown={() => handleDownloadClick(result._id)}
                                 >
-                                    <Download size={20} />
+                                    <Download size={15} />
                                 </Button>
                             </>}
+                    </Col>
+                    <Col md='auto'>
+                        {result.watched ?
+                        <>
+                            <Button
+                                variant='outline-secondary'
+                                onMouseDown={() => handleUnwatchedClick(result._id)}
+                            >
+                                <DisplayFill size={15}/>
+                            </Button>
+                        </>
+                        :
+                        <>
+                            <Button
+                                variant='outline-secondary'
+                                onMouseDown={() => handleWatchedClick(result._id)}
+                            >
+                                <Display size={15}/>
+                            </Button>
+                        </>
+                        }
                     </Col>
                 </Row>
             </div>
