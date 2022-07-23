@@ -17,3 +17,4 @@ alpine-cron/backup.sh
 alpine-cron/docker-compose.yaml
 docker-compose.yml
 *.sqlite3
+mongodb/restore.txt

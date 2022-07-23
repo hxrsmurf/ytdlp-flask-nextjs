@@ -1,0 +1,2 @@
+docker exec -i [mongo] sh -c 'mongodump --host=serverip --db=ytdlp --username=user --password=pass --authenticationDatabase=admin --archive> /tmp/backups/$(date +%Y%m%d-%H%M%S-UTC).archive'
+docker exec -i [mongo] sh -c 'mongorestore --host=serverip --db=ytdlp --username=user --password=pass --authenticationDatabase=admin --archive < /tmp/backups/$(date +%Y%m%d-%H%M%S-UTC).archive'
