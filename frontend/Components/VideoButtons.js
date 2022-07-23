@@ -1,4 +1,4 @@
-import { Youtube, Download, PlayFill } from 'react-bootstrap-icons'
+import { Youtube, Download, PlayFill, Display, DisplayFill } from 'react-bootstrap-icons'
 import { useState } from 'react'
 
 import Row from 'react-bootstrap/Row'
@@ -36,7 +36,7 @@ export default function VideoButtons(props) {
                             href={result.original_url}
                             target="_blank"
                             variant='outline-danger'>
-                            <Youtube size={20} />
+                            <Youtube size={15} />
                         </Button>
                     </Col>
                     <Col md='auto'>
@@ -46,7 +46,7 @@ export default function VideoButtons(props) {
                                     variant='outline-secondary'
                                     onMouseDown={() => handlePlayCDNVideo(result)}
                                 >
-                                    <PlayFill size={20} />
+                                    <PlayFill size={15} />
                                 </Button>
                                 {
                                     cdnVideo ?
@@ -63,9 +63,24 @@ export default function VideoButtons(props) {
                                     variant='outline-secondary'
                                     onMouseDown={() => handleDownloadClick(result._id)}
                                 >
-                                    <Download size={20} />
+                                    <Download size={15} />
                                 </Button>
                             </>}
+                    </Col>
+                    <Col md='auto'>
+                        {result.watched ?
+                        <>
+                            <Button variant='outline-secondary'>
+                                <DisplayFill size={15}/>
+                            </Button>
+                        </>
+                        :
+                        <>
+                            <Button variant='outline-secondary'>
+                                <Display size={15}/>
+                            </Button>
+                        </>
+                        }
                     </Col>
                 </Row>
             </div>
