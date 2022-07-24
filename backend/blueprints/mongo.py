@@ -82,10 +82,29 @@ def search_videos(channel_id):
 @mongo_bp.route('/videos/add', methods=['GET'])
 def add_videos():
     url = request.args['url']
-    download_result = download(video=url, video_range=1, download_confirm=False)
+
+    if len(url.split('playlist?')) > 1:
+        range = 99
+    else:
+        range = 1
+
+    download_result = download(video=url, video_range=range, download_confirm=False)
 
     if download_result == None:
         return(f'Video error {url}')
+
+
+    try:
+        def download_video(video_url):
+            requests.get(os.environ.get("API_URL") + '/mongo/videos/add?url=' + video_url)
+
+        if download_result['entries']:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=None) as executor:
+                for entry in download_result['entries']:
+                    video_url = entry['webpage_url']
+                    executor.submit(download_video, video_url)
+    except:
+        pass
 
     channel_name_lowercase = download_result['channel'].lower()
 
