@@ -52,7 +52,7 @@ export default function VideoButtons(props) {
                         {result.cdn_video ?
                             <>
                                 <Col md='auto'>
-                                    <a href={result.cdn_video} download target="_blank">
+                                    <a href={result.cdn_video} download target="_blank" rel='noreferrer noopener'>
                                         <Button
                                             variant='outline-secondary'
                                             onMouseDown={() => handleDownloadLocal(result)}
