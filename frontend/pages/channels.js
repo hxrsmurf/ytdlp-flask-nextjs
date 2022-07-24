@@ -3,14 +3,11 @@ import EntryForm from '../Components/EntryForm'
 import Card from 'react-bootstrap/Card'
 
 import Image from 'next/image'
-import { useRef } from 'react'
 
 export default function channels({ results }) {
     const handleClick = async (event) => {
         window.open(event, '_blank')
     }
-
-    const lazyRoot = useRef(null)
 
     return (
         <>
