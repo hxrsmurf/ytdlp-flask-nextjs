@@ -82,9 +82,11 @@ def search_videos(channel_id):
 @mongo_bp.route('/videos/add', methods=['GET'])
 def add_videos():
     url = request.args['url']
+    is_playlist = False
 
     if len(url.split('playlist?')) > 1:
         range = 99
+        is_playlist = True
     else:
         range = 1
 
@@ -106,32 +108,35 @@ def add_videos():
     except:
         pass
 
-    channel_name_lowercase = download_result['channel'].lower()
+    if not is_playlist:
+        channel_name_lowercase = download_result['channel'].lower()
 
-    query = Mongo.Videos(
-        channel_name = download_result['channel'],
-        channel_name_lowercase = channel_name_lowercase,
-        channel_id = download_result['channel_id'],
-        description = download_result['description'],
-        duration = download_result['duration'],
-        duration_string = download_result['duration_string'],
-        fulltitle = download_result['fulltitle'],
-        video_id = download_result['id'],
-        like_count = download_result['like_count'],
-        view_count = download_result['view_count'],
-        original_url = download_result['original_url'],
-        thumbnail = download_result['thumbnail'],
-        title = download_result['title'],
-        upload_date = download_result['upload_date'],
-        webpage_url = download_result['webpage_url'],
-        watched = False
-    )
+        query = Mongo.Videos(
+            channel_name = download_result['channel'],
+            channel_name_lowercase = channel_name_lowercase,
+            channel_id = download_result['channel_id'],
+            description = download_result['description'],
+            duration = download_result['duration'],
+            duration_string = download_result['duration_string'],
+            fulltitle = download_result['fulltitle'],
+            video_id = download_result['id'],
+            like_count = download_result['like_count'],
+            view_count = download_result['view_count'],
+            original_url = download_result['original_url'],
+            thumbnail = download_result['thumbnail'],
+            title = download_result['title'],
+            upload_date = download_result['upload_date'],
+            webpage_url = download_result['webpage_url'],
+            watched = False
+        )
 
-    query.save()
+        query.save()
 
-    query_json = json.loads(query.to_json())
+        query_json = json.loads(query.to_json())
+        return({'download_results' : download_result, 'query_json' : query_json})
+    else:
+        return({'download_results' : download_result})
 
-    return({'download_results' : download_result, 'query_json' : query_json})
 
 @mongo_bp.route('/videos/unique/channel', methods=['GET'])
 def get_videos_unique_channel():
