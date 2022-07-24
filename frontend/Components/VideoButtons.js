@@ -54,13 +54,12 @@ export default function VideoButtons(props) {
                                 >
                                     <PlayFill size={15} />
                                 </Button>
-                                {
-                                    cdnVideo ?
-                                        <>
-                                            <VideoPlayer show={modalShow} data={cdnVideo} onHide={() => setModalShow(false)} />
-                                        </>
-                                        :
-                                        <></>
+                                {cdnVideo ?
+                                    <>
+                                        <VideoPlayer show={modalShow} data={cdnVideo} onHide={() => setModalShow(false)} />
+                                    </>
+                                    :
+                                    <></>
                                 }
                             </>
                             :
