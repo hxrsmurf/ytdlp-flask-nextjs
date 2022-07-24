@@ -18,7 +18,7 @@ export default function VideoCardList({ data }) {
         <>
             <Row style={{ height: '150px' }}>
                 {data.map((result, id) => (
-                    <Col lg='4' key={id} style={{ width: '260px', height: '400px' }} className='mt-5'>
+                    <Col lg='4' key={id} style={{ width: '290px', height: '400px' }} className='mt-5'>
                         <Card key={id}>
                             <Card.Body>
                                 {result.thumbnail ?
