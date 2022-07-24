@@ -1,9 +1,10 @@
-import Container from 'react-bootstrap/Container'
+import Button from '@mui/material/Button'
+import Container from '@mui/material/Container';
 
-export default function Home() {
+export default function index() {
   return (
-    <Container className='mt-5'>
-      Hello World
+    <Container>
+      <Button variant='contained'>Hello World</Button>
     </Container>
   )
 }
