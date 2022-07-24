@@ -33,10 +33,14 @@ export default function VideoButtons(props) {
         const result =  await fetch(query_url)
     }
 
+    const handleDownloadLocal = async (event) => {
+        console.log(event)
+    }
+
     return (
         <>
             <div className='mt-4'>
-                <Row>
+                <Row style={{width: '260px'}} className="justify-content-md-center">
                     <Col md='auto'>
                         <Button
                             href={result.original_url}
@@ -45,33 +49,44 @@ export default function VideoButtons(props) {
                             <Youtube size={15} />
                         </Button>
                     </Col>
-                    <Col md='auto'>
                         {result.cdn_video ?
                             <>
-                                <Button
-                                    variant='outline-secondary'
-                                    onMouseDown={() => handlePlayCDNVideo(result)}
-                                >
-                                    <PlayFill size={15} />
-                                </Button>
-                                {cdnVideo ?
-                                    <>
-                                        <VideoPlayer show={modalShow} data={cdnVideo} onHide={() => setModalShow(false)} />
-                                    </>
-                                    :
-                                    <></>
-                                }
+                                <Col md='auto'>
+                                    <a href={result.cdn_video} download target="_blank">
+                                        <Button
+                                            variant='outline-secondary'
+                                            onMouseDown={() => handleDownloadLocal(result)}
+                                        >
+                                            <Download size={15} />
+                                        </Button>
+                                    </a>
+                                </Col>
+
+                                <Col md='auto'>
+                                    <Button
+                                        variant='outline-secondary'
+                                        onMouseDown={() => handlePlayCDNVideo(result)}
+                                    >
+                                        <PlayFill size={15} />
+                                    </Button>
+                                    {cdnVideo ?
+                                        <>
+                                            <VideoPlayer show={modalShow} data={cdnVideo} onHide={() => setModalShow(false)} />
+                                        </>
+                                        :
+                                        <></>}
+                                </Col>
                             </>
                             :
-                            <>
+                            <Col md='auto'>
                                 <Button
                                     variant='outline-secondary'
                                     onMouseDown={() => handleDownloadClick(result._id)}
                                 >
                                     <Download size={15} />
                                 </Button>
-                            </>}
-                    </Col>
+                            </Col>
+                            }
                     <Col md='auto'>
                         {result.watched ?
                         <>
