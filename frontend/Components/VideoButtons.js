@@ -1,4 +1,4 @@
-import { Youtube, Download, PlayFill, Display, DisplayFill } from 'react-bootstrap-icons'
+import { Youtube, PlayFill, Display, DisplayFill, CloudArrowDown, FileEarmarkArrowDown } from 'react-bootstrap-icons'
 import { useState } from 'react'
 
 import Row from 'react-bootstrap/Row'
@@ -57,7 +57,7 @@ export default function VideoButtons(props) {
                                             variant='outline-secondary'
                                             onMouseDown={() => handleDownloadLocal(result)}
                                         >
-                                            <Download size={15} />
+                                            <FileEarmarkArrowDown size={15} />
                                         </Button>
                                     </a>
                                 </Col>
@@ -83,7 +83,7 @@ export default function VideoButtons(props) {
                                     variant='outline-secondary'
                                     onMouseDown={() => handleDownloadClick(result._id)}
                                 >
-                                    <Download size={15} />
+                                    <CloudArrowDown size={15} />
                                 </Button>
                             </Col>
                             }
