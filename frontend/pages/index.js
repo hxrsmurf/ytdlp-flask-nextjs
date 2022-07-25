@@ -160,7 +160,9 @@ export default function MiniDrawer() {
         <Divider />
 
         <List>
-          <Sidebar open={open} icon='Inbox' title='test'/>
+          <Sidebar open={open} icon='Home' title='Home'/>
+          <Sidebar open={open} icon='Subscriptions' title='Subscriptions'/>
+          <Sidebar open={open} icon='Library' title='Library'/>
         </List>
 
       </Drawer>
