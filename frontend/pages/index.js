@@ -19,6 +19,7 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 
 import { useState } from 'react';
+import Sidebar from '../Components/Material/Menu/Sidebar';
 
 const drawerWidth = 200;
 
@@ -159,14 +160,7 @@ export default function MiniDrawer() {
         <Divider />
 
         <List>
-          <ListItem disablePadding sx={{ display: 'block' }}>
-            <ListItemButton sx={{minHeight: 48, justifyContent: open ? 'initial' : 'center', px: 2.5}}>
-              <ListItemIcon sx={{minWidth: 0, mr: open ? 3: 'auto', justifyContent: 'center'}}>
-                <InboxIcon />
-              </ListItemIcon>
-              <ListItemText primary='test' sx={{opacity: open ? 1 : 0}}/>
-            </ListItemButton>
-          </ListItem>
+          <Sidebar open={open} icon='Inbox' title='test'/>
         </List>
 
       </Drawer>
