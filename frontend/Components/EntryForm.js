@@ -1,8 +1,9 @@
 import Form from 'react-bootstrap/Form'
-import Button from 'react-bootstrap/Button'
+import Button from '@mui/material/Button';
 import { useState } from 'react'
 import Router from 'next/router'
 import LoadingCircle from './LoadingCircle'
+
 
 export default function EntryForm({ type }) {
     const base_api = process.env.NEXT_PUBLIC_BASE_API_URL
@@ -36,7 +37,7 @@ export default function EntryForm({ type }) {
                         <Form.Label>{type}</Form.Label>
                         <Form.Control type="string" onChange={(e) => setValue(e.target.value)} />
                     </Form.Group>
-                    <Button variant="primary" type="submit" onClick={(e) => handleSubmit(e)}>
+                    <Button variant="contained" type="submit" onClick={(e) => handleSubmit(e)}>
                         Submit
                     </Button>
                 </Form>
