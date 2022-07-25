@@ -1,7 +1,7 @@
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import Button from 'react-bootstrap/Button'
+import Button from '@mui/material/Button'
 import Dropdown from 'react-bootstrap/Dropdown'
 import { useState } from 'react'
 
@@ -120,14 +120,16 @@ export default function index({ results, result_all_channels }) {
                     </Col>
                     <Col>
                         <Button
-                            variant='secondary'
+                            variant='contained'
+                            color='secondary'
                             onMouseDown={(e) => handleResetFilter(e)}
                         >
                             Reset</Button>
                     </Col>
                     <Col md='auto'>
                         <Button
-                            variant='info'
+                            variant='contained'
+                            color='info'
                             onMouseDown={(e) => handleShowDownloadedVideos(e)}
                         >
                             Show Downloaded</Button>
@@ -136,7 +138,8 @@ export default function index({ results, result_all_channels }) {
                         {showWatchedButton ?
                         <>
                             <Button
-                                variant='secondary'
+                                variant='contained'
+                                color='info'
                                 onMouseDown={(e) => handleShowWatched(e)}
                             >
                                 Show Watched
@@ -145,7 +148,8 @@ export default function index({ results, result_all_channels }) {
                         :
                         <>
                             <Button
-                                variant='secondary'
+                                variant='contained'
+                                color='info'
                                 onMouseDown={(e) => handleShowUnWatched(e)}
                             >
                                 Show Unwatched
@@ -161,7 +165,8 @@ export default function index({ results, result_all_channels }) {
                                 {dropdownName ?
                                     <>
                                         <Button
-                                            variant='info'
+                                            variant='contained'
+                                            color='warning'
                                             onMouseDown={(e) => handleDownloadLatestChannel(e)}
                                         >
                                             Download {channel}</Button>
@@ -169,7 +174,8 @@ export default function index({ results, result_all_channels }) {
                                     :
                                     <>
                                         <Button
-                                            variant='warning'
+                                            variant='contained'
+                                            color='warning'
                                             onMouseDown={(e) => handleDownloadLatest(e)}
                                         >
                                             Download latest</Button>
