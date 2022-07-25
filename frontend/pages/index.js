@@ -1,145 +1,217 @@
-import { styled, useTheme } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import MuiDrawer from '@mui/material/Drawer';
-import MuiAppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import List from '@mui/material/List';
-import CssBaseline from '@mui/material/CssBaseline';
-import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import Container from 'react-bootstrap/Container'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
+import Button from 'react-bootstrap/Button'
+import Dropdown from 'react-bootstrap/Dropdown'
+import { useState } from 'react'
 
-import { useState } from 'react';
-import Sidebar from '../Components/Material/Menu/Sidebar';
+import EntryForm from '../Components/EntryForm'
+import LoadingCircle from '../Components/LoadingCircle'
+import VideoCardList from '../Components/VideoCardList'
+import MissingChannels from '../Components/MissingChannels'
+import SyncChannels from '../Components/SyncChannels'
 
-const drawerWidth = 200;
+export default function index({ results, result_all_channels }) {
+    const [channel, setChannel] = useState()
+    const [channelID, setChannelID] = useState()
+    const [dropdownName, setDropdownName] = useState()
+    const [newResults, setNewResults] = useState()
+    const [loading, setLoading] = useState()
+    const [missingChannels, setMissingChannels] = useState()
+    const [showWatchedButton, setShowWatchedButton] = useState()
 
-const openedMixin = (theme) => ({
-  width: drawerWidth,
-  transition: theme.transitions.create('width', {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.enteringScreen,
-  }),
-  overflowX: 'hidden',
-});
+    const base_api_url = process.env.NEXT_PUBLIC_BASE_API_URL
 
-const closedMixin = (theme) => ({
-  transition: theme.transitions.create('width', {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  overflowX: 'hidden',
-  width: `calc(${theme.spacing(7)} + 1px)`,
-  [theme.breakpoints.up('sm')]: {
-    width: `calc(${theme.spacing(8)} + px)`,
-  },
-});
+    const handleDropdownClick = async (event) => {
+        setDropdownName(channel)
+        const request_channel_videos = await fetch(process.env.NEXT_PUBLIC_BASE_API_URL + '/mongo/videos/search/' + channelID)
+        const new_results = await request_channel_videos.json()
+        setNewResults(new_results)
+    }
 
-const DrawerHeader = styled('div')(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'flex-end',
-  padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
-  ...theme.mixins.toolbar,
-}));
+    const handleResetFilter = async (event) => {
+        setDropdownName()
+        setChannel()
+        const request_channel_videos = await fetch(process.env.NEXT_PUBLIC_BASE_API_URL + '/mongo/videos')
+        const new_results = await request_channel_videos.json()
+        setNewResults(new_results)
+    }
 
-const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== 'open',
-})(({ theme, open }) => ({
-  zIndex: theme.zIndex.drawer + 1,
-  transition: theme.transitions.create(['width', 'margin'], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  ...(open && {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(['width', 'margin'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  }),
-}));
+    const handleDownloadLatest = async (event) => {
+        const latest_range = 1
+        const query_url = (base_api_url + '/mongo/download/latest?range=' + latest_range + '&id=' + 'all')
+        setLoading(true)
+        fetch(query_url)
+        setTimeout(() => setLoading(false), 1000);
+    }
 
-const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
-  ({ theme, open }) => ({
-    width: drawerWidth,
-    flexShrink: 0,
-    whiteSpace: 'nowrap',
-    boxSizing: 'border-box',
-    ...(open && {
-      ...openedMixin(theme),
-      '& .MuiDrawer-paper': openedMixin(theme),
-    }),
-    ...(!open && {
-      ...closedMixin(theme),
-      '& .MuiDrawer-paper': closedMixin(theme),
-    }),
-  }),
-);
+    const handleDownloadLatestChannel = async (event) => {
+        const latest_range = 7
+        const query_url = (base_api_url + '/mongo/download/latest?range=' + latest_range + '&id=' + channelID)
+        setLoading(true)
+        fetch(query_url)
+        setTimeout(() => setLoading(false), 1000);
+    }
 
-export default function MiniDrawer() {
-  const theme = useTheme();
-  const [open, setOpen] = useState(false);
+    const handleShowDownloadedVideos = async (event) => {
+        const request = await fetch(base_api_url + '/mongo/videos/downloaded')
+        const results = await request.json()
+        setNewResults(results)
+    }
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
+    const handleShowWatched = async (event) => {
+        const request = await fetch(base_api_url + '/mongo/videos/watched')
+        const results = await request.json()
+        setShowWatchedButton(false)
+        setNewResults(results)
+    }
 
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
+    const handleShowUnWatched = async (event) => {
+        const request = await fetch(base_api_url + '/mongo/videos/unwatched')
+        const results = await request.json()
+        setShowWatchedButton(true)
+        setNewResults(results)
+    }
 
-  return (
-    <Box sx={{ display: 'flex' }}>
-      <CssBaseline />
-      <AppBar position="fixed" open={open} style={{backgroundColor: '#424242'}}>
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            sx={{
-              marginRight: 5,
-              ...(open && { display: 'none' }),
-            }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            YouTube
-          </Typography>
-        </Toolbar>
-      </AppBar>
+    return (
+        <>
+            <Container className='mt-5'>
+                <EntryForm type='Videos' />
+            </Container>
 
-      <Drawer variant="permanent" open={open}>
-        <DrawerHeader>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-          </IconButton>
-        </DrawerHeader>
+            {missingChannels ?
+                <>
+                    <MissingChannels data={missingChannels} />
+                </>
+                :
+                <></>
+            }
 
-        <Divider />
+            <Container className='mt-5'>
+                <Row>
+                    <Col md='auto'>
+                        <Dropdown variant="success">
+                            <Dropdown.Toggle>
+                                {dropdownName ? channel : 'Channels...'}
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu>
+                                {result_all_channels.map((channel, id) => (
+                                    <>
+                                        <Dropdown.Item
+                                            key={id}
+                                        >
+                                            <Row
+                                                onMouseDown={(e) => handleDropdownClick(e)}
+                                                onMouseOver={(e) => {
+                                                    setChannel(e.target.textContent)
+                                                    setChannelID(e.target.nextSibling.textContent)
+                                                }
+                                                }
+                                            >
+                                                <Col>{channel.channel_name}</Col>
+                                                <Col hidden>{channel.channel_id}</Col>
+                                            </Row>
+                                        </Dropdown.Item>
+                                    </>
 
-        <List>
-          <Sidebar open={open} icon='Home' title='Home'/>
-          <Sidebar open={open} icon='Subscriptions' title='Subscriptions'/>
-          <Sidebar open={open} icon='Library' title='Library'/>
-        </List>
+                                ))}
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    </Col>
+                    <Col>
+                        <Button
+                            variant='secondary'
+                            onMouseDown={(e) => handleResetFilter(e)}
+                        >
+                            Reset</Button>
+                    </Col>
+                    <Col md='auto'>
+                        <Button
+                            variant='info'
+                            onMouseDown={(e) => handleShowDownloadedVideos(e)}
+                        >
+                            Show Downloaded</Button>
+                    </Col>
+                    <Col md='auto'>
+                        {showWatchedButton ?
+                        <>
+                            <Button
+                                variant='secondary'
+                                onMouseDown={(e) => handleShowWatched(e)}
+                            >
+                                Show Watched
+                            </Button>
+                        </>
+                        :
+                        <>
+                            <Button
+                                variant='secondary'
+                                onMouseDown={(e) => handleShowUnWatched(e)}
+                            >
+                                Show Unwatched
+                            </Button>
+                        </>
+                        }
 
-      </Drawer>
+                    </Col>
+                    <Col md='auto'>
+                        {loading ? <LoadingCircle text='Downloading...' />
+                            :
+                            <>
+                                {dropdownName ?
+                                    <>
+                                        <Button
+                                            variant='info'
+                                            onMouseDown={(e) => handleDownloadLatestChannel(e)}
+                                        >
+                                            Download {channel}</Button>
+                                    </>
+                                    :
+                                    <>
+                                        <Button
+                                            variant='warning'
+                                            onMouseDown={(e) => handleDownloadLatest(e)}
+                                        >
+                                            Download latest</Button>
+                                    </>
+                                }
+                            </>
+                        }
+                    </Col>
 
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        <DrawerHeader />
-        <Typography paragraph>
-          Hello World
-        </Typography>
-      </Box>
-    </Box>
-  );
+                    <Col md='auto'>
+                        <SyncChannels callback={setMissingChannels}/>
+                    </Col>
+
+                </Row>
+            </Container>
+
+            <Container className='mt-5'>
+                {newResults ?
+                    <>
+                        <VideoCardList data={newResults} />
+                    </>
+                    :
+                    <>
+                        <VideoCardList data={results} />
+                    </>
+                }
+            </Container>
+        </>
+    )
+}
+
+export async function getServerSideProps() {
+    const res = await fetch(process.env.NEXT_PUBLIC_BASE_API_URL + '/mongo/videos')
+    const results = await res.json()
+
+    const request_all_channels = await fetch(process.env.NEXT_PUBLIC_BASE_API_URL + '/mongo/videos/unique/channel')
+    const result_all_channels = await request_all_channels.json()
+
+    return {
+        props: {
+            results,
+            result_all_channels
+        }
+    }
 }
