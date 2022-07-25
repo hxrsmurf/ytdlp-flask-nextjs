@@ -1,4 +1,5 @@
-import Button from "react-bootstrap/Button"
+import Button from '@mui/material/Button';
+
 export default function SyncChannels({ callback }) {
 
     // We have to do this because ytsearch yt-dlp is bad at finding channels by their ID.
@@ -19,7 +20,8 @@ export default function SyncChannels({ callback }) {
     return (
         <>
             <Button
-                variant='light'
+                variant='contained'
+                color='info'
                 onMouseDown={(e) => handleSyncChannels(e)}
             >
                 Sync Channels
