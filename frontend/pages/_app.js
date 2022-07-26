@@ -1,5 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'video.js/dist/video-js.min.css'
+import '../styles/dot.css'
 
 import Container from '@mui/material/Container';
 import '@fontsource/roboto/300.css';
