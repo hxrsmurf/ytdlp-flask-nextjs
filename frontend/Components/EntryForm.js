@@ -3,7 +3,7 @@ import Router from 'next/router'
 import LoadingCircle from './LoadingCircle'
 import { Button, FormControl, FormGroup, Input, InputLabel } from '@mui/material';
 
-export default function EntryForm({ type }) {
+export default function EntryForm() {
     const base_api = process.env.NEXT_PUBLIC_BASE_API_URL
 
     const [value, setValue] = useState()
@@ -32,7 +32,7 @@ export default function EntryForm({ type }) {
             {loading ? <LoadingCircle text='Downloading...' /> :
                 <FormControl sx={{ width: '63ch'}}>
                     <FormGroup className="mb-3">
-                        <InputLabel>{type}</InputLabel>
+                        <InputLabel>URL</InputLabel>
                         <Input type="string" onChange={(e) => setValue(e.target.value)} />
                     </FormGroup>
                     <Button variant="contained" type="submit" color="success" onClick={(e) => handleSubmit(e)}>

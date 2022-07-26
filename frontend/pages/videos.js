@@ -78,7 +78,7 @@ export default function videos({ results, result_all_channels }) {
     return (
         <>
             <Container className='mt-5'>
-                <EntryForm type='Videos' />
+                <EntryForm/>
             </Container>
 
             {missingChannels ?

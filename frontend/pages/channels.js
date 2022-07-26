@@ -13,7 +13,7 @@ export default function channels({ results }) {
         <>
             <Container className='mt-3'>
                 <Container className='mt-5'>
-                    <EntryForm type='Channels' />
+                    <EntryForm/>
                 </Container>
             </Container>
 
