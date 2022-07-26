@@ -36,6 +36,9 @@ const closedMixin = (theme) => ({
   [theme.breakpoints.up('sm')]: {
     width: `calc(${theme.spacing(8)} + px)`,
   },
+  [theme.breakpoints.down('sm')] : {
+    width: theme.spacing(0),
+  }
 });
 
 const DrawerHeader = styled('div')(({ theme }) => ({
@@ -43,6 +46,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   alignItems: 'center',
   justifyContent: 'flex-end',
   padding: theme.spacing(0, 1),
+  backgroundColor: '#424242',
   // necessary for content to be below app bar
   ...theme.mixins.toolbar,
 }));
@@ -120,7 +124,7 @@ export default function NavigationMUI() {
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon sx={{color: 'white'}} />}
           </IconButton>
         </DrawerHeader>
 
