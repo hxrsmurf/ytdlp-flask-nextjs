@@ -1,9 +1,17 @@
-export default function LoadingCircle({text}) {
-    return (
+import LoadingButton from '@mui/lab/LoadingButton';
+import LoopIcon from '@mui/icons-material/Loop';
 
-        <button className="btn btn-primary" type="button" disabled>
-            <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-            <span className="sr-only">{text}</span>
-        </button>
+export default function LoadingCircle({ text }) {
+    return (
+        <>
+            <LoadingButton
+                loading
+                loadingPosition="start"
+                startIcon={<LoopIcon />}
+                variant="contained"
+            >
+                {text}
+            </LoadingButton>
+        </>
     )
 }
