@@ -1,6 +1,5 @@
 import Container from '@mui/material/Container';
 
-import { Dot, HandThumbsUp } from 'react-bootstrap-icons';
 import { AppBar, Dialog, IconButton, Toolbar, Typography } from '@mui/material';
 
 import CloseIcon from '@mui/icons-material/Close';
