@@ -1,6 +1,11 @@
-import { Youtube, PlayFill, Display, DisplayFill, CloudArrowDown, FileEarmarkArrowDown } from 'react-bootstrap-icons'
 import { useState } from 'react'
 
+import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
+import DownloadIcon from '@mui/icons-material/Download';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import TvTwoToneIcon from '@mui/icons-material/TvTwoTone';
+import TvOutlinedIcon from '@mui/icons-material/TvOutlined';
+import YouTubeIcon from '@mui/icons-material/YouTube';
 
 import VideoPlayer from './Modals/VideoPlayer'
 
@@ -46,7 +51,7 @@ export default function VideoButtons(props) {
             >
                 <Grid item>
                     <IconButton href={result.original_url} target="_blank" size='large' rel='noreferred noopener'>
-                        <Youtube color='red' />
+                        <YouTubeIcon sx={{color: 'red'}}/>
                     </IconButton>
                 </Grid>
 
@@ -54,13 +59,13 @@ export default function VideoButtons(props) {
                     <>
                         <Grid item>
                             <IconButton href={result.cdn_video} target="_blank" size='large' rel='noreferred noopener'>
-                                <FileEarmarkArrowDown />
+                                <DownloadIcon />
                             </IconButton>
                         </Grid>
 
                         <Grid item>
                             <IconButton size='large' onMouseDown={() => handlePlayCDNVideo(result)}>
-                                <PlayFill />
+                                <PlayArrowIcon />
                             </IconButton>
 
                             {cdnVideo ?
@@ -75,7 +80,7 @@ export default function VideoButtons(props) {
                     :
                     <Grid item>
                         <IconButton onMouseDown={() => handleDownloadClick(result._id)}>
-                            <CloudArrowDown />
+                            <CloudDownloadIcon />
                         </IconButton>
                     </Grid>
                 }
@@ -84,13 +89,13 @@ export default function VideoButtons(props) {
                     {result.watched ?
                         <>
                             <IconButton onMouseDown={() => handleUnwatchedClick(result._id)}>
-                                <DisplayFill />
+                                <TvTwoToneIcon/>
                             </IconButton>
                         </>
                         :
                         <>
                             <IconButton onMouseDown={() => handleWatchedClick(result._id)}>
-                                <Display />
+                                <TvOutlinedIcon/>
                             </IconButton>
                         </>
                     }
