@@ -1,9 +1,7 @@
-import Form from 'react-bootstrap/Form'
-import Button from '@mui/material/Button';
 import { useState } from 'react'
 import Router from 'next/router'
 import LoadingCircle from './LoadingCircle'
-
+import { Button, FormControl, FormGroup, Input, InputLabel } from '@mui/material';
 
 export default function EntryForm({ type }) {
     const base_api = process.env.NEXT_PUBLIC_BASE_API_URL
@@ -32,15 +30,15 @@ export default function EntryForm({ type }) {
     return (
         <>
             {loading ? <LoadingCircle text='Downloading...' /> :
-                <Form>
-                    <Form.Group className="mb-3">
-                        <Form.Label>{type}</Form.Label>
-                        <Form.Control type="string" onChange={(e) => setValue(e.target.value)} />
-                    </Form.Group>
-                    <Button variant="contained" type="submit" onClick={(e) => handleSubmit(e)}>
+                <FormControl sx={{ width: '63ch'}}>
+                    <FormGroup className="mb-3">
+                        <InputLabel>{type}</InputLabel>
+                        <Input type="string" onChange={(e) => setValue(e.target.value)} />
+                    </FormGroup>
+                    <Button variant="contained" type="submit" color="success" onClick={(e) => handleSubmit(e)}>
                         Submit
                     </Button>
-                </Form>
+                </FormControl>
             }
         </>
     )
