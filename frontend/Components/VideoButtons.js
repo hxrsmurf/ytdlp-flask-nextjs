@@ -1,11 +1,10 @@
 import { Youtube, PlayFill, Display, DisplayFill, CloudArrowDown, FileEarmarkArrowDown } from 'react-bootstrap-icons'
 import { useState } from 'react'
 
-import Button from 'react-bootstrap/Button'
 
 import VideoPlayer from './Modals/VideoPlayer'
 
-import { Grid } from '@mui/material';
+import { Grid, IconButton } from '@mui/material';
 
 export default function VideoButtons(props) {
     const result = props.data
@@ -44,38 +43,25 @@ export default function VideoButtons(props) {
                 justifyContent="center"
                 alignItems="center"
                 className='mt-3'
-                spacing={1.2}
             >
                 <Grid item>
-                    <Button
-                        href={result.original_url}
-                        target="_blank"
-                        variant='outline-danger'>
-                        <Youtube size={15} />
-                    </Button>
+                    <IconButton href={result.original_url} target="_blank" size='large' rel='noreferred noopener'>
+                        <Youtube color='red' />
+                    </IconButton>
                 </Grid>
 
                 {result.cdn_video ?
                     <>
                         <Grid item>
-                                <Button
-                                    variant='outline-secondary'
-                                    onMouseDown={() => handleDownloadLocal(result)}
-                                    href={result.cdn_video}
-                                    target="_blank"
-                                    rel='noreferrer noopener'
-                                >
-                                    <FileEarmarkArrowDown size={15} />
-                                </Button>
+                            <IconButton href={result.cdn_video} target="_blank" size='large' rel='noreferred noopener'>
+                                <FileEarmarkArrowDown />
+                            </IconButton>
                         </Grid>
 
                         <Grid item>
-                            <Button
-                                variant='outline-secondary'
-                                onMouseDown={() => handlePlayCDNVideo(result)}
-                            >
-                                <PlayFill size={15} />
-                            </Button>
+                            <IconButton size='large' onMouseDown={() => handlePlayCDNVideo(result)}>
+                                <PlayFill />
+                            </IconButton>
 
                             {cdnVideo ?
                                 <>
@@ -88,33 +74,24 @@ export default function VideoButtons(props) {
                     </>
                     :
                     <Grid item>
-                        <Button
-                            variant='outline-secondary'
-                            onMouseDown={() => handleDownloadClick(result._id)}
-                        >
-                            <CloudArrowDown size={15} />
-                        </Button>
+                        <IconButton onMouseDown={() => handleDownloadClick(result._id)}>
+                            <CloudArrowDown />
+                        </IconButton>
                     </Grid>
                 }
 
                 <Grid item>
                     {result.watched ?
                         <>
-                            <Button
-                                variant='outline-secondary'
-                                onMouseDown={() => handleUnwatchedClick(result._id)}
-                            >
-                                <DisplayFill size={15} />
-                            </Button>
+                            <IconButton onMouseDown={() => handleUnwatchedClick(result._id)}>
+                                <DisplayFill />
+                            </IconButton>
                         </>
                         :
                         <>
-                            <Button
-                                variant='outline-secondary'
-                                onMouseDown={() => handleWatchedClick(result._id)}
-                            >
-                                <Display size={15} />
-                            </Button>
+                            <IconButton onMouseDown={() => handleWatchedClick(result._id)}>
+                                <Display />
+                            </IconButton>
                         </>
                     }
                 </Grid>
