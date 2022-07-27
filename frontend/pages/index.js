@@ -1,7 +1,4 @@
-import Row from 'react-bootstrap/Row'
-import Col from 'react-bootstrap/Col'
 import Button from '@mui/material/Button'
-import Dropdown from 'react-bootstrap/Dropdown'
 import { useState } from 'react'
 
 import EntryForm from '../Components/EntryForm'
@@ -9,7 +6,7 @@ import LoadingCircle from '../Components/LoadingCircle'
 import VideoCardList from '../Components/VideoCardList'
 import MissingChannels from '../Components/MissingChannels'
 import SyncChannels from '../Components/SyncChannels'
-import { Container, FormControl, Grid, InputLabel, MenuItem, Select } from '@mui/material'
+import { Container, FormControl, Grid, InputLabel, Menu, MenuItem, Select } from '@mui/material'
 
 export default function index({ results, result_all_channels }) {
     const [channel, setChannel] = useState()
@@ -19,6 +16,10 @@ export default function index({ results, result_all_channels }) {
     const [loading, setLoading] = useState()
     const [missingChannels, setMissingChannels] = useState()
     const [showWatchedButton, setShowWatchedButton] = useState()
+
+    const [anchorEl, setAnchorEl] = useState(null)
+    const channelMenuOpen = Boolean(anchorEl)
+    const [loadingChannelFilter, setLoadingChannelFilter] = useState()
 
     const base_api_url = process.env.NEXT_PUBLIC_BASE_API_URL
 
@@ -74,6 +75,27 @@ export default function index({ results, result_all_channels }) {
         setNewResults(results)
     }
 
+    const handleChannelMenuClick = async (event) => {
+        setAnchorEl(event.currentTarget)
+    }
+
+    const handleChannelClose = async (event) => {
+        setAnchorEl(null)
+    }
+
+    const handleChannelNameClose = async (event) => {
+        setAnchorEl(null)
+        setDropdownName(event.channel_name)
+        setChannelID(event.channel_id)
+
+        console.log(event.channel_name)
+        setLoadingChannelFilter(true)
+        const request_channel_videos = await fetch(process.env.NEXT_PUBLIC_BASE_API_URL + '/mongo/videos/search/' + channelID)
+        const new_results = await request_channel_videos.json()
+        setNewResults(new_results)
+        setLoadingChannelFilter(false)
+    }
+
     return (
         <>
 
@@ -91,23 +113,29 @@ export default function index({ results, result_all_channels }) {
 
             <Grid container spacing={2} className='mt-2' direction='row'>
                 <Grid item className='mr-5' width={200}>
-                    <FormControl fullWidth>
-                        <InputLabel>Channels</InputLabel>
-
-                        <Select
-                            value={dropdownName}
-                            onChange={(e) => handleDropdownClick(e)}
-                        >
-                            {result_all_channels.map((channel, id) => (
-                                <>
-                                    <MenuItem key={id}>
+                    <Button
+                        variant='contained'
+                        aria-controls={channelMenuOpen ? 'basic-menu' : undefined}
+                        aria-haspopup='true'
+                        aria-expanded={channelMenuOpen ? 'true' : undefined}
+                        onClick={handleChannelMenuClick}
+                    >
+                    {dropdownName ? <>{loadingChannelFilter ? <LoadingCircle/>:  dropdownName}</> : 'Channels...'}
+                    </Button>
+                    <Menu
+                        open={channelMenuOpen}
+                        onClose={handleChannelClose}
+                        anchorEl={anchorEl}
+                    >
+                        {result_all_channels.map((channel, id) => (
+                                <div key={id}>
+                                    <MenuItem key={id} onClick={() => handleChannelNameClose(channel)}>
                                         {channel.channel_name}
                                     </MenuItem>
-                                </>
+                                </div>
 
                             ))}
-                        </Select>
-                    </FormControl>
+                    </Menu>
                 </Grid>
 
                 <Grid item>
@@ -164,7 +192,7 @@ export default function index({ results, result_all_channels }) {
                                         color='warning'
                                         onMouseDown={(e) => handleDownloadLatestChannel(e)}
                                     >
-                                        Download {channel}</Button>
+                                        Download {dropdownName}</Button>
                                 </>
                                 :
                                 <>
@@ -185,14 +213,20 @@ export default function index({ results, result_all_channels }) {
             </Grid>
 
             <Container className='mt-5'>
-                {newResults ?
-                    <>
-                        <VideoCardList data={newResults} />
-                    </>
-                    :
-                    <>
-                        <VideoCardList data={results} />
-                    </>
+                {loadingChannelFilter ?
+                    <LoadingCircle/>
+                :
+                <>
+                    {newResults ?
+                        <>
+                            <VideoCardList data={newResults} />
+                        </>
+                        :
+                        <>
+                            <VideoCardList data={results} />
+                        </>
+                    }
+                </>
                 }
             </Container>
         </>
