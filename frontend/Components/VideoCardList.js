@@ -22,7 +22,7 @@ export default function VideoCardList({ data }) {
             <Grid container spacing={4}>
                 {data.map((result, id) => (
                     <Grid item spacing={4}>
-                        <Card sx={{ width: 255, height: 320, backgroundColor: '#edebea' }}>
+                        <Card sx={{ width: 250, height: 320, backgroundColor: '#edebea' }}>
                             <CardActionArea>
                                 <CardHeader
                                     title={<Typography noWrap>{result.title}</Typography>}
