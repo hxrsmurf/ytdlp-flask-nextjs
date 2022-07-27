@@ -1,4 +1,3 @@
-import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Button from '@mui/material/Button'
@@ -10,6 +9,7 @@ import LoadingCircle from '../Components/LoadingCircle'
 import VideoCardList from '../Components/VideoCardList'
 import MissingChannels from '../Components/MissingChannels'
 import SyncChannels from '../Components/SyncChannels'
+import { Container, FormControl, Grid, InputLabel, MenuItem, Select } from '@mui/material'
 
 export default function index({ results, result_all_channels }) {
     const [channel, setChannel] = useState()
@@ -24,6 +24,7 @@ export default function index({ results, result_all_channels }) {
 
     const handleDropdownClick = async (event) => {
         setDropdownName(channel)
+        console.log(channel)
         const request_channel_videos = await fetch(process.env.NEXT_PUBLIC_BASE_API_URL + '/mongo/videos/search/' + channelID)
         const new_results = await request_channel_videos.json()
         setNewResults(new_results)
@@ -75,6 +76,7 @@ export default function index({ results, result_all_channels }) {
 
     return (
         <>
+
             <Container className='mt-5'>
                 <EntryForm type='Videos' />
             </Container>
@@ -87,55 +89,47 @@ export default function index({ results, result_all_channels }) {
                 <></>
             }
 
-            <Container className='mt-5'>
-                <Row>
-                    <Col md='auto'>
-                        <Dropdown variant="success">
-                            <Dropdown.Toggle>
-                                {dropdownName ? channel : 'Channels...'}
-                            </Dropdown.Toggle>
-                            <Dropdown.Menu>
-                                {result_all_channels.map((channel, id) => (
-                                    <>
-                                        <Dropdown.Item
-                                            key={id}
-                                        >
-                                            <Row
-                                                onMouseDown={(e) => handleDropdownClick(e)}
-                                                onMouseOver={(e) => {
-                                                    setChannel(e.target.textContent)
-                                                    setChannelID(e.target.nextSibling.textContent)
-                                                }
-                                                }
-                                            >
-                                                <Col>{channel.channel_name}</Col>
-                                                <Col hidden>{channel.channel_id}</Col>
-                                            </Row>
-                                        </Dropdown.Item>
-                                    </>
+            <Grid container spacing={2} className='mt-2' direction='row'>
+                <Grid item className='mr-5' width={200}>
+                    <FormControl fullWidth>
+                        <InputLabel>Channels</InputLabel>
 
-                                ))}
-                            </Dropdown.Menu>
-                        </Dropdown>
-                    </Col>
-                    <Col>
-                        <Button
-                            variant='contained'
-                            color='secondary'
-                            onMouseDown={(e) => handleResetFilter(e)}
+                        <Select
+                            value={dropdownName}
+                            onChange={(e) => handleDropdownClick(e)}
                         >
-                            Reset</Button>
-                    </Col>
-                    <Col md='auto'>
-                        <Button
-                            variant='contained'
-                            color='info'
-                            onMouseDown={(e) => handleShowDownloadedVideos(e)}
-                        >
-                            Show Downloaded</Button>
-                    </Col>
-                    <Col md='auto'>
-                        {showWatchedButton ?
+                            {result_all_channels.map((channel, id) => (
+                                <>
+                                    <MenuItem key={id}>
+                                        {channel.channel_name}
+                                    </MenuItem>
+                                </>
+
+                            ))}
+                        </Select>
+                    </FormControl>
+                </Grid>
+
+                <Grid item>
+                    <Button
+                        variant='contained'
+                        color='secondary'
+                        onMouseDown={(e) => handleResetFilter(e)}
+                    >
+                        Reset
+                    </Button>
+                </Grid>
+                <Grid item>
+                    <Button
+                        variant='contained'
+                        color='info'
+                        onMouseDown={(e) => handleShowDownloadedVideos(e)}
+                    >
+                        Show Downloaded
+                    </Button>
+                </Grid>
+                <Grid item>
+                    {showWatchedButton ?
                         <>
                             <Button
                                 variant='contained'
@@ -155,42 +149,40 @@ export default function index({ results, result_all_channels }) {
                                 Show Unwatched
                             </Button>
                         </>
-                        }
+                    }
+                </Grid>
 
-                    </Col>
-                    <Col md='auto'>
-                        {loading ? <LoadingCircle text='Downloading...' />
-                            :
-                            <>
-                                {dropdownName ?
-                                    <>
-                                        <Button
-                                            variant='contained'
-                                            color='warning'
-                                            onMouseDown={(e) => handleDownloadLatestChannel(e)}
-                                        >
-                                            Download {channel}</Button>
-                                    </>
-                                    :
-                                    <>
-                                        <Button
-                                            variant='contained'
-                                            color='warning'
-                                            onMouseDown={(e) => handleDownloadLatest(e)}
-                                        >
-                                            Download latest</Button>
-                                    </>
-                                }
-                            </>
-                        }
-                    </Col>
+                <Grid item>
 
-                    <Col md='auto'>
-                        <SyncChannels callback={setMissingChannels}/>
-                    </Col>
+                    {loading ? <LoadingCircle text='Downloading...' />
+                        :
+                        <>
+                            {dropdownName ?
+                                <>
+                                    <Button
+                                        variant='contained'
+                                        color='warning'
+                                        onMouseDown={(e) => handleDownloadLatestChannel(e)}
+                                    >
+                                        Download {channel}</Button>
+                                </>
+                                :
+                                <>
+                                    <Button
+                                        variant='contained'
+                                        color='warning'
+                                        onMouseDown={(e) => handleDownloadLatest(e)}
+                                    >
+                                        Download latest</Button>
+                                </>
+                            }
+                        </>
+                    }
+                </Grid>
 
-                </Row>
-            </Container>
+                <Grid item><SyncChannels callback={setMissingChannels} /></Grid>
+
+            </Grid>
 
             <Container className='mt-5'>
                 {newResults ?
