@@ -6,11 +6,11 @@ export default function LoadingCircle({ text }) {
         <>
             <LoadingButton
                 loading
-                loadingPosition="start"
+                loadingPosition={text ? "start" : "center"}
                 startIcon={<LoopIcon />}
                 variant="contained"
             >
-                {text}
+                {text ? text : <></>}
             </LoadingButton>
         </>
     )

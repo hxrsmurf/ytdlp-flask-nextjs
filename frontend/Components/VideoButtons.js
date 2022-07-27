@@ -8,6 +8,7 @@ import TvOutlinedIcon from '@mui/icons-material/TvOutlined';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 
 import VideoPlayer from './Modals/VideoPlayer'
+import LoadingCircle from './LoadingCircle';
 
 import { Grid, IconButton } from '@mui/material';
 
@@ -46,7 +47,6 @@ export default function VideoButtons(props) {
     const handleDownloadBlob = async (event) => {
         // https://stackoverflow.com/questions/71829361/how-to-download-mp4-video-in-js-react
         setLoading(true)
-        console.log(event)
         const blob = await fetch(event)
             .then((response) => response.blob())
             .then((blob) => {
@@ -67,16 +67,34 @@ export default function VideoButtons(props) {
             >
                 <Grid item>
                     <IconButton href={result.original_url} target="_blank" size='large' rel='noreferred noopener'>
-                        <YouTubeIcon sx={{color: 'red'}}/>
+                        <YouTubeIcon sx={{ color: 'red' }} />
                     </IconButton>
                 </Grid>
 
                 {result.cdn_video ?
                     <>
                         <Grid item>
-                            <IconButton href={result.cdn_video} target="_blank" size='large' rel='noreferred noopener'>
-                                <DownloadIcon />
-                            </IconButton>
+                            {loading ?
+                                <IconButton size='large'>
+                                    <LoadingCircle />
+                                </IconButton>
+                                :
+                                <>
+                                    {blobURL ?
+                                        <>
+                                            <IconButton size='large' href={blobURL} download={result.title}>
+                                                <DownloadIcon />
+                                            </IconButton>
+                                        </>
+                                        :
+                                        <>
+                                            <IconButton size='large' onClick={() => handleDownloadBlob(result.cdn_video)}>
+                                                <DownloadIcon />
+                                            </IconButton>
+                                        </>
+                                    }
+                                </>
+                            }
                         </Grid>
 
                         <Grid item>
@@ -105,13 +123,13 @@ export default function VideoButtons(props) {
                     {result.watched ?
                         <>
                             <IconButton onMouseDown={() => handleUnwatchedClick(result._id)}>
-                                <TvTwoToneIcon/>
+                                <TvTwoToneIcon />
                             </IconButton>
                         </>
                         :
                         <>
                             <IconButton onMouseDown={() => handleWatchedClick(result._id)}>
-                                <TvOutlinedIcon/>
+                                <TvOutlinedIcon />
                             </IconButton>
                         </>
                     }
