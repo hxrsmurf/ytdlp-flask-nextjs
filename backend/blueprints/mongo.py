@@ -345,15 +345,19 @@ def download_video_by_id(video_id):
 
     print(cdn_video_url)
 
-    cdn_video_request = requests.get(cdn_video_url)
+    cdn_video_request = requests.head(cdn_video_url)
 
     # If on CDN
     if cdn_video_request.status_code == 200:
+        print('Exists on CDN, updating database')
+        Mongo.Videos.objects(video_id=video_id).update_one(set__cdn_video=cdn_video_url)
         return(cdn_video_url)
     else:
+        print(f'Downloading {original_url}')
         downloaded_file = download(video=original_url, video_range=1, download_confirm=True)
         b2_upload(file=video_file_name, folder=video_folder)
 
+        print(f'Updating database...')
         Mongo.Videos.objects(video_id=video_id).update_one(set__cdn_video=cdn_video_url)
 
         if os.path.exists(video_file_name):
