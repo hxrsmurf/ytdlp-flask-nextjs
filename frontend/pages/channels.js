@@ -1,8 +1,13 @@
-import Container from 'react-bootstrap/Container'
 import EntryForm from '../Components/EntryForm'
-import Card from 'react-bootstrap/Card'
+
+import { CardActionArea, Container } from '@mui/material';
 
 import Image from 'next/image'
+
+import Card from '@mui/material/Card';
+import CardHeader from '@mui/material/CardHeader';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
 
 export default function channels({ results }) {
     const handleClick = async (event) => {
@@ -13,31 +18,35 @@ export default function channels({ results }) {
         <>
             <Container className='mt-3'>
                 <Container className='mt-5'>
-                    <EntryForm/>
+                    <EntryForm />
                 </Container>
             </Container>
 
             <Container className='mt-5' >
                 {results.map((result, id) => (
-                    <Card style={{ width: '75', cursor: 'pointer' }} key={id} className='mt-5'
-                            onClick={(e)=> handleClick(result.original_url)}
-                            >
-                        <Card.Header>{result.channel_name} - {result.original_url}</Card.Header>
-                        <Card.Body>
-                            {result.cdn_photo_cover ?
-                                <Image
-                                    src={result.cdn_photo_cover}
-                                    width={100}
-                                    height={20}
-                                    layout='responsive'
-                                    lazyBoundary='25px'
-                                    quality={100}/>
-                            :
-                                <></>
-                            }
-                        </Card.Body>
-                        <Card.Footer className="text-muted">{result.description}</Card.Footer>
+                    <Card sx={{ backgroundColor: '#edebea', marginTop: 5 }}>
+                        <CardActionArea href={result.original_url} target='_blank'>
+                            <CardHeader
+                                title={<Typography>{result.channel_name} - {result.original_url}</Typography>}
+                            />
+                            <CardContent>
 
+                                {result.cdn_photo_cover ?
+                                    <Image
+                                        src={result.cdn_photo_cover}
+                                        width={100}
+                                        height={20}
+                                        layout='responsive'
+                                        lazyBoundary='25px'
+                                        quality={100} />
+                                    :
+                                    <></>
+                                }
+
+                                <div className='mt-3'>{result.description}</div>
+
+                            </CardContent>
+                        </CardActionArea>
                     </Card>
                 ))}
             </Container>
