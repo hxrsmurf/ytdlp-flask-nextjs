@@ -345,7 +345,7 @@ def download_video_by_id(video_id):
 
     print(cdn_video_url)
 
-    cdn_video_request = requests.get(cdn_video_url)
+    cdn_video_request = requests.head(cdn_video_url)
 
     # If on CDN
     if cdn_video_request.status_code == 200:
