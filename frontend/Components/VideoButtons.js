@@ -1,11 +1,15 @@
-import { Youtube, PlayFill, Display, DisplayFill, CloudArrowDown, FileEarmarkArrowDown } from 'react-bootstrap-icons'
 import { useState } from 'react'
 
-import Row from 'react-bootstrap/Row'
-import Col from 'react-bootstrap/Col'
-import Button from 'react-bootstrap/Button'
+import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
+import DownloadIcon from '@mui/icons-material/Download';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import TvTwoToneIcon from '@mui/icons-material/TvTwoTone';
+import TvOutlinedIcon from '@mui/icons-material/TvOutlined';
+import YouTubeIcon from '@mui/icons-material/YouTube';
 
 import VideoPlayer from './Modals/VideoPlayer'
+
+import { Grid, IconButton } from '@mui/material';
 
 export default function VideoButtons(props) {
     const result = props.data
@@ -25,12 +29,12 @@ export default function VideoButtons(props) {
 
     const handleWatchedClick = async (event) => {
         const query_url = (process.env.NEXT_PUBLIC_BASE_API_URL + '/mongo/videos/' + event + '/watched')
-        const result =  await fetch(query_url)
+        const result = await fetch(query_url)
     }
 
     const handleUnwatchedClick = async (event) => {
         const query_url = (process.env.NEXT_PUBLIC_BASE_API_URL + '/mongo/videos/' + event + '/unwatched')
-        const result =  await fetch(query_url)
+        const result = await fetch(query_url)
     }
 
     const handleDownloadLocal = async (event) => {
@@ -39,77 +43,64 @@ export default function VideoButtons(props) {
 
     return (
         <>
-            <div className='mt-4'>
-                <Row style={{width: '260px'}} className="justify-content-md-center">
-                    <Col md='auto'>
-                        <Button
-                            href={result.original_url}
-                            target="_blank"
-                            variant='outline-danger'>
-                            <Youtube size={15} />
-                        </Button>
-                    </Col>
-                        {result.cdn_video ?
-                            <>
-                                <Col md='auto'>
-                                    <a href={result.cdn_video} download target="_blank" rel='noreferrer noopener'>
-                                        <Button
-                                            variant='outline-secondary'
-                                            onMouseDown={() => handleDownloadLocal(result)}
-                                        >
-                                            <FileEarmarkArrowDown size={15} />
-                                        </Button>
-                                    </a>
-                                </Col>
+            <Grid
+                container
+                justifyContent="center"
+                alignItems="center"
+                className='mt-3'
+            >
+                <Grid item>
+                    <IconButton href={result.original_url} target="_blank" size='large' rel='noreferred noopener'>
+                        <YouTubeIcon sx={{color: 'red'}}/>
+                    </IconButton>
+                </Grid>
 
-                                <Col md='auto'>
-                                    <Button
-                                        variant='outline-secondary'
-                                        onMouseDown={() => handlePlayCDNVideo(result)}
-                                    >
-                                        <PlayFill size={15} />
-                                    </Button>
-                                    {cdnVideo ?
-                                        <>
-                                            <VideoPlayer show={modalShow} data={cdnVideo} onHide={() => setModalShow(false)} />
-                                        </>
-                                        :
-                                        <></>}
-                                </Col>
-                            </>
-                            :
-                            <Col md='auto'>
-                                <Button
-                                    variant='outline-secondary'
-                                    onMouseDown={() => handleDownloadClick(result._id)}
-                                >
-                                    <CloudArrowDown size={15} />
-                                </Button>
-                            </Col>
+                {result.cdn_video ?
+                    <>
+                        <Grid item>
+                            <IconButton href={result.cdn_video} target="_blank" size='large' rel='noreferred noopener'>
+                                <DownloadIcon />
+                            </IconButton>
+                        </Grid>
+
+                        <Grid item>
+                            <IconButton size='large' onMouseDown={() => handlePlayCDNVideo(result)}>
+                                <PlayArrowIcon />
+                            </IconButton>
+
+                            {cdnVideo ?
+                                <>
+                                    <VideoPlayer show={modalShow} data={cdnVideo} onHide={() => setModalShow(false)} />
+                                </>
+                                :
+                                <></>
                             }
-                    <Col md='auto'>
-                        {result.watched ?
+                        </Grid>
+                    </>
+                    :
+                    <Grid item>
+                        <IconButton onMouseDown={() => handleDownloadClick(result._id)}>
+                            <CloudDownloadIcon />
+                        </IconButton>
+                    </Grid>
+                }
+
+                <Grid item>
+                    {result.watched ?
                         <>
-                            <Button
-                                variant='outline-secondary'
-                                onMouseDown={() => handleUnwatchedClick(result._id)}
-                            >
-                                <DisplayFill size={15}/>
-                            </Button>
+                            <IconButton onMouseDown={() => handleUnwatchedClick(result._id)}>
+                                <TvTwoToneIcon/>
+                            </IconButton>
                         </>
                         :
                         <>
-                            <Button
-                                variant='outline-secondary'
-                                onMouseDown={() => handleWatchedClick(result._id)}
-                            >
-                                <Display size={15}/>
-                            </Button>
+                            <IconButton onMouseDown={() => handleWatchedClick(result._id)}>
+                                <TvOutlinedIcon/>
+                            </IconButton>
                         </>
-                        }
-                    </Col>
-                </Row>
-            </div>
+                    }
+                </Grid>
+            </Grid>
         </>
     )
 }

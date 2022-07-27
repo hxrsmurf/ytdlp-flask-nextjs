@@ -1,7 +1,9 @@
-import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
-import Container from 'react-bootstrap/Container';
-import { Dot, HandThumbsUp } from 'react-bootstrap-icons';
+import Container from '@mui/material/Container';
+
+import { AppBar, Dialog, IconButton, Toolbar, Typography } from '@mui/material';
+
+import CloseIcon from '@mui/icons-material/Close';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 
 export default function VideoPlayer(props) {
     const title = props.data.title
@@ -13,34 +15,33 @@ export default function VideoPlayer(props) {
     const description = props.data.description
 
     return (
-        <Modal
-            {...props}
-            aria-labelledby="contained-modal-title-vcenter"
-            fullscreen
+        <Dialog
+            fullScreen
+            open={props.show}
+            onClose={props.onHide}
         >
-            <Modal.Header closeButton>
-                <Modal.Title id="contained-modal-title-vcenter">
-                    {title}
-                </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <h4>{channel_name}</h4>
-                <Container>
-                    <video
-                        controls
-                        preload='auto'
-                        userActions='{"hotkeys": true}'
-                        width='1024px'
-                        height='640px'
-                        >
-                        <source src={video_url} type="video/mp4"/>
-                    </video>
-                </Container>
-            </Modal.Body>
-            <Modal.Footer>
-                <HandThumbsUp/> {like_count}<Dot/>{view_count} views
-                <Button onClick={props.onHide}>Close</Button>
-            </Modal.Footer>
-        </Modal>
+            <AppBar style={{ backgroundColor: '#424242' }}>
+                <Toolbar>
+                    <IconButton onClick={props.onHide}>
+                        <CloseIcon />
+                    </IconButton>
+                    <Typography sx={{ ml: 2, flex: 1 }}>{title}<span className="dot"></span>{channel_name}</Typography>
+                    <Typography>
+                        <ThumbUpIcon sx={{mr: 1, mb: .8}}/>{like_count}<span className="dot"></span>{view_count} views<span className="dot"></span>Uploaded {upload_date}
+                    </Typography>
+                </Toolbar>
+            </AppBar>
+            <Container sx={{ mt: 10 }}>
+                <video
+                    controls
+                    preload='auto'
+                    userActions='{"hotkeys": true}'
+                    width='1024px'
+                    height='640px'
+                >
+                    <source src={video_url} type="video/mp4" />
+                </video>
+            </Container>
+        </Dialog>
     );
 }
