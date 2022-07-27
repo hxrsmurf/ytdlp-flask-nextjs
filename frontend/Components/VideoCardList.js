@@ -9,6 +9,8 @@ import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import Typography from '@mui/material/Typography';
 
+import Image from 'next/image';
+
 export default function VideoCardList({ data }) {
 
     const handleClick = async (event) => {
@@ -27,12 +29,22 @@ export default function VideoCardList({ data }) {
                                     subheader={result.channel_name}
                                     sx={{ display: 'block', overflow: 'hidden' }}
                                 />
-                                <CardMedia
-                                    component='img'
-                                    height='140'
-                                    image={result.thumbnail}
-                                />
                                 <CardContent>
+
+                                {result.thumbnail ?
+                                    <Image
+                                        src={result.thumbnail}
+                                        width={700}
+                                        height={400}
+                                        layout='responsive'
+                                        lazyBoundary='1px'
+                                        quality={100}
+                                        style={{ cursor: "pointer"}}
+                                        onClick={(e) => handleClick(result.original_url)}
+                                        />
+                                :
+                                    <></>
+                                }
                                     <Grid container spacing={1} justifyContent='center' alignItems='center'>
                                         <Grid item>{result.view_count} views</Grid>
                                         <Grid item><span className='dot'></span></Grid>
