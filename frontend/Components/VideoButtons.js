@@ -16,6 +16,8 @@ export default function VideoButtons(props) {
 
     const [cdnVideo, setCDNVideo] = useState()
     const [modalShow, setModalShow] = useState()
+    const [blobURL, setBlobURL] = useState()
+    const [loading, setLoading] = useState()
 
     const handleDownloadClick = async (event) => {
         const query_url = (process.env.NEXT_PUBLIC_BASE_API_URL + '/mongo/download/video/' + event)
@@ -39,6 +41,20 @@ export default function VideoButtons(props) {
 
     const handleDownloadLocal = async (event) => {
         console.log(event)
+    }
+
+    const handleDownloadBlob = async (event) => {
+        // https://stackoverflow.com/questions/71829361/how-to-download-mp4-video-in-js-react
+        setLoading(true)
+        console.log(event)
+        const blob = await fetch(event)
+            .then((response) => response.blob())
+            .then((blob) => {
+                const url = window.URL.createObjectURL(new Blob([blob]))
+                setBlobURL(url)
+                console.log(url)
+            })
+        setLoading(false)
     }
 
     return (
