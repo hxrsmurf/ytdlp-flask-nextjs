@@ -15,7 +15,8 @@ def download(video, video_range=2, download_confirm=False):
         'playlistend' : video_range,
         'ignoreerrors' : True,
         'format': 'bestvideo*+bestaudio/best',
-        'merge_output_format': 'mp4'
+        'merge_output_format': 'mp4',
+        'keepvideo' : True
     }
 
     with YoutubeDL(ytdl_opts) as ydl:
