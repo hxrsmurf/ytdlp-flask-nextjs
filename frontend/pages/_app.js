@@ -1,4 +1,3 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
 import 'video.js/dist/video-js.min.css'
 import '../styles/dot.css'
 
