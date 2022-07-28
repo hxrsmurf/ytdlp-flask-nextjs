@@ -1,3 +1,6 @@
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/hxrsmurf/ytdlp-flask-nextjs/Node.js%20CI?style=for-the-badge)
+![GitHub last commit (branch)](https://img.shields.io/github/last-commit/hxrsmurf/ytdlp-flask-nextjs/master?style=for-the-badge)
+
 # Welcome
 
 This is just a pet project to learn more about [Python Flask](https://flask.palletsprojects.com/en/2.1.x/) and [NextJS](https://nextjs.org/).
@@ -40,6 +43,7 @@ While YouTubeDL-Material & TubeArchivist are great projects, I wanted something 
 - [X] Added basic docker support ~~Dockerize~~
 - [ ] CI/CD (?)
 - [ ] Add badge metrics for issues, license, etc.
+  - [X] Add GitHub build badge
 - [ ] Twilio integration (text the API to add channel)
 - [ ] Web Browser extension like TubeArchivst
 - [ ] Add database caching, maybe through Redis
