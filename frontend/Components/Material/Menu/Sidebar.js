@@ -1,5 +1,4 @@
 import { ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material"
-import InboxIcon from '@mui/icons-material/Inbox';
 import HomeIcon from '@mui/icons-material/Home';
 import SubscriptionsIcon from '@mui/icons-material/Subscriptions';
 import VideoLibraryIcon from '@mui/icons-material/VideoLibrary';

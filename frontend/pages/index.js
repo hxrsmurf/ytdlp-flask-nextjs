@@ -6,7 +6,7 @@ import LoadingCircle from '../Components/LoadingCircle'
 import VideoCardList from '../Components/VideoCardList'
 import MissingChannels from '../Components/MissingChannels'
 import SyncChannels from '../Components/SyncChannels'
-import { Container, FormControl, Grid, InputLabel, Menu, MenuItem, Select } from '@mui/material'
+import { Container, Grid, Menu, MenuItem } from '@mui/material'
 
 export default function index({ results, result_all_channels }) {
     const [channel, setChannel] = useState()

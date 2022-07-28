@@ -40,10 +40,6 @@ export default function VideoButtons(props) {
         const result = await fetch(query_url)
     }
 
-    const handleDownloadLocal = async (event) => {
-        console.log(event)
-    }
-
     const handleDownloadBlob = async (event) => {
         // https://stackoverflow.com/questions/71829361/how-to-download-mp4-video-in-js-react
         setLoading(true)
