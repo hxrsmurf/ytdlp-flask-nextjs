@@ -16,15 +16,15 @@ export default function channels({ results }) {
 
     return (
         <>
-            <Container className='mt-3'>
-                <Container className='mt-5'>
+            <Container sx={{marginTop: 3}}>
+                <Container sx={{marginTop: 5}}>
                     <EntryForm />
                 </Container>
             </Container>
 
-            <Container className='mt-5' >
+            <Container sx={{marginTop: 5}}>
                 {results.map((result, id) => (
-                    <Card sx={{ backgroundColor: '#edebea', marginTop: 5 }}>
+                    <Card sx={{ backgroundColor: '#edebea', marginTop: 5 }} key={id}>
                         <CardActionArea href={result.original_url} target='_blank'>
                             <CardHeader
                                 title={<Typography>{result.channel_name} - {result.original_url}</Typography>}
@@ -43,7 +43,7 @@ export default function channels({ results }) {
                                     <></>
                                 }
 
-                                <div className='mt-3'>{result.description}</div>
+                                <div sx={{marginTop: 3}}>{result.description}</div>
 
                             </CardContent>
                         </CardActionArea>

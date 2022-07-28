@@ -31,7 +31,7 @@ export default function EntryForm() {
         <>
             {loading ? <LoadingCircle text='Downloading...' /> :
                 <FormControl sx={{ width: '63ch'}}>
-                    <FormGroup className="mb-3">
+                    <FormGroup  sx={{marginBottom: 3}}>
                         <InputLabel>URL</InputLabel>
                         <Input type="string" onChange={(e) => setValue(e.target.value)} />
                     </FormGroup>

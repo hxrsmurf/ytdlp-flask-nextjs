@@ -63,7 +63,7 @@ export default function VideoButtons(props) {
                 container
                 justifyContent="center"
                 alignItems="center"
-                className='mt-3'
+                sx={{marginTop: 3}}
             >
                 <Grid item>
                     <IconButton href={result.original_url} target="_blank" size='large' rel='noreferred noopener'>

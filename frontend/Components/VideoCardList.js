@@ -21,7 +21,7 @@ export default function VideoCardList({ data }) {
         <>
             <Grid container spacing={4}>
                 {data.map((result, id) => (
-                    <Grid item spacing={4}>
+                    <Grid item key={id}>
                         <Card sx={{ width: 250, height: 320, backgroundColor: '#edebea' }}>
                             <CardActionArea>
                                 <CardHeader
@@ -45,7 +45,7 @@ export default function VideoCardList({ data }) {
                                 :
                                     <></>
                                 }
-                                    <Grid container spacing={1} justifyContent='center' alignItems='center'>
+                                    <Grid container spacing={1} justifyContent='center' alignItems='center' sx={{fontSize: '1rem', marginTop: 1}}>
                                         <Grid item>{result.view_count} views</Grid>
                                         <Grid item><span className='dot'></span></Grid>
                                         <Grid item>{result.upload_date}</Grid>

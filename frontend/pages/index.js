@@ -99,7 +99,7 @@ export default function index({ results, result_all_channels }) {
     return (
         <>
 
-            <Container className='mt-5'>
+            <Container sx={{marginTop: 5}}>
                 <EntryForm type='Videos' />
             </Container>
 
@@ -111,8 +111,8 @@ export default function index({ results, result_all_channels }) {
                 <></>
             }
 
-            <Grid container spacing={2} className='mt-2' direction='row' justifyContent="center" alignItems="center">
-                <Grid item className='mr-2' width={200}>
+            <Grid container spacing={2} sx={{marginTop: 5}} direction='row' justifyContent="center" alignItems="center">
+                <Grid item  sx={{marginRight: 2}} width={200}>
                     <Button
                         variant='contained'
                         aria-controls={channelMenuOpen ? 'basic-menu' : undefined}
@@ -212,7 +212,7 @@ export default function index({ results, result_all_channels }) {
 
             </Grid>
 
-            <Container className='mt-5'>
+            <Container sx={{marginTop: 5}}>
                 {loadingChannelFilter ?
                     <LoadingCircle/>
                 :
