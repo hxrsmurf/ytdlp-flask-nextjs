@@ -1,0 +1,28 @@
+# https://hub.docker.com/r/jrottenberg/ffmpeg
+
+# Windows
+docker run -v "C:/ytdlp-flask-nextjs/ffmpeg":/tmp -w /C:/ytdlp-flask-nextjs/ffmpeg jrottenberg/ffmpeg -i https://cdn/video.mp4 -f mp4 /tmp/out.mp4
+
+docker run -v "C:/ytdlp-flask-nextjs/ffmpeg":/tmp -w /C:/ytdlp-flask-nextjs/ffmpeg jrottenberg/ffmpeg -i /tmp/video.mp4 -f mp4 /tmp/tt.mp4
+
+# Linux
+docker run -v $(pwd):$(pwd) -w $(pwd) jrottenberg/ffmpeg -i https://cdn/video.mp4 -f mp4 /tmp/out.mp4
+
+
+$url = "C:/ytdlp-flask-nextjs/ffmpeg/video.mp4"
+$output = $url.split('/')[$url.split('/').length-1]
+$folder = $output.split('.')[0]
+
+# ffmpeg -i in.mkv -c:v copy -flags +cgop -g 30 -hls_time 1 -hls_playlist_type event folder\out.m3u8
+
+docker run -v C:/ytdlp-flask-nextjs/ffmpeg/${folder}:/tmp/${folder} `
+    -w /C:/ytdlp-flask-nextjs/ffmpeg `
+    jrottenberg/ffmpeg `
+    -i $url `
+    -c copy `
+    -flags +cgop `
+    -g 30 `
+    -hls_time 1 `
+    -hls_playlist_type event `
+    /tmp/$folder/$folder.m3u8 `
+    -f mp4 /tmp/$output

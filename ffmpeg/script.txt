@@ -1,9 +1,0 @@
-# https://hub.docker.com/r/jrottenberg/ffmpeg
-
-# Windows
-docker run -v "C:/ytdlp-flask-nextjs/ffmpeg":/tmp -w /C:/ytdlp-flask-nextjs/ffmpeg jrottenberg/ffmpeg -i https://cdn/video.mp4 -f mp4 /tmp/out.mp4
-
-docker run -v "C:/ytdlp-flask-nextjs/ffmpeg":/tmp -w /C:/ytdlp-flask-nextjs/ffmpeg jrottenberg/ffmpeg -i /tmp/video.mp4 -f mp4 /tmp/tt.mp4
-
-# Linux
-docker run -v $(pwd):$(pwd) -w $(pwd) jrottenberg/ffmpeg -i https://cdn/video.mp4 -f mp4 /tmp/out.mp4
