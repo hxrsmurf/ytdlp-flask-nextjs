@@ -8,6 +8,7 @@ import shutil
 from functions.downloader import download
 from functions.utils import getCurrentTime
 from functions.backblaze_upload import b2_upload, b2_sync
+from functions.convert_ffmpeg import convert_to_hls
 from classes import Mongo
 
 mongo_bp = Blueprint('mongo', __name__, url_prefix='/mongo')
@@ -335,6 +336,8 @@ def download_video_by_id(video_id):
     video_file_name = f'{video_id}.mp4'
     video_folder = 'videos'
     cdn_video_url = f'{os.environ.get("CDN_URL")}/{os.environ.get("B2_BUCKET")}/{video_folder}/{video_id}/{video_file_name}'
+
+    convert_to_hls(video_id)
 
     check_exists_cdn = requests.head(cdn_video_url)
 
