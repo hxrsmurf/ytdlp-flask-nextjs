@@ -1,0 +1,7 @@
+$bucket = 'bucket'
+$files = b2 ls $bucket videos
+
+yt-dlp [videoID] -f bestvideo*+bestaudio/best --merge-output-format mp4
+
+b2 sync --dryRun --delete --allowEmptySource . b2://$bucket/videos/
+b2 ls $bucket videos/
