@@ -350,9 +350,17 @@ def download_video_by_id(video_id):
         print(f'{video_id} exists on CDN')
         query = Mongo.Videos.objects(cdn_video=cdn_video_url)
         if not query:
-            print(f'Database is out of date. Updating...')
+            print(f'Database is out of date for MP4. Updating...')
             Mongo.Videos.objects(video_id=video_id).update_one(set__cdn_video=cdn_video_url)
-            print('Complete Database Update')
+            print('Completed Database Update')
+
+        if FEATURE_HLS:
+            query_hls = Mongo.Videos.objects(cdn_video_hls=cdn_video_url_hls)
+            if not query_hls:
+                print(f'Database is out of date for HLS. Updating...')
+                Mongo.Videos.objects(video_id=video_id).update_one(set__cdn_video_hls=cdn_video_url_hls)
+                print('Completed Database Update')
+
         return(f'{video_id} exists on CDN')
     else:
         if (not check_exists_cdn.status_code == 200):
@@ -370,6 +378,8 @@ def download_video_by_id(video_id):
             else:
                 print(f'Converting: {video_id}')
                 convert_to_hls(video_id=video_id)
+
+            Mongo.Videos.objects(video_id=video_id).update_one(set__cdn_video_hls=cdn_video_url_hls)
 
         print(f'Uploading {video_id} to BackBlaze...')
         b2_sync(video_id)
