@@ -334,14 +334,17 @@ def download_video_by_id(video_id):
     original_url = query_json['original_url']
 
     video_file_name = f'{video_id}.mp4'
+    video_file_name_hls = f'{video_id}.m3u8'
     video_folder = 'videos'
-    cdn_video_url = f'{os.environ.get("CDN_URL")}/{os.environ.get("B2_BUCKET")}/{video_folder}/{video_id}/{video_file_name}'
 
-    convert_to_hls(video_id)
+    cdn_video_base_path = f'{os.environ.get("CDN_URL")}/{os.environ.get("B2_BUCKET")}/{video_folder}/{video_id}'
+    cdn_video_url = f'{cdn_video_base_path}/{video_file_name}'
+    cdn_video_url_hls = f'{cdn_video_base_path}/{video_file_name_hls}'
 
     check_exists_cdn = requests.head(cdn_video_url)
+    check_exists_cdn_hls = requests.head(cdn_video_url_hls)
 
-    if (check_exists_cdn.status_code == 200):
+    if (check_exists_cdn.status_code == 200 & check_exists_cdn_hls.status_code == 200):
         print(f'{video_id} exists on CDN')
         query = Mongo.Videos.objects(cdn_video=cdn_video_url)
         if not query:
@@ -350,12 +353,20 @@ def download_video_by_id(video_id):
             print('Complete Database Update')
         return(f'{video_id} exists on CDN')
     else:
-        print(f'Downloading {video_id}')
-        download_result = download(video=original_url, video_range=1, download_confirm=True)
-        print(f'Completed Download')
+        if (not check_exists_cdn.status_code == 200):
+            print(f'Downloading {video_id}')
+            download_result = download(video=original_url, video_range=1, download_confirm=True)
+            print(f'Completed Download')
 
-        file_name = download_result['requested_downloads'][0]['_filename']
-        file_path = download_result['requested_downloads'][0]['filepath']
+            file_name = download_result['requested_downloads'][0]['_filename']
+            file_path = download_result['requested_downloads'][0]['filepath']
+
+        if (not check_exists_cdn_hls.status_code == 200):
+            print(f'Converting: {cdn_video_url}')
+            convert_to_hls(video_id=video_id, url=cdn_video_url)
+        else:
+            print(f'Converting: {video_id}')
+            convert_to_hls(video_id=video_id)
 
         print(f'Uploading {video_id} to BackBlaze...')
         b2_sync(video_id)
@@ -368,7 +379,7 @@ def download_video_by_id(video_id):
         if os.path.exists(video_file_name):
             shutil.rmtree(video_file_name)
 
-        return(cdn_video_url)
+        return(cdn_video_url, cdn_video_url_hls)
 
 @mongo_bp.route('/database/clear/cdn/videos')
 def clear_cdn_videos():
