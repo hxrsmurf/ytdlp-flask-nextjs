@@ -345,6 +345,7 @@ def download_video_by_id(video_id):
             print(f'Database is out of date. Updating...')
             Mongo.Videos.objects(video_id=video_id).update_one(set__cdn_video=cdn_video_url)
             print('Complete Database Update')
+        return(f'{video_id} exists on CDN')
     else:
         print(f'Downloading {video_id}')
         download_result = download(video=original_url, video_range=1, download_confirm=True)
@@ -365,3 +366,18 @@ def download_video_by_id(video_id):
             shutil.rmtree(video_file_name)
 
         return(cdn_video_url)
+
+@mongo_bp.route('/database/clear/cdn/videos')
+def clear_cdn_videos():
+    videos = videos_already_downloaded()
+    try:
+        confirm = request.args['confirm']
+        if confirm == 'true':
+            for video in json.loads(videos.data):
+                video_id = video['_id']
+                Mongo.Videos.objects(video_id=video_id).update_one(set__cdn_video=None)
+            return('Database cleared')
+        else:
+            return('<a href="?confirm=true">Click this to confirm deletion</a>')
+    except:
+        return(videos)
