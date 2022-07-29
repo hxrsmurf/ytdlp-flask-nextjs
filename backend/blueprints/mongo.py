@@ -344,6 +344,8 @@ def download_video_by_id(video_id):
     check_exists_cdn = requests.head(cdn_video_url)
     check_exists_cdn_hls = requests.head(cdn_video_url_hls)
 
+    FEATURE_HLS = False
+
     if (check_exists_cdn.status_code == 200 & check_exists_cdn_hls.status_code == 200):
         print(f'{video_id} exists on CDN')
         query = Mongo.Videos.objects(cdn_video=cdn_video_url)
@@ -361,12 +363,13 @@ def download_video_by_id(video_id):
             file_name = download_result['requested_downloads'][0]['_filename']
             file_path = download_result['requested_downloads'][0]['filepath']
 
-        if (not check_exists_cdn_hls.status_code == 200):
-            print(f'Converting: {cdn_video_url}')
-            convert_to_hls(video_id=video_id, url=cdn_video_url)
-        else:
-            print(f'Converting: {video_id}')
-            convert_to_hls(video_id=video_id)
+        if FEATURE_HLS:
+            if (not check_exists_cdn_hls.status_code == 200):
+                print(f'Converting: {cdn_video_url}')
+                convert_to_hls(video_id=video_id, url=cdn_video_url)
+            else:
+                print(f'Converting: {video_id}')
+                convert_to_hls(video_id=video_id)
 
         print(f'Uploading {video_id} to BackBlaze...')
         b2_sync(video_id)
