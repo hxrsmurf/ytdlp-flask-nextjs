@@ -38,17 +38,6 @@ While YouTubeDL-Material & TubeArchivist are great projects, I wanted something 
 
 ## To Do
 
+Check [Project Board](https://github.com/users/hxrsmurf/projects/3/views/1)
+
 - [X] [Using Mongo](https://github.com/hxrsmurf/ytdlp-flask-nextjs/pull/13) ~~[Using Firebase](https://github.com/hxrsmurf/ytdlp-flask-nextjs/pull/5)~~ ~~Migrate from SQLite to Serverless Database (DynamoDB, Firestore)~~
-- [ ] - Download functionality and uploade to Backblaze B2 with Cloudflare
-  - [X] [Used for channel cover photos](https://github.com/hxrsmurf/ytdlp-flask-nextjs/pull/15)
-  - [ ] Video thumbnails
-  - [ ] Videos themselves
-- [X] Added basic docker support ~~Dockerize~~
-- [ ] CI/CD (?)
-- [ ] Add badge metrics for issues, license, etc.
-  - [X] Add GitHub build badge
-- [ ] Twilio integration (text the API to add channel)
-- [ ] Web Browser extension like TubeArchivst
-- [ ] Add database caching, maybe through Redis
-- [ ] HLS or MPEG-DASH conversion (probably HLS)
-- [ ] Secure Python Flask backend with API keys or something
