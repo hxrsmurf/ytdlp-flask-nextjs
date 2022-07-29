@@ -2,10 +2,14 @@ import asyncio
 from ffmpeg import FFmpeg
 # https://github.com/jonghwanhyeon/python-ffmpeg
 
-def convert_to_hls(video_id):
-    source_path = f'{video_id}/{video_id}.mp4'
+def convert_to_hls(video_id, url=None):
+    if url:
+        source_path = url
+    else:
+        source_path = f'{video_id}/{video_id}.mp4'
+
     destination_path = f'{video_id}/{video_id}.m3u8'
-    print(f'Converting to HLS\nSource: {source_path}\nDestination:{destination_path}')
+    print(f'Converting to HLS\nSource: {source_path}\nDestination: {destination_path}')
 
     ffmpeg = FFmpeg().option('y').input(
         source_path,
