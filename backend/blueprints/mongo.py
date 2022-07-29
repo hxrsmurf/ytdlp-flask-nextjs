@@ -6,7 +6,7 @@ from flask import Blueprint, jsonify, request, Response
 
 from functions.downloader import download
 from functions.utils import getCurrentTime
-from functions.backblaze_upload import b2_upload
+from functions.backblaze_upload import b2_upload, b2_sync
 from classes import Mongo
 
 mongo_bp = Blueprint('mongo', __name__, url_prefix='/mongo')
@@ -335,30 +335,30 @@ def download_video_by_id(video_id):
     video_folder = 'videos'
     cdn_video_url = f'{os.environ.get("CDN_URL")}/{os.environ.get("B2_BUCKET")}/{video_folder}/{video_id}/{video_file_name}'
 
-    try:
-        query_cdn_video_url = query_json['cdn_video']
-        if query_cdn_video_url == cdn_video_url:
-            print('Already uploaded to Backblaze.')
-            return(query_cdn_video_url)
-    except:
-        pass
+    check_exists_cdn = requests.head(cdn_video_url)
 
-    print(cdn_video_url)
-
-    cdn_video_request = requests.head(cdn_video_url)
-
-    # If on CDN
-    if cdn_video_request.status_code == 200:
-        print('Exists on CDN, updating database')
-        Mongo.Videos.objects(video_id=video_id).update_one(set__cdn_video=cdn_video_url)
-        return(cdn_video_url)
+    if (check_exists_cdn.status_code == 200):
+        print(f'{video_id} exists on CDN')
+        query = Mongo.Videos.objects(cdn_video=cdn_video_url)
+        if not query:
+            print(f'Database is out of date. Updating...')
+            Mongo.Videos.objects(video_id=video_id).update_one(set__cdn_video=cdn_video_url)
+            print('Complete Database Update')
     else:
-        print(f'Downloading {original_url}')
-        downloaded_file = download(video=original_url, video_range=1, download_confirm=True)
-        b2_upload(file=video_file_name, folder=video_folder)
+        print(f'Downloading {video_id}')
+        download_result = download(video=original_url, video_range=1, download_confirm=True)
+        print(f'Completed Download')
 
-        print(f'Updating database...')
+        file_name = download_result['requested_downloads'][0]['_filename']
+        file_path = download_result['requested_downloads'][0]['filepath']
+
+        print(f'Uploading {video_id} to BackBlaze...')
+        b2_sync(video_id)
+        print('Completed Upload')
+
+        print(f'Updating database for {video_id}')
         Mongo.Videos.objects(video_id=video_id).update_one(set__cdn_video=cdn_video_url)
+        print('Complete Database Update')
 
         if os.path.exists(video_file_name):
             os.remove(video_file_name)
