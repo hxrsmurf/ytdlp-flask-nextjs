@@ -1,3 +1,5 @@
+![GitHub issues](https://img.shields.io/github/issues/hxrsmurf/ytdlp-flask-nextjs?style=for-the-badge)
+
 |  Folder |  Build | Last Commit |
 | ------------ | ------------ | ------------ | 
 | Frontend  | ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/hxrsmurf/ytdlp-flask-nextjs/Node.js%20CI?style=for-the-badge) | ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/hxrsmurf/ytdlp-flask-nextjs/master?style=for-the-badge)  | |
