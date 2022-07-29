@@ -47,3 +47,13 @@ def bunnycdn_get(id):
     response = requests.get(video_url, headers=headers)
     json_response = json.loads(response.text)
     print(json_response['encodeProgress'])
+
+def bunnycdn_fetch(url, title):
+    video_url = f'{base_url}/fetch'
+
+    payload = json.dumps({
+        'url': url,
+        'title' : title
+    })
+
+    requests.post(base_url, data=payload, headers=headers)
