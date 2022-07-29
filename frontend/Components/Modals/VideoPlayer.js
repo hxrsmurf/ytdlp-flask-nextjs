@@ -8,6 +8,7 @@ import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 export default function VideoPlayer(props) {
     const title = props.data.title
     const video_url = props.data.cdn_video
+    const hls_url = props.data.cdn_video_hls
     const channel_name = props.data.channel_name
     const like_count = props.data.like_count
     const upload_date = props.data.upload_date
