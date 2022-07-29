@@ -333,7 +333,7 @@ def download_video_by_id(video_id):
 
     video_file_name = f'{video_id}.mp4'
     video_folder = 'videos'
-    cdn_video_url = f'{os.environ.get("CDN_URL")}/{os.environ.get("B2_BUCKET")}/{video_folder}/{video_file_name}'
+    cdn_video_url = f'{os.environ.get("CDN_URL")}/{os.environ.get("B2_BUCKET")}/{video_folder}/{video_id}/{video_file_name}'
 
     try:
         query_cdn_video_url = query_json['cdn_video']
