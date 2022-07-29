@@ -1,4 +1,6 @@
-![GitHub issues](https://img.shields.io/github/issues/hxrsmurf/ytdlp-flask-nextjs?style=for-the-badge)
+![GitHub issues](https://img.shields.io/github/issues-raw/hxrsmurf/ytdlp-flask-nextjs?style=for-the-badge)
+![GitHub closed issues](https://img.shields.io/github/issues-closed-raw/hxrsmurf/ytdlp-flask-nextjs?style=for-the-badge)
+
 
 |  Folder |  Build | Last Commit |
 | ------------ | ------------ | ------------ | 
