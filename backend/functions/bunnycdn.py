@@ -45,8 +45,11 @@ def bunnycdn_upload(title, video_id, url):
 def bunnycdn_get(id):
     video_url = f'{base_url}/{id}'
     response = requests.get(video_url, headers=headers)
-    json_response = json.loads(response.text)
-    print(json_response['encodeProgress'])
+    try:
+        json_response = json.loads(response.text)
+        return json_response['encodeProgress']
+    except:
+        return None
 
 def bunnycdn_fetch(url, title):
     video_url = f'{base_url}/fetch'
@@ -56,4 +59,6 @@ def bunnycdn_fetch(url, title):
         'title' : title
     })
 
-    requests.post(base_url, data=payload, headers=headers)
+    response = requests.post(base_url, data=payload, headers=headers)
+    json_response = json.loads(response.text)
+    return(json_response['guid'])
