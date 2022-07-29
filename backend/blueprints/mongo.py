@@ -370,7 +370,14 @@ def download_video_by_id(video_id):
 @mongo_bp.route('/database/clear/cdn/videos')
 def clear_cdn_videos():
     videos = videos_already_downloaded()
-    for video in json.loads(videos.data):
-        video_id = video['_id']
-        Mongo.Videos.objects(video_id=video_id).update_one(set__cdn_video=None)
-    return(videos)
+    try:
+        confirm = request.args['confirm']
+        if confirm == 'true':
+            for video in json.loads(videos.data):
+                video_id = video['_id']
+                Mongo.Videos.objects(video_id=video_id).update_one(set__cdn_video=None)
+            return('Database cleared')
+        else:
+            return('<a href="?confirm=true">Click this to confirm deletion</a>')
+    except:
+        return(videos)
