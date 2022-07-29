@@ -3,6 +3,7 @@ import os
 import requests
 import concurrent.futures
 from flask import Blueprint, jsonify, request, Response
+import shutil
 
 from functions.downloader import download
 from functions.utils import getCurrentTime
@@ -361,6 +362,6 @@ def download_video_by_id(video_id):
         print('Complete Database Update')
 
         if os.path.exists(video_file_name):
-            os.remove(video_file_name)
+            shutil.rmtree(video_file_name)
 
         return(cdn_video_url)
