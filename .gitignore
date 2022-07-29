@@ -22,3 +22,4 @@ mongodb/restore.txt
 *.webm
 ffmpeg/script.ps1
 powershell/delete-b2-files.ps1
+*.m3u8
