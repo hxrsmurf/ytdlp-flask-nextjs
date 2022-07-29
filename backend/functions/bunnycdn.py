@@ -1,3 +1,4 @@
+from email import header
 import requests
 import json
 from dotenv import load_dotenv
@@ -33,7 +34,16 @@ def bunnycdn_upload(title, video_id, url):
     video_url = f'{base_url}/{guid}'
     print('Uploading to BunnyCDN')
     response = requests.put(video_url, headers=headers, data=upload_video_file)
+
     if response.status_code == 200:
         print('Completed Upload to BunnyCDN')
     else:
         print('Failure to upload')
+
+    return guid
+
+def bunnycdn_fetch(id):
+    video_url = f'{base_url}/{id}'
+    response = requests.get(video_url, headers=headers)
+    json_response = json.loads(response.text)
+    print(json_response['encodeProgress'])
