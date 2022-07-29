@@ -42,7 +42,7 @@ def bunnycdn_upload(title, video_id, url):
 
     return guid
 
-def bunnycdn_fetch(id):
+def bunnycdn_get(id):
     video_url = f'{base_url}/{id}'
     response = requests.get(video_url, headers=headers)
     json_response = json.loads(response.text)
