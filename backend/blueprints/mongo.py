@@ -336,7 +336,7 @@ def download_video_by_id(video_id):
     query_json = json.loads(query.to_json())[0]
     original_url = query_json['original_url']
     video_title = query_json['title']
-    cdn_mp4_exists = False
+    cdn_mp4_exists, cdn_hls_exists = False, False
 
     if 'cdn_video' in query_json.keys():
         cdn_video_url = query_json['cdn_video']
@@ -348,6 +348,8 @@ def download_video_by_id(video_id):
         cdn_video_hls_id = query_json['cdn_video_hls']
         cdn_video_hls_url = f'https://video.bunnycdn.com/play/{os.environ.get("BUNNYCDN_LIBRARY")}/{cdn_video_hls_id}'
         check_cdn_hls = requests.get(cdn_video_hls_url)
+        if check_cdn_hls.status_code == 200:
+            cdn_hls_exists = True
 
     return('kevin')
 
