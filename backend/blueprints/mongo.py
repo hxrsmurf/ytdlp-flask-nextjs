@@ -393,6 +393,9 @@ def download_video_by_id(video_id):
     print(message)
     return(message)
 
+    # To Do:
+    # Once available on CDN, add to HLS Queue
+
     try:
         cdn_video_base_path = f'{os.environ.get("CDN_URL")}/{os.environ.get("B2_BUCKET")}/videos/{video_id}'
         video_file_name = f'{video_id}.mp4'
