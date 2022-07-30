@@ -62,3 +62,7 @@ def bunnycdn_fetch(url, title):
     response = requests.post(base_url, data=payload, headers=headers)
     json_response = json.loads(response.text)
     return(json_response['guid'])
+
+def bunnycdn_list():
+    response = requests.get(base_url, headers=headers)
+    return(json.loads(response.text))
