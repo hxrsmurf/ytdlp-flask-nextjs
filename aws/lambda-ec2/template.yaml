@@ -12,6 +12,7 @@ Resources:
           B2_KEY_ID: example
           B2_KEY: example
           B2_BUCKET: example
+          RESTRICTED_IPS: 8.8.8.8, 1.1.1.1
       Events:
         PostAPI:
           Type: HttpApi
