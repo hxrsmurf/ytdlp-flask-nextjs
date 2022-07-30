@@ -355,7 +355,7 @@ def download_video_by_id(video_id):
     if cdn_mp4_exists and not cdn_hls_exists:
         if cdn_hls_db:
             bunnycdn_video_uploaded = bunnycdn_get(id=cdn_video_hls_id)
-            print(f'{video_id} has HLS DB Entry: {cdn_video_hls_id}\nDownload percentage: {bunnycdn_video_uploaded}%')
+            print(f'{video_id} has HLS DB Entry: {cdn_video_hls_id}\nBunnyCDN Progress: {bunnycdn_video_uploaded}%')
         else:
             print(f'Queuing to BunnyCDN: {video_id} - {video_title}')
             bunnycdn_video_guid = bunnycdn_fetch(url=cdn_video_url, title=video_title)
