@@ -16,7 +16,8 @@ def convert(video_id):
     cd /root/\n\
     yt-dlp --format bestvideo*+bestaudio/best --merge-output-format mp4 --output \'%(id)s/%(id)s.%(ext)s\' https://youtu.be/{video_id}\n\
     b2 authorize-account {B2_KEY_ID} {B2_KEY}\n\
-    b2 sync {video_id} b2://{B2_BUCKET}/videos/{video_id}\
+    b2 sync {video_id} b2://{B2_BUCKET}/videos/{video_id}\n\
+    sudo shutdown -h now\
     '
     return(re.sub(r"    ", "", data))
 
