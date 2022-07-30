@@ -386,6 +386,9 @@ def download_video_by_id(video_id):
 
             return(cdn_video_url)
 
+    if cdn_mp4_exists and cdn_hls_exists:
+        return(f'MP4 reachable on CDN: {cdn_video_url}</br>CDN reachable on CDN: {cdn_video_hls_url}')
+
     return('kevin')
 
     try:
