@@ -336,7 +336,7 @@ def download_video_by_id(video_id):
     query_json = json.loads(query.to_json())[0]
     original_url = query_json['original_url']
     video_title = query_json['title']
-    cdn_mp4_exists, cdn_hls_exists = False, False
+    cdn_mp4_exists, cdn_hls_exists, cdn_hls_db = False, False, False
 
     if 'cdn_video' in query_json.keys():
         cdn_video_url = query_json['cdn_video']
@@ -345,6 +345,7 @@ def download_video_by_id(video_id):
             cdn_mp4_exists = True
 
     if 'cdn_video_hls' in query_json.keys():
+        cdn_hls_db = True
         cdn_video_hls_id = query_json['cdn_video_hls']
         cdn_video_hls_url = f'https://video.bunnycdn.com/play/{os.environ.get("BUNNYCDN_LIBRARY")}/{cdn_video_hls_id}'
         check_cdn_hls = requests.get(cdn_video_hls_url)
@@ -352,10 +353,14 @@ def download_video_by_id(video_id):
             cdn_hls_exists = True
 
     if cdn_mp4_exists and not cdn_hls_exists:
-        print(f'Queuing to BunnyCDN: {video_id} - {video_title}')
-        bunnycdn_video_guid = bunnycdn_fetch(url=cdn_video_url, title=video_title)
-        print(f'GUID: {bunnycdn_video_guid}')
-        query.update_one(set__cdn_video_hls=bunnycdn_video_guid)
+        if cdn_hls_db:
+            bunnycdn_video_uploaded = bunnycdn_get(id=cdn_video_hls_id)
+            print(f'{video_id} has HLS DB Entry: {cdn_video_hls_id}\nDownload percentage: {bunnycdn_video_uploaded}%')
+        else:
+            print(f'Queuing to BunnyCDN: {video_id} - {video_title}')
+            bunnycdn_video_guid = bunnycdn_fetch(url=cdn_video_url, title=video_title)
+            print(f'GUID: {bunnycdn_video_guid}')
+            query.update_one(set__cdn_video_hls=bunnycdn_video_guid)
 
     return('kevin')
 
