@@ -11,6 +11,7 @@ def handler(event, context):
     request_context = json_event['requestContext']
     source_ip = request_context['http']['sourceIp']
 
+
     restricted_ips = os.environ['RESTRICTED_IPS']
 
     if not source_ip in restricted_ips:
@@ -23,7 +24,9 @@ def handler(event, context):
         return({'statusCode': 200, 'body': 'Not current query string'})
 
     user_data = convert_user_data.convert(video_id=requested_video_id, bunnycdn_guid=requested_bunny_guid)
-    run_ec2.run_instance(user_data=user_data, instance_type='t3a.nano')
+    testing_instance_types = ['t2.nano']
+    for type in testing_instance_types:
+        print(run_ec2.run_instance(user_data=user_data, instance_type=type))
 
     return({
             'statusCode': 200,

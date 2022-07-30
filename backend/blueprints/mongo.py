@@ -345,7 +345,8 @@ def download_video_by_id(video_id):
         cdn_video_url = f'{os.environ.get("CDN_URL")}/{os.environ.get("B2_BUCKET")}/videos/{video_id}/{video_id}.mp4'
 
     check_cdn_mp4 = requests.head(cdn_video_url)
-    if check_cdn_mp4.status_code == 200:
+    debug = False
+    if check_cdn_mp4.status_code == 200 & debug == False:
         cdn_mp4_exists = True
 
     if 'cdn_video_hls' in query_json.keys():
@@ -389,7 +390,7 @@ def download_video_by_id(video_id):
                 requests.get(aws_api_url)
 
                 cdn_video_url = f'{os.environ.get("CDN_URL")}/{os.environ.get("B2_BUCKET")}/videos/{video_id}/{video_id}.mp4'
-                Mongo.Videos.objects(video_id=video_id).update_one(set__cdn_video=cdn_video_url)
+                #Mongo.Videos.objects(video_id=video_id).update_one(set__cdn_video=cdn_video_url)
                 return(cdn_video_url)
             else:
                 print(f'Downloading: {video_id} - {video_title}')
