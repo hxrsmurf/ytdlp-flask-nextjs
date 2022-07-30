@@ -9,6 +9,7 @@ on:
   pull_request:
     # The branches below must be a subset of the branches above
     branches: [ "master" ]
+  workflow_dispatch
 
 jobs:
   build:
@@ -41,6 +42,6 @@ jobs:
         cache-dependency-path: ./frontend/package-lock.json
     - run: npm ci
       working-directory: ./frontend
-    - run: npm run build --if-present    
+    - run: npm run build --if-present
       working-directory: ./frontend
     #- run: npm test
