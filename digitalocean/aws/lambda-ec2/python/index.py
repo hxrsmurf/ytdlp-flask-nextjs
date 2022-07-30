@@ -9,7 +9,6 @@ def handler(event, context):
     json_event = json.loads(json.dumps(event))
     request_context = json_event['requestContext']
     source_ip = request_context['http']['sourceIp']
-
     try:
         requested_video_id = json_event['queryStringParameters']['id']
     except:
