@@ -369,22 +369,32 @@ def download_video_by_id(video_id):
         if cdn_mp4_db:
             return(cdn_video_url)
         else:
-            print(f'Downloading: {video_id} - {video_title}')
-            download(video=original_url, video_range=1, download_confirm=True)
+            FEATURE_AWS_API = True
+            if FEATURE_AWS_API:
+                # Use AWS to download and upload the video
+                aws_api_url = f'{os.environ.get("AWS_API_URL")}/?id={video_id}'
+                requests.get(aws_api_url)
 
-            print(f'Completed download\nUploading to Backblaze')
-            b2_sync(video_id)
+                cdn_video_url = f'{os.environ.get("CDN_URL")}/{os.environ.get("B2_BUCKET")}/videos/{video_id}/{video_id}.mp4'
+                Mongo.Videos.objects(video_id=video_id).update_one(set__cdn_video=cdn_video_url)
+                return(cdn_video_url)
+            else:
+                print(f'Downloading: {video_id} - {video_title}')
+                download(video=original_url, video_range=1, download_confirm=True)
 
-            print(f'Completed upload to Backblaze\nUpdating database')
-            cdn_video_url = f'{os.environ.get("CDN_URL")}/{os.environ.get("B2_BUCKET")}/videos/{video_id}/{video_id}.mp4'
-            Mongo.Videos.objects(video_id=video_id).update_one(set__cdn_video=cdn_video_url)
+                print(f'Completed download\nUploading to Backblaze')
+                b2_sync(video_id)
 
-            print(f'Completed update todatabase\nRemoving local file')
-            if os.path.exists(video_id):
-                shutil.rmtree(video_id)
-            print(f'Completed {video_id}')
+                print(f'Completed upload to Backblaze\nUpdating database')
+                cdn_video_url = f'{os.environ.get("CDN_URL")}/{os.environ.get("B2_BUCKET")}/videos/{video_id}/{video_id}.mp4'
+                Mongo.Videos.objects(video_id=video_id).update_one(set__cdn_video=cdn_video_url)
 
-            return(cdn_video_url)
+                print(f'Completed update todatabase\nRemoving local file')
+                if os.path.exists(video_id):
+                    shutil.rmtree(video_id)
+                print(f'Completed {video_id}')
+
+                return(cdn_video_url)
 
     if cdn_mp4_exists and cdn_hls_exists:
         return(f'MP4 reachable on CDN: {cdn_video_url}</br>CDN reachable on CDN: {cdn_video_hls_url}')
