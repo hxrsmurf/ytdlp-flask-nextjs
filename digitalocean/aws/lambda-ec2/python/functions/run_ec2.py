@@ -1,10 +1,10 @@
 import boto3
 
-def run_instance(user_data):
+def run_instance(user_data, instance_type):
     client = boto3.client('ec2')
     response = client.run_instances(
         ImageId='ami-09a41e26df464c548',
-        InstanceType='t2.micro',
+        InstanceType=instance_type,
         KeyName='nvme-virginia',
         MinCount=1,
         MaxCount=1,

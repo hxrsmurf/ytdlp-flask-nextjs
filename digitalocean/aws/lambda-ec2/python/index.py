@@ -15,7 +15,7 @@ def handler(event, context):
         return({'statusCode': 200, 'body': 'Not current query string'})
 
     user_data = convert_user_data.convert(video_id=requested_video_id)
-    run_ec2.run_instance(user_data)
+    run_ec2.run_instance(user_data=user_data, instance_type='t3.nano')
 
     return({
             'statusCode': 200,
