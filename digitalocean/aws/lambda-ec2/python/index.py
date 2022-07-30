@@ -1,30 +1,12 @@
 import boto3
-
+import functions.convert_user_data as convert_user_data
+import functions.run_ec2 as run_ec2
 def handler(event, context):
     # sam build; sam deploy --no-confirm-changeset
-    client = boto3.client('ec2')
 
-    response = client.run_instances(
-        ImageId='ami-09a41e26df464c548',
-        InstanceType='t2.micro',
-        KeyName='nvme-virginia',
-        MinCount=1,
-        MaxCount=1,
-        NetworkInterfaces=[{
-            'AssociatePublicIpAddress': True,
-            'DeleteOnTermination': True,
-            'DeviceIndex': 0,
-            'SubnetId': 'subnet-0d8fa1295c21f9ead'
-        }],
-        InstanceMarketOptions={
-            'MarketType': 'spot',
-            'SpotOptions': {
-                'SpotInstanceType' : 'one-time'
-            }
-        }
-    )
+    base64UserData = convert_user_data.convert(video_id='RlOB3UALvrQ')
+    run_ec2.run_instance(base64UserData)
 
-    print(response)
     return({
             'statusCode': 200,
             'body': 'Success'
