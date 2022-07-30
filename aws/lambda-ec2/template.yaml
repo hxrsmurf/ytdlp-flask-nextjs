@@ -9,9 +9,18 @@ Parameters:
   B2Bucket:
     Type: String
     Default: example
+
   RestrictedIps:
     Type: String
     Default: 8.8.8.8, 1.1.1.1
+
+  BunnyCDNLibrary:
+    Type: String
+    Default: example
+  BunnyCDNKey:
+    Type: String
+    Default: example
+
 Resources:
   Lambda:
     Type: 'AWS::Serverless::Function'
@@ -26,6 +35,8 @@ Resources:
           B2_KEY: !Ref B2Key
           B2_BUCKET: !Ref B2Bucket
           RESTRICTED_IPS: !Ref RestrictedIps
+          BUNNYCDN_LIBRARY: !Ref BunnyCDNLibrary
+          BUNNYCDN_KEY: !Ref BunnyCDNKey
       Events:
         PostAPI:
           Type: HttpApi

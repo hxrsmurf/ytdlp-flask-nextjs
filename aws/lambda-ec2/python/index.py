@@ -18,11 +18,12 @@ def handler(event, context):
 
     try:
         requested_video_id = json_event['queryStringParameters']['id']
+        requested_bunny_guid = json_event['queryStringParameters']['guid']
     except:
         return({'statusCode': 200, 'body': 'Not current query string'})
 
-    user_data = convert_user_data.convert(video_id=requested_video_id)
-    run_ec2.run_instance(user_data=user_data, instance_type='t3.nano')
+    user_data = convert_user_data.convert(video_id=requested_video_id, bunnycdn_guid=requested_bunny_guid)
+    run_ec2.run_instance(user_data=user_data, instance_type='t3a.nano')
 
     return({
             'statusCode': 200,
