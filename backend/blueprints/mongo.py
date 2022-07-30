@@ -351,6 +351,12 @@ def download_video_by_id(video_id):
         if check_cdn_hls.status_code == 200:
             cdn_hls_exists = True
 
+    if cdn_mp4_exists and not cdn_hls_exists:
+        print(f'Queuing to BunnyCDN: {video_id} - {video_title}')
+        bunnycdn_video_guid = bunnycdn_fetch(url=cdn_video_url, title=video_title)
+        print(f'GUID: {bunnycdn_video_guid}')
+        query.update_one(set__cdn_video_hls=bunnycdn_video_guid)
+
     return('kevin')
 
     try:
