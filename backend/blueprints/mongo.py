@@ -336,9 +336,10 @@ def download_video_by_id(video_id):
     query_json = json.loads(query.to_json())[0]
     original_url = query_json['original_url']
     video_title = query_json['title']
-    cdn_mp4_exists, cdn_hls_exists, cdn_hls_db = False, False, False
+    cdn_mp4_exists, cdn_mp4_db, cdn_hls_exists, cdn_hls_db = False,False, False, False
 
     if 'cdn_video' in query_json.keys():
+        cdn_mp4_db = True
         cdn_video_url = query_json['cdn_video']
         check_cdn_mp4 = requests.head(cdn_video_url)
         if check_cdn_mp4.status_code == 200:
@@ -362,19 +363,25 @@ def download_video_by_id(video_id):
             print(f'GUID: {bunnycdn_video_guid}')
             query.update_one(set__cdn_video_hls=bunnycdn_video_guid)
     else:
-        print(f'Downloading: {video_id} - {video_title}')
-        download(video=original_url, video_range=1, download_confirm=True)
-        print(f'Completed download\nUploading to Backblaze')
-        b2_sync(video_id)
-        print(f'Completed upload to Backblaze\nUpdating database')
+        if cdn_mp4_db:
+            return(cdn_video_url)
+        else:
+            print(f'Downloading: {video_id} - {video_title}')
+            download(video=original_url, video_range=1, download_confirm=True)
 
-        cdn_video_url = f'{os.environ.get("CDN_URL")}/{os.environ.get("B2_BUCKET")}/videos/{video_id}/{video_id}.mp4'
+            print(f'Completed download\nUploading to Backblaze')
+            b2_sync(video_id)
 
-        Mongo.Videos.objects(video_id=video_id).update_one(set__cdn_video=cdn_video_url)
-        print(f'Completed update todatabase\nRemoving local file')
-        if os.path.exists(video_id):
-            shutil.rmtree(video_id)
-        print(f'Completed {video_id}')
+            print(f'Completed upload to Backblaze\nUpdating database')
+            cdn_video_url = f'{os.environ.get("CDN_URL")}/{os.environ.get("B2_BUCKET")}/videos/{video_id}/{video_id}.mp4'
+            Mongo.Videos.objects(video_id=video_id).update_one(set__cdn_video=cdn_video_url)
+
+            print(f'Completed update todatabase\nRemoving local file')
+            if os.path.exists(video_id):
+                shutil.rmtree(video_id)
+            print(f'Completed {video_id}')
+
+            return(cdn_video_url)
 
     return('kevin')
 
