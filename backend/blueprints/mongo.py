@@ -396,51 +396,6 @@ def download_video_by_id(video_id):
     # To Do:
     # Once available on CDN, add to HLS Queue
 
-    try:
-        cdn_video_base_path = f'{os.environ.get("CDN_URL")}/{os.environ.get("B2_BUCKET")}/videos/{video_id}'
-        video_file_name = f'{video_id}.mp4'
-        cdn_video_url = f'{cdn_video_base_path}/{video_file_name}'
-    except:
-        pass
-
-    if check_exists_cdn:
-        if check_exists_cdn.status_code == 200:
-            if not check_exists_cdn_hls or check_exists_cdn_hls.status_code == 200:
-                print('HLS does not exist on CDN')
-
-                bunnycdn_video_uploaded = bunnycdn_get(id=cdn_video_hls_id)
-                if not bunnycdn_video_uploaded >= 0:
-                    print(f'HLS is not processing, send to HLS Queue')
-                    bunnycdn_video_guid = bunnycdn_fetch(url=cdn_video_url, title=video_title)
-                    print(bunnycdn_video_guid)
-                    query.update_one(set__cdn_video_hls=bunnycdn_video_guid)
-                else:
-                    print(f'HLS is currently processing: {bunnycdn_video_uploaded}')
-            return(cdn_video_url, cdn_video_url_hls)
-    else:
-        download(video=original_url, video_range=1, download_confirm=True)
-        b2_sync(video_id)
-        Mongo.Videos.objects(video_id=video_id).update_one(set__cdn_video=cdn_video_url)
-        if os.path.exists(video_id):
-            shutil.rmtree(video_id)
-
-        confirm_mp4_cdn = requests.head(cdn_video_url)
-
-        while True:
-            if not confirm_mp4_cdn.status_code == 200:
-                confirm_mp4_cdn = requests.head(cdn_video_url)
-                print(confirm_mp4_cdn.status_code)
-                print('sleeping')
-                time.sleep(30)
-            else:
-                break
-
-        # Once available on CDN, add to HLS Queue
-        bunnycdn_video_guid = bunnycdn_fetch(url=cdn_video_url, title=video_title)
-        query.update_one(set__cdn_video_hls=bunnycdn_video_guid)
-
-        return(cdn_video_url, cdn_video_url_hls)
-
 @mongo_bp.route('/database/clear/cdn/videos')
 def clear_cdn_videos():
     videos = videos_already_downloaded()
