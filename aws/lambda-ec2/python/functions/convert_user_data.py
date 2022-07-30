@@ -24,6 +24,25 @@ def convert(video_id, bunnycdn_guid):
     --upload-file \'/tmp/{video_id}/{video_id}.mp4\'\n\
     sudo shutdown -h now\
     '
+
+    hls = f'\
+    #!/bin/bash\n\
+    apt-get update\n\
+    apt-get install docker.io -yf\n\
+    docker run -v /tmp:/media:Z tnk4on/yt-dlp --format bestvideo*+bestaudio/best --merge-output-format mp4 --output \'%(id)s/%(id)s.%(ext)s\' https://youtu.be/{video_id}\n\
+    docker run -v /tmp:/media:Z --entrypoint "" tnk4on/yt-dlp ffmpeg \
+        -i {video_id}/{video_id}.mp4 \
+        -c:v libx264 \
+        -c:a copy \
+        -flags +cgop \
+        -g 30 \
+        -hls_time 1 \
+        -hls_playlist_type event \
+        {video_id}/{video_id}.m3u8 \n\
+    docker run --rm -v /tmp:/root -e B2_APPLICATION_KEY_ID={B2_KEY_ID} -e B2_APPLICATION_KEY={B2_KEY} sierra1011/backblaze-b2 authorize_account\n\
+    docker run --rm -v /tmp:/root sierra1011/backblaze-b2 sync /root/{video_id} b2://{B2_BUCKET}/videos/{video_id}\n\
+    sudo shutdown -h now\
+    '
     manual = f'\
     #!/bin/bash\n\
     apt-get update\n\
