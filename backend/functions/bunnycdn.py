@@ -47,7 +47,7 @@ def bunnycdn_get(id):
     response = requests.get(video_url, headers=headers)
     try:
         json_response = json.loads(response.text)
-        return json_response['encodeProgress']
+        return json_response
     except:
         return None
 

@@ -336,56 +336,65 @@ def download_video_by_id(video_id):
     query_json = json.loads(query.to_json())[0]
     original_url = query_json['original_url']
     video_title = query_json['title']
+    cdn_mp4_exists, cdn_mp4_db, cdn_hls_exists, cdn_hls_db = False,False, False, False
 
-    try:
+    if 'cdn_video' in query_json.keys():
+        cdn_mp4_db = True
         cdn_video_url = query_json['cdn_video']
+        check_cdn_mp4 = requests.head(cdn_video_url)
+        if check_cdn_mp4.status_code == 200:
+            cdn_mp4_exists = True
+
+    if 'cdn_video_hls' in query_json.keys():
+        cdn_hls_db = True
         cdn_video_hls_id = query_json['cdn_video_hls']
-        cdn_video_url_hls = f'https://video.bunnycdn.com/play/{os.environ.get("BUNNYCDN_LIBRARY")}/{cdn_video_hls_id}'
-        check_exists_cdn = requests.head(cdn_video_url)
-        check_exists_cdn_hls = requests.get(cdn_video_url_hls)
-    except:
-        check_exists_cdn, cdn_video_hls_id, cdn_video_url_hls, check_exists_cdn_hls = None, None, None, None
-        cdn_video_base_path = f'{os.environ.get("CDN_URL")}/{os.environ.get("B2_BUCKET")}/videos/{video_id}'
-        video_file_name = f'{video_id}.mp4'
-        cdn_video_url = f'{cdn_video_base_path}/{video_file_name}'
+        cdn_video_hls_url = f'https://video.bunnycdn.com/play/{os.environ.get("BUNNYCDN_LIBRARY")}/{cdn_video_hls_id}'
+        check_cdn_hls = requests.get(cdn_video_hls_url)
+        if check_cdn_hls.status_code == 200:
+            cdn_hls_exists = True
 
-    if check_exists_cdn:
-        if check_exists_cdn.status_code == 200:
-            if not check_exists_cdn_hls or check_exists_cdn_hls.status_code == 200:
-                print('HLS does not exist on CDN')
-
-                bunnycdn_video_uploaded = bunnycdn_get(id=cdn_video_hls_id)
-                if not bunnycdn_video_uploaded >= 0:
-                    print(f'HLS is not processing, send to HLS Queue')
-                    bunnycdn_video_guid = bunnycdn_fetch(url=cdn_video_url, title=video_title)
-                    print(bunnycdn_video_guid)
-                    query.update_one(set__cdn_video_hls=bunnycdn_video_guid)
-                else:
-                    print(f'HLS is currently processing: {bunnycdn_video_uploaded}')
-            return(cdn_video_url, cdn_video_url_hls)
+    if cdn_mp4_exists and not cdn_hls_exists:
+        if cdn_hls_db:
+            bunnycdn_video_uploaded = bunnycdn_get(id=cdn_video_hls_id)
+            message = (f'{video_id} has HLS DB Entry: {cdn_video_hls_id}\nBunnyCDN Progress: {bunnycdn_video_uploaded}%')
+            print(message)
+            return(message)
+        else:
+            print(f'Queuing to BunnyCDN: {video_id} - {video_title}')
+            bunnycdn_video_guid = bunnycdn_fetch(url=cdn_video_url, title=video_title)
+            print(f'GUID: {bunnycdn_video_guid}')
+            query.update_one(set__cdn_video_hls=bunnycdn_video_guid)
+            return(bunnycdn_video_guid)
     else:
-        download(video=original_url, video_range=1, download_confirm=True)
-        b2_sync(video_id)
-        Mongo.Videos.objects(video_id=video_id).update_one(set__cdn_video=cdn_video_url)
-        if os.path.exists(video_id):
-            shutil.rmtree(video_id)
+        if cdn_mp4_db:
+            return(cdn_video_url)
+        else:
+            print(f'Downloading: {video_id} - {video_title}')
+            download(video=original_url, video_range=1, download_confirm=True)
 
-        confirm_mp4_cdn = requests.head(cdn_video_url)
+            print(f'Completed download\nUploading to Backblaze')
+            b2_sync(video_id)
 
-        while True:
-            if not confirm_mp4_cdn.status_code == 200:
-                confirm_mp4_cdn = requests.head(cdn_video_url)
-                print(confirm_mp4_cdn.status_code)
-                print('sleeping')
-                time.sleep(30)
-            else:
-                break
+            print(f'Completed upload to Backblaze\nUpdating database')
+            cdn_video_url = f'{os.environ.get("CDN_URL")}/{os.environ.get("B2_BUCKET")}/videos/{video_id}/{video_id}.mp4'
+            Mongo.Videos.objects(video_id=video_id).update_one(set__cdn_video=cdn_video_url)
 
-        # Once available on CDN, add to HLS Queue
-        bunnycdn_video_guid = bunnycdn_fetch(url=cdn_video_url, title=video_title)
-        query.update_one(set__cdn_video_hls=bunnycdn_video_guid)
+            print(f'Completed update todatabase\nRemoving local file')
+            if os.path.exists(video_id):
+                shutil.rmtree(video_id)
+            print(f'Completed {video_id}')
 
-        return(cdn_video_url, cdn_video_url_hls)
+            return(cdn_video_url)
+
+    if cdn_mp4_exists and cdn_hls_exists:
+        return(f'MP4 reachable on CDN: {cdn_video_url}</br>CDN reachable on CDN: {cdn_video_hls_url}')
+
+    message = (f'Error in Download Video Return for {video_id}')
+    print(message)
+    return(message)
+
+    # To Do:
+    # Once available on CDN, add to HLS Queue
 
 @mongo_bp.route('/database/clear/cdn/videos')
 def clear_cdn_videos():
