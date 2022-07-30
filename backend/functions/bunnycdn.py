@@ -66,3 +66,11 @@ def bunnycdn_fetch(url, title):
 def bunnycdn_list():
     response = requests.get(base_url, headers=headers)
     return(json.loads(response.text))
+
+def bunnycdn_list_broken_videos():
+    videos = bunnycdn_list()
+    for video in videos['items']:
+        guid = video['guid']
+        status = video['status']
+        if not status == 4:
+            print(guid)

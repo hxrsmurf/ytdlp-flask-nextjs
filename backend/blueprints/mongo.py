@@ -11,7 +11,7 @@ from functions.utils import getCurrentTime
 from functions.backblaze_upload import b2_upload, b2_sync
 from functions.convert_ffmpeg import convert_to_hls
 
-from functions.bunnycdn import bunnycdn_upload, bunnycdn_get, bunnycdn_fetch, bunnycdn_list
+from functions.bunnycdn import *
 
 from classes import Mongo
 
@@ -402,6 +402,11 @@ def clear_cdn_videos():
     except:
         return(videos)
 
-@mongo_bp.route('/bunnycdn/list')
+@mongo_bp.route('/bunnycdn/list/')
 def list_videos_on_bunnycdn():
     return bunnycdn_list()
+
+@mongo_bp.route('/bunnycdn/list/broken/')
+def list_broken_videos_on_bunnycdn():
+    bunnycdn_list_broken_videos()
+    return('kevin')
