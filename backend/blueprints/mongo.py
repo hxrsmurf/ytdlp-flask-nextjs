@@ -389,7 +389,9 @@ def download_video_by_id(video_id):
     if cdn_mp4_exists and cdn_hls_exists:
         return(f'MP4 reachable on CDN: {cdn_video_url}</br>CDN reachable on CDN: {cdn_video_hls_url}')
 
-    return('kevin')
+    message = (f'Error in Download Video Return for {video_id}')
+    print(message)
+    return(message)
 
     try:
         cdn_video_base_path = f'{os.environ.get("CDN_URL")}/{os.environ.get("B2_BUCKET")}/videos/{video_id}'
