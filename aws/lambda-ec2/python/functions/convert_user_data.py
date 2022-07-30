@@ -9,6 +9,13 @@ BUNNYCDN_LIBRARY = os.environ['BUNNYCDN_LIBRARY']
 BUNNYCDN_KEY = os.environ['BUNNYCDN_KEY']
 
 def convert(video_id, bunnycdn_guid):
+    docker_data = f'\
+    #!/bin/bash\n\
+    apt-get update\n\
+    apt-get install docker.io -yf\n\
+    docker run -v /tmp:/media:Z tnk4on/yt-dlp --format bestvideo*+bestaudio/best --merge-output-format mp4 --output \'%(id)s/%(id)s.%(ext)s\' https://youtu.be/{video_id} \
+    '
+
     data = f'\
     #!/bin/bash\n\
     apt-get update\n\
