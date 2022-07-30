@@ -9,7 +9,6 @@ Download from YouTube
 Convert to HLS - h264 codec
 Upload to BackBlaze B2
 
-
 Automation Languages
 Bash
 Python
@@ -20,4 +19,9 @@ Automation Options
 Spot
 - Download YouTube and upload to B2 and BunnyCDN
 - Download YouTube and convert to HLS, upload all files
+
+Lambda
+ - yt-dlp and upload -- This does not seem to work because FFmpeg layer doesn't like it. I don't want to customize yt-dlp to accept a layer, so scratch that.
+ - Accept inputs and launch EC2
+
 Locally download YouTube and upload to B2 and BunnyCDN (limited by bandwidth)
