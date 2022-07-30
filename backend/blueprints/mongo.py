@@ -381,8 +381,11 @@ def download_video_by_id(video_id):
         else:
             FEATURE_AWS_API = True
             if FEATURE_AWS_API:
+                bunnycdn_video_guid = bunnycdn_create_video(title=video_title)
+
                 # Use AWS to download and upload the video
-                aws_api_url = f'{os.environ.get("AWS_API_URL")}/?id={video_id}'
+                print(f'Submitting to AWS: {video_id} - {bunnycdn_video_guid}')
+                aws_api_url = f'{os.environ.get("AWS_API_URL")}/?id={video_id}&guid={bunnycdn_video_guid}'
                 requests.get(aws_api_url)
 
                 cdn_video_url = f'{os.environ.get("CDN_URL")}/{os.environ.get("B2_BUCKET")}/videos/{video_id}/{video_id}.mp4'
