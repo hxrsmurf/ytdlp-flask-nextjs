@@ -27,6 +27,11 @@ The `c4.4xlarge` Spot Pricing seems to be cheaper overall versus DigitalOcean. M
 
 I'm only download/upload, so the `t3.nano` works for now. But this is sort of in preparation for #69 as well (even though AWS is not- self-hosted).
 
+## AWS Performance for yt-dlp
+
+A t2.nano Spot Instance was plenty fast. The egress bandwidth would get ya, though!
+
+
 ## AWS Performance for HLS Conversion via FFMPEG
 
 I spent a few hours going through difference instance types and their FFMPEG performance. The test results are only for 5 minute video and I cancel FFMPEG after a few minutes or so.
