@@ -1,4 +1,8 @@
 Transform: AWS::Serverless-2016-10-31
+Parameters:
+  RestrictedIps:
+    Type: String
+    Default: 8.8.8.8, 1.1.1.1
 Resources:
   Lambda:
     Type: 'AWS::Serverless::Function'
@@ -12,6 +16,7 @@ Resources:
           B2_KEY_ID: example
           B2_KEY: example
           B2_BUCKET: example
+          RESTRICTED_IPS: !Ref RestrictedIps
       Events:
         PostAPI:
           Type: HttpApi
