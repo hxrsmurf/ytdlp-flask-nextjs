@@ -341,9 +341,12 @@ def download_video_by_id(video_id):
     if 'cdn_video' in query_json.keys():
         cdn_mp4_db = True
         cdn_video_url = query_json['cdn_video']
-        check_cdn_mp4 = requests.head(cdn_video_url)
-        if check_cdn_mp4.status_code == 200:
-            cdn_mp4_exists = True
+    else:
+        cdn_video_url = f'{os.environ.get("CDN_URL")}/{os.environ.get("B2_BUCKET")}/videos/{video_id}/{video_id}.mp4'
+
+    check_cdn_mp4 = requests.head(cdn_video_url)
+    if check_cdn_mp4.status_code == 200:
+        cdn_mp4_exists = True
 
     if 'cdn_video_hls' in query_json.keys():
         cdn_hls_db = True
@@ -352,6 +355,13 @@ def download_video_by_id(video_id):
         check_cdn_hls = requests.get(cdn_video_hls_url)
         if check_cdn_hls.status_code == 200:
             cdn_hls_exists = True
+
+    if cdn_mp4_exists:
+        query = Mongo.Videos.objects(cdn_video=cdn_video_url)
+        if not query:
+            Mongo.Videos.objects(video_id=video_id).update_one(set__cdn_video=cdn_video_url)
+            return('Updated database')
+        return('Video in database already')
 
     if cdn_mp4_exists and not cdn_hls_exists:
         if cdn_hls_db:
