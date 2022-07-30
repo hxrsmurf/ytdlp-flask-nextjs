@@ -339,18 +339,14 @@ def download_video_by_id(video_id):
 
     if 'cdn_video' in query_json.keys():
         cdn_video_url = query_json['cdn_video']
+        check_cdn_mp4 = requests.head(cdn_video_url)
 
     if 'cdn_video_hls' in query_json.keys():
         cdn_video_hls_id = query_json['cdn_video_hls']
+        cdn_video_hls_url = f'https://video.bunnycdn.com/play/{os.environ.get("BUNNYCDN_LIBRARY")}/{cdn_video_hls_id}'
+        check_cdn_hls = requests.get(cdn_video_hls_url)
 
     try:
-        cdn_video_url = query_json['cdn_video']
-        cdn_video_hls_id = query_json['cdn_video_hls']
-        cdn_video_url_hls = f'https://video.bunnycdn.com/play/{os.environ.get("BUNNYCDN_LIBRARY")}/{cdn_video_hls_id}'
-        check_exists_cdn = requests.head(cdn_video_url)
-        check_exists_cdn_hls = requests.get(cdn_video_url_hls)
-    except:
-        check_exists_cdn, cdn_video_hls_id, cdn_video_url_hls, check_exists_cdn_hls = None, None, None, None
         cdn_video_base_path = f'{os.environ.get("CDN_URL")}/{os.environ.get("B2_BUCKET")}/videos/{video_id}'
         video_file_name = f'{video_id}.mp4'
         cdn_video_url = f'{cdn_video_base_path}/{video_file_name}'
