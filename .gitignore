@@ -23,3 +23,5 @@ mongodb/restore.txt
 ffmpeg/script.ps1
 powershell/delete-b2-files.ps1
 *.m3u8
+aws/lambda/.aws-sam/*
+aws/lambda-ec2/.aws-sam/*

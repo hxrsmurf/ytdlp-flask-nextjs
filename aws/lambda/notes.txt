@@ -1,0 +1,3 @@
+This does not seem to work even with the FFMPEG layer. When merging formats, the error below happens:
+
+`ERROR: Stream #1:0 -> #0:1 (copy)`
