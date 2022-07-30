@@ -1,0 +1,23 @@
+Docs
+https://aws.amazon.com/ec2/spot/pricing/
+https://aws.amazon.com/ec2/pricing/on-demand/
+
+Launch AWS EC2 Spot Instance with Base64 User Data
+
+Install ffmpeg, python, and pip
+Download from YouTube
+Convert to HLS - h264 codec
+Upload to BackBlaze B2
+
+
+Automation Languages
+Bash
+Python
+SSM Automation Document
+Lambda
+
+Automation Options
+Spot
+- Download YouTube and upload to B2 and BunnyCDN
+- Download YouTube and convert to HLS, upload all files
+Locally download YouTube and upload to B2 and BunnyCDN (limited by bandwidth)
