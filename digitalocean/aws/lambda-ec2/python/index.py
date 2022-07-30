@@ -3,14 +3,19 @@ import json
 import functions.convert_user_data as convert_user_data
 import functions.run_ec2 as run_ec2
 
+# sam build; sam deploy --no-confirm-changeset
+
 def handler(event, context):
     json_event = json.loads(json.dumps(event))
     request_context = json_event['requestContext']
     source_ip = request_context['http']['sourceIp']
 
-    # sam build; sam deploy --no-confirm-changeset
+    try:
+        requested_video_id = json_event['queryStringParameters']['id']
+    except:
+        return({'statusCode': 200, 'body': 'Not current query string'})
 
-    base64UserData = convert_user_data.convert(video_id='RlOB3UALvrQ')
+    base64UserData = convert_user_data.convert(video_id=requested_video_id)
     run_ec2.run_instance(base64UserData)
 
     return({
