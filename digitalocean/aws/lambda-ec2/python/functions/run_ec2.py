@@ -1,6 +1,6 @@
 import boto3
 
-def run_instance(base64UserData):
+def run_instance(user_data):
     client = boto3.client('ec2')
     response = client.run_instances(
         ImageId='ami-09a41e26df464c548',
@@ -8,7 +8,7 @@ def run_instance(base64UserData):
         KeyName='nvme-virginia',
         MinCount=1,
         MaxCount=1,
-        UserData=base64UserData,
+        UserData=user_data,
         NetworkInterfaces=[{
             'AssociatePublicIpAddress': True,
             'DeleteOnTermination': True,

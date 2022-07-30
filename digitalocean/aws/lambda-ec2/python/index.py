@@ -15,8 +15,8 @@ def handler(event, context):
     except:
         return({'statusCode': 200, 'body': 'Not current query string'})
 
-    base64UserData = convert_user_data.convert(video_id=requested_video_id)
-    run_ec2.run_instance(base64UserData)
+    user_data = convert_user_data.convert(video_id=requested_video_id)
+    run_ec2.run_instance(user_data)
 
     return({
             'statusCode': 200,

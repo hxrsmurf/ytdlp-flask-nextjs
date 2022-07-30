@@ -13,10 +13,10 @@ def convert(video_id):
     '
     return(re.sub(r"    ", "", data))
 
+def convert_base64(data):
     # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/ec2.html#EC2.Client.run_instances
     # This value will be base64 encoded automatically. Do not base64 encode this value prior to performing the operation.
 
     encodedBytes = base64.b64encode(data.encode("utf-8"))
     encodedStr = str(encodedBytes, "utf-8")
-    print(encodedStr)
-print(convert('video_id'))
+    return(encodedStr)
