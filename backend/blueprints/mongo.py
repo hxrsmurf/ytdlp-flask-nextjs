@@ -337,6 +337,12 @@ def download_video_by_id(video_id):
     original_url = query_json['original_url']
     video_title = query_json['title']
 
+    if 'cdn_video' in query_json.keys():
+        cdn_video_url = query_json['cdn_video']
+
+    if 'cdn_video_hls' in query_json.keys():
+        cdn_video_hls_id = query_json['cdn_video_hls']
+
     try:
         cdn_video_url = query_json['cdn_video']
         cdn_video_hls_id = query_json['cdn_video_hls']
