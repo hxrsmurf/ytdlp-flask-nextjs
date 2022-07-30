@@ -1,5 +1,14 @@
 Transform: AWS::Serverless-2016-10-31
 Parameters:
+  B2KeyId:
+    Type: String
+    Default: example
+  B2Key:
+    Type: String
+    Default: example
+  B2Bucket:
+    Type: String
+    Default: example
   RestrictedIps:
     Type: String
     Default: 8.8.8.8, 1.1.1.1
@@ -13,9 +22,9 @@ Resources:
       Timeout: 5
       Environment:
         Variables:
-          B2_KEY_ID: example
-          B2_KEY: example
-          B2_BUCKET: example
+          B2_KEY_ID: !Ref B2KeyId
+          B2_KEY: !Ref B2Key
+          B2_BUCKET: !Ref B2Bucket
           RESTRICTED_IPS: !Ref RestrictedIps
       Events:
         PostAPI:
