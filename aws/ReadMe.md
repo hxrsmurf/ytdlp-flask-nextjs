@@ -1,6 +1,8 @@
-This creates a CloudFormation template using AWS SAM.
+This creates a CloudFormation template using [AWS SAM](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/what-is-sam.html).
 
-It creates:
+Using Lambda with yt-dlp and ffmpeg was not a great time. While I did add `ffmpeg` layer, I think yt-dlp expects actual `ffmpeg` to exist and it spits out an error. Too much of a hassle to custom build something, for now.
+
+SAM creates:
 - Lambda Function
 - API Gateway
 
