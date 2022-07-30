@@ -408,5 +408,8 @@ def list_videos_on_bunnycdn():
 
 @mongo_bp.route('/bunnycdn/list/broken/')
 def list_broken_videos_on_bunnycdn():
-    bunnycdn_list_broken_videos()
-    return('kevin')
+    return jsonify(bunnycdn_list_broken_videos())
+
+@mongo_bp.route('/bunnycdn/list/broken/delete')
+def delete_broken_videos_on_bunnycdn():
+    return jsonify(bunnycdn_videos_broken_delete())

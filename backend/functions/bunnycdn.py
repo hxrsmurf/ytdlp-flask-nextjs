@@ -69,8 +69,29 @@ def bunnycdn_list():
 
 def bunnycdn_list_broken_videos():
     videos = bunnycdn_list()
+    bad_guids = []
     for video in videos['items']:
         guid = video['guid']
         status = video['status']
         if not status == 4:
-            print(guid)
+            bad_guids.append(guid)
+
+    return(bad_guids)
+
+def bunnycdn_videos_broken_delete():
+    guids = bunnycdn_list_broken_videos()
+    for guid in guids:
+        url = f'{base_url}/{guid}'
+        try:
+            print(f'Deleting {guid}')
+            response = requests.delete(url, headers=headers)
+            print(f'Success')
+        except Exception as e:
+            print(f'Error deleting {guid} -- {e}')
+
+        if response.status_code == 200:
+            print(f'Successfully deleted {guid}')
+        else:
+            print(f'Error deleting {guid}')
+
+    return(guids)
