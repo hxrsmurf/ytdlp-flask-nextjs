@@ -124,10 +124,13 @@ export default function VideoButtons(props) {
                     </>
                     :
                     <Grid item>
-                        {downloadQueued ? <HourglassEmptyIcon/> :
-                        <IconButton onMouseDown={() => handleDownloadClick(result._id)}>
-                            <CloudDownloadIcon />
-                        </IconButton>}
+                        {downloadQueued ? 
+                            <HourglassEmptyIcon/> 
+                        :
+                            <IconButton onMouseDown={() => handleDownloadClick(result._id)}>
+                                <CloudDownloadIcon />
+                            </IconButton>
+                        }
                     </Grid>
                 }
                 </>}
