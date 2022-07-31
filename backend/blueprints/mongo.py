@@ -7,7 +7,7 @@ import shutil
 import time
 
 from functions.downloader import download
-from functions.utils import getCurrentTime
+from functions.utils import getCurrentTime, getInitialVideosToLoad
 from functions.backblaze_upload import b2_upload, b2_sync
 from functions.convert_ffmpeg import convert_to_hls
 
@@ -68,14 +68,9 @@ def get_channels_cover_photo_missing():
         Mongo.Channels.objects(channel_id=channel_id).update_one(set__cdn_photo_cover=result_download_cover_photo)
     return(jsonify(query_json))
 
-@mongo_bp.route('/videos', methods=['GET'])
+@mongo_bp.route('/videos/', methods=['GET'])
 def get_videos():
-    if len(request.args) == 0:
-        limit = slice(0,25)
-    else:
-        limit = slice(0,int(request.args['limit']))
-
-    query = Mongo.Videos.objects(watched=False).order_by('-upload_date')[limit]
+    query = Mongo.Videos.objects(watched=False,upload_date__gte=getInitialVideosToLoad()).order_by('-upload_date')
     query_json = json.loads(query.to_json())
     return(jsonify(query_json))
 
@@ -238,15 +233,15 @@ def videos_mark_unwatched(video_id):
 
 @mongo_bp.route('/videos/watched')
 def videos_view_watched():
-    limit = slice(0,25)
-    query = Mongo.Videos.objects(watched=True).order_by('-upload_date')[limit]
+    limit = slice(0,30)
+    query = Mongo.Videos.objects(watched=True,upload_date__gte=getInitialVideosToLoad()).order_by('-upload_date')[limit]
     query_json = json.loads(query.to_json())
     return(jsonify(query_json))
 
 @mongo_bp.route('/videos/unwatched')
 def videos_view_unwatched():
-    limit = slice(0,25)
-    query = Mongo.Videos.objects(watched__ne=True).order_by('-upload_date')[limit]
+    limit = slice(0,30)
+    query = Mongo.Videos.objects(watched__ne=True,upload_date__gte=getInitialVideosToLoad()).order_by('-upload_date')[limit]
     query_json = json.loads(query.to_json())
     return(jsonify(query_json))
 
