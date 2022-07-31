@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 import DownloadIcon from '@mui/icons-material/Download';
+import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import TvTwoToneIcon from '@mui/icons-material/TvTwoTone';
 import TvOutlinedIcon from '@mui/icons-material/TvOutlined';
@@ -77,6 +78,8 @@ export default function VideoButtons(props) {
                     </IconButton>
                 </Grid>
 
+                {result.cdn_video == 'queued' ? <HourglassEmptyIcon/> : <>
+
                 {result.cdn_video ?
                     <>
                         <Grid item>
@@ -124,6 +127,7 @@ export default function VideoButtons(props) {
                         </IconButton>
                     </Grid>
                 }
+                </>}
 
                 <Grid item>
                     {isWatched ?
