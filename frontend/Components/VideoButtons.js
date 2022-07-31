@@ -20,10 +20,12 @@ export default function VideoButtons(props) {
     const [modalShow, setModalShow] = useState()
     const [blobURL, setBlobURL] = useState()
     const [loading, setLoading] = useState()
+    const [downloadQueued, setdownloadQueued] = useState(null)
 
     const handleDownloadClick = async (event) => {
         const query_url = (process.env.NEXT_PUBLIC_BASE_API_URL + '/mongo/download/video/' + event)
         fetch(query_url)
+        setdownloadQueued(true)
     }
 
     const handlePlayCDNVideo = async (event) => {
@@ -122,9 +124,10 @@ export default function VideoButtons(props) {
                     </>
                     :
                     <Grid item>
+                        {downloadQueued ? <HourglassEmptyIcon/> :
                         <IconButton onMouseDown={() => handleDownloadClick(result._id)}>
                             <CloudDownloadIcon />
-                        </IconButton>
+                        </IconButton>}
                     </Grid>
                 }
                 </>}
