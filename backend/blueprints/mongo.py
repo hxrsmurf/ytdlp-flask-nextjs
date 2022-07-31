@@ -331,7 +331,7 @@ def download_video_by_id(video_id):
     query_json = json.loads(query.to_json())[0]
     original_url = query_json['original_url']
     video_title = query_json['title']
-    cdn_mp4_exists, cdn_mp4_db, cdn_hls_exists, cdn_hls_db = False,False, False, False
+    cdn_mp4_exists, cdn_mp4_db, cdn_hls_exists, cdn_hls_db, check_cdn_mp4 = False,False, False, False, False
 
     if 'cdn_video' in query_json.keys():
         cdn_mp4_db = True
@@ -339,10 +339,13 @@ def download_video_by_id(video_id):
     else:
         cdn_video_url = f'{os.environ.get("CDN_URL")}/{os.environ.get("B2_BUCKET")}/videos/{video_id}/{video_id}.mp4'
 
-    check_cdn_mp4 = requests.head(cdn_video_url)
+    if not cdn_video_url == 'queued':
+        check_cdn_mp4 = requests.head(cdn_video_url)
+
     debug = False
-    if check_cdn_mp4.status_code == 200 & debug == False:
-        cdn_mp4_exists = True
+    if check_cdn_mp4:
+        if check_cdn_mp4.status_code == 200 & debug == False:
+            cdn_mp4_exists = True
 
     if 'cdn_video_hls' in query_json.keys():
         cdn_hls_db = True
@@ -373,7 +376,7 @@ def download_video_by_id(video_id):
             return(bunnycdn_video_guid)
     else:
         if cdn_mp4_db:
-            return(cdn_video_url)
+            return(f'{cdn_video_url} for {video_id}')
         else:
             FEATURE_DOWNLOAD_QUEUE = True
 
