@@ -22,24 +22,13 @@ app.config['MONGODB_SETTINGS'] = {
     'authentication_source' : 'admin'
 }
 
-from classes.shared import db
 from classes.shared import mongo_db
 
-db.init_app(app)
 mongo_db.init_app(app)
-db.app = app
 
 # Blueprints
-from blueprints.videos import videos_bp
-from blueprints.channels import channels_bp
-from blueprints.download import download_bp
-from blueprints.search import search_bp
 from blueprints.mongo import mongo_bp
 
-app.register_blueprint(videos_bp)
-app.register_blueprint(channels_bp)
-app.register_blueprint(download_bp)
-app.register_blueprint(search_bp)
 app.register_blueprint(mongo_bp)
 
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
