@@ -111,7 +111,7 @@ if __name__ == "__main__":
         download(video=youtube_url, video_range=1, download_confirm=True)
         print(f'Successfully downloadeded {video_id}')
     else:
-        response = requests.get(f'{API_URL}/mongo/videos')
+        response = requests.get(f'{API_URL}/mongo/download/queue/')
         response_json = json.loads(response.content)
 
         for video in response_json:
