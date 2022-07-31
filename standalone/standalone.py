@@ -128,3 +128,4 @@ if __name__ == "__main__":
                             shutil.rmtree(f'/tmp/{video_id}')
                     elif isWindowsOS:
                         download(video=original_url,video_range=1, download_confirm=True)
+                        requests.get(f'{API_URL}/mongo/download/queue/{video_id}/complete')
