@@ -91,11 +91,13 @@ export default function index({ results, result_all_channels }) {
     }
 
     useEffect(()  => {
-        (async () => {
-            const request_channel_videos = await fetch(process.env.NEXT_PUBLIC_BASE_API_URL + '/mongo/videos/search/' + channelID)
-            const new_results = await request_channel_videos.json()
-            setNewResults(new_results)
-        })()
+        if (channelID) {
+            (async () => {
+                const request_channel_videos = await fetch(process.env.NEXT_PUBLIC_BASE_API_URL + '/mongo/videos/search/' + channelID)
+                const new_results = await request_channel_videos.json()
+                setNewResults(new_results)
+            })()
+        }
     }, [channelID])
 
     return (
