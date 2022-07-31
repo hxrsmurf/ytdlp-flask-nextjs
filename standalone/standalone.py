@@ -93,9 +93,12 @@ def parse_config():
     return json.loads(file_data)
 
 if __name__ == "__main__":
-    FEATURE_DOWNLOAD = False
+    FEATURE_DOWNLOAD, isWindowsOS = True, False
     config = parse_config()
     API_URL = config['API_URL']
+
+    if os.name == 'nt':
+        isWindowsOS = True
 
     if not len(sys.argv) == 1:
         video_id = sys.argv[1]
@@ -116,7 +119,11 @@ if __name__ == "__main__":
             channel_name = video['channel_name']
             thumbnail_url = video['thumbnail']
 
-            if 'HelloWorld' in channel_name and FEATURE_DOWNLOAD:
-                subprocess.call(['./script.sh',original_url,video_id])
-                if os.path.exists(f'/tmp/{video_id}'):
-                    shutil.rmtree(f'/tmp/{video_id}')
+            if 'HBO' in channel_name and FEATURE_DOWNLOAD:
+                print(channel_name)
+                if not isWindowsOS:
+                    subprocess.call(['./docker.sh',original_url,video_id])
+                    if os.path.exists(f'/tmp/{video_id}'):
+                        shutil.rmtree(f'/tmp/{video_id}')
+                elif isWindowsOS:
+                    download(video=original_url,video_range=1, download_confirm=True)
