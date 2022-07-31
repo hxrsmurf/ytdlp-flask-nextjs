@@ -25,3 +25,4 @@ powershell/delete-b2-files.ps1
 *.m3u8
 aws/lambda/.aws-sam/*
 aws/lambda-ec2/.aws-sam/*
+standalone/config.json
