@@ -2,6 +2,8 @@ import asyncio
 import json
 import os
 import requests
+import shutil
+import subprocess
 import sys
 
 from ffmpeg import FFmpeg
@@ -91,9 +93,13 @@ def parse_config():
     return json.loads(file_data)
 
 if __name__ == "__main__":
-    FEATURE_DOWNLOAD = False
+    FEATURE_DOWNLOAD, isWindowsOS = True, False
     config = parse_config()
     API_URL = config['API_URL']
+    CDN_URL = config['CDN_URL']
+
+    if os.name == 'nt':
+        isWindowsOS = True
 
     if not len(sys.argv) == 1:
         video_id = sys.argv[1]
@@ -114,10 +120,14 @@ if __name__ == "__main__":
             channel_name = video['channel_name']
             thumbnail_url = video['thumbnail']
 
-            if 'HelloWorld' in channel_name and FEATURE_DOWNLOAD:
-                if not os.path.exists(f'{video_id}/{video_id}.webp'):
-                    download_thumbnail(thumbnail_url=thumbnail_url,video_id=video_id)
-
-                if not os.path.exists(video_id):
-                    download(video=original_url, video_range=1, download_confirm=True)
-                    convert_to_hls(video_id=video_id)
+            if 'HBO' in channel_name and FEATURE_DOWNLOAD:
+                print(channel_name)
+                check_exists_cdn = requests.head(f'{CDN_URL}/{video_id}/{video_id}.mp4')
+                print(f'{video_id} - {check_exists_cdn}')
+                if not check_exists_cdn.status_code == 200:
+                    if not isWindowsOS:
+                        subprocess.call(['./docker.sh',original_url,video_id])
+                        if os.path.exists(f'/tmp/{video_id}'):
+                            shutil.rmtree(f'/tmp/{video_id}')
+                    elif isWindowsOS:
+                        download(video=original_url,video_range=1, download_confirm=True)

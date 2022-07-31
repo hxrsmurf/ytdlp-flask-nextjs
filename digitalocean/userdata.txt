@@ -1,0 +1,6 @@
+#!/bin/bash
+apt-get update
+apt-get install git docker.io python3-pip ffmpeg -yf
+pip install yt-dlp
+pip3 install -r ytdlp-flask-nextjs/standalone/requirements.txt
+git clone https://github.com/hxrsmurf/ytdlp-flask-nextjs.git

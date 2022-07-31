@@ -26,3 +26,4 @@ powershell/delete-b2-files.ps1
 aws/lambda/.aws-sam/*
 aws/lambda-ec2/.aws-sam/*
 standalone/config.json
+digitalocean/docker.sh
