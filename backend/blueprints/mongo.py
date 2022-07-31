@@ -378,14 +378,20 @@ def download_video_by_id(video_id):
             FEATURE_DOWNLOAD_QUEUE = True
 
             if FEATURE_DOWNLOAD_QUEUE:
-                message = f'Queueing {video_id} - {original_url}'
-                query = Mongo.DownloadQueue(
-                    video_id=video_id,
-                    webpage_url=original_url,
-                    downloaded = False
-                ).save()
-                print(message)
-                return(message)
+                db_check_existing = Mongo.DownloadQueue.objects(video_id=video_id)
+                if db_check_existing:
+                    message = f'{video_id} - Exists in database'
+                    print(message)
+                    return(message)
+                else:
+                    message = f'Queueing {video_id} - {original_url}'
+                    query = Mongo.DownloadQueue(
+                        video_id=video_id,
+                        webpage_url=original_url,
+                        downloaded = False
+                    ).save()
+                    print(message)
+                    return(message)
 
             FEATURE_AWS_API = True
             if FEATURE_AWS_API:
