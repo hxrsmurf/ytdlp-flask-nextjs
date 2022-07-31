@@ -449,6 +449,14 @@ def update_download_queue_video(video_id):
     Mongo.DownloadQueue.objects(video_id=video_id).update_one(set__downloaded=True)
     return(video_id)
 
+@mongo_bp.route('/download/queue/delete-queue/')
+def delete_download_queue_video():
+    videos_with_queued_download_status = json.loads((Mongo.Videos.objects(cdn_video='queued')).to_json())
+    for video in videos_with_queued_download_status:
+        video_id = video['_id']
+        Mongo.Videos.objects(video_id=video_id).update_one(set__cdn_video=None)
+    return('Successfully queued cdn_video')
+
 @mongo_bp.route('/database/clear/cdn/videos')
 def clear_cdn_videos():
     videos = videos_already_downloaded()
