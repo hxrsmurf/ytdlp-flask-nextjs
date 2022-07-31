@@ -385,11 +385,12 @@ def download_video_by_id(video_id):
                     return(message)
                 else:
                     message = f'Queueing {video_id} - {original_url}'
-                    query = Mongo.DownloadQueue(
+                    Mongo.DownloadQueue(
                         video_id=video_id,
                         webpage_url=original_url,
                         downloaded = False
                     ).save()
+                    Mongo.Videos.objects(video_id=video_id).update_one(set__cdn_video='queued')
                     print(message)
                     return(message)
 
