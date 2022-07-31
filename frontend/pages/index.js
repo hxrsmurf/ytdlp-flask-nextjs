@@ -113,7 +113,7 @@ export default function index({ results, result_all_channels }) {
                 <></>
             }
 
-            <Grid container spacing={2} sx={{marginTop: 5}} direction='row' justifyContent="center" alignItems="center">
+            <Grid container spacing={2} sx={{marginTop: 5}} direction='row' justifyContent="center" alignItems="center" wrap='nowrap'>
                 <Grid item  sx={{marginRight: 2}} width={300}>
                     <Button
                         variant='contained'
