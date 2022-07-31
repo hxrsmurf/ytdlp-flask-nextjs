@@ -381,7 +381,8 @@ def download_video_by_id(video_id):
                 message = f'Queueing {video_id} - {original_url}'
                 query = Mongo.DownloadQueue(
                     video_id=video_id,
-                    webpage_url=original_url
+                    webpage_url=original_url,
+                    downloaded = False
                 ).save()
                 print(message)
                 return(message)
