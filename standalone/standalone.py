@@ -115,13 +115,10 @@ if __name__ == "__main__":
         response_json = json.loads(response.content)
 
         for video in response_json:
-            video_id = video['_id']
-            original_url = video['original_url']
-            channel_name = video['channel_name']
-            thumbnail_url = video['thumbnail']
+            video_id = video['video_id']
+            original_url = video['webpage_url']
 
-            if 'HBO' in channel_name and FEATURE_DOWNLOAD:
-                print(channel_name)
+            if FEATURE_DOWNLOAD:
                 check_exists_cdn = requests.head(f'{CDN_URL}/{video_id}/{video_id}.mp4')
                 print(f'{video_id} - {check_exists_cdn}')
                 if not check_exists_cdn.status_code == 200:
