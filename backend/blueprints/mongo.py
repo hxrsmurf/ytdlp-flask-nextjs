@@ -233,15 +233,13 @@ def videos_mark_unwatched(video_id):
 
 @mongo_bp.route('/videos/watched')
 def videos_view_watched():
-    limit = slice(0,25)
-    query = Mongo.Videos.objects(watched=True).order_by('-upload_date')[limit]
+    query = Mongo.Videos.objects(watched=True,upload_date__gte=getInitialVideosToLoad()).order_by('-upload_date')
     query_json = json.loads(query.to_json())
     return(jsonify(query_json))
 
 @mongo_bp.route('/videos/unwatched')
 def videos_view_unwatched():
-    limit = slice(0,25)
-    query = Mongo.Videos.objects(watched__ne=True).order_by('-upload_date')[limit]
+    query = Mongo.Videos.objects(watched__ne=True,upload_date__gte=getInitialVideosToLoad()).order_by('-upload_date')
     query_json = json.loads(query.to_json())
     return(jsonify(query_json))
 
