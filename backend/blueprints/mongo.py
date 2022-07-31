@@ -437,6 +437,12 @@ def download_video_by_id(video_id):
     # To Do:
     # Once available on CDN, add to HLS Queue
 
+@mongo_bp.route('/download/queue')
+def get_download_queue():
+    query = Mongo.DownloadQueue.objects()
+    query_json = json.loads(query.to_json())
+    return(jsonify(query_json))
+
 @mongo_bp.route('/database/clear/cdn/videos')
 def clear_cdn_videos():
     videos = videos_already_downloaded()
