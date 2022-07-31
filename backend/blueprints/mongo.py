@@ -446,8 +446,12 @@ def get_download_queue():
 
 @mongo_bp.route('/download/queue/<string:video_id>/complete')
 def update_download_queue_video(video_id):
+    cdn_video_url = f'{os.environ.get("CDN_URL")}/{os.environ.get("B2_BUCKET")}/videos/{video_id}/{video_id}.mp4'
+    print(f'Marking {video_id} as complete and updating database with CDN URL')
     Mongo.DownloadQueue.objects(video_id=video_id).update_one(set__downloaded=True)
-    return(video_id)
+    Mongo.Videos.objects(video_id=video_id).update_one(set__cdn_video=cdn_video_url)
+
+    return(f'{cdn_video_url} - {video_id}')
 
 @mongo_bp.route('/download/queue/delete-queue/')
 def delete_download_queue_video():
