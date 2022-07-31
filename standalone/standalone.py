@@ -126,6 +126,8 @@ if __name__ == "__main__":
                         subprocess.call(['./docker.sh',original_url,video_id])
                         if os.path.exists(f'/tmp/{video_id}'):
                             shutil.rmtree(f'/tmp/{video_id}')
+                        requests.get(f'{API_URL}/mongo/download/queue/{video_id}/complete')
+
                     elif isWindowsOS:
                         download(video=original_url,video_range=1, download_confirm=True)
                         requests.get(f'{API_URL}/mongo/download/queue/{video_id}/complete')
