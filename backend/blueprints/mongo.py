@@ -68,7 +68,7 @@ def get_channels_cover_photo_missing():
         Mongo.Channels.objects(channel_id=channel_id).update_one(set__cdn_photo_cover=result_download_cover_photo)
     return(jsonify(query_json))
 
-@mongo_bp.route('/videos', methods=['GET'])
+@mongo_bp.route('/videos/', methods=['GET'])
 def get_videos():
     if len(request.args) == 0:
         limit = slice(0,25)
