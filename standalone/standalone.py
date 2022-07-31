@@ -114,20 +114,23 @@ if __name__ == "__main__":
         response = requests.get(f'{API_URL}/mongo/download/queue/')
         response_json = json.loads(response.content)
 
-        for video in response_json:
-            video_id = video['video_id']
-            original_url = video['webpage_url']
+        if len(response_json) == 0:
+            print('Nothing queued to download')
+        else:
+            for video in response_json:
+                video_id = video['video_id']
+                original_url = video['webpage_url']
 
-            if FEATURE_DOWNLOAD:
-                check_exists_cdn = requests.head(f'{CDN_URL}/{video_id}/{video_id}.mp4')
-                print(f'{video_id} - {check_exists_cdn}')
-                if not check_exists_cdn.status_code == 200:
-                    if not isWindowsOS:
-                        subprocess.call(['./docker.sh',original_url,video_id])
-                        if os.path.exists(f'/tmp/{video_id}'):
-                            shutil.rmtree(f'/tmp/{video_id}')
-                        requests.get(f'{API_URL}/mongo/download/queue/{video_id}/complete')
+                if FEATURE_DOWNLOAD:
+                    check_exists_cdn = requests.head(f'{CDN_URL}/{video_id}/{video_id}.mp4')
+                    print(f'{video_id} - {check_exists_cdn}')
+                    if not check_exists_cdn.status_code == 200:
+                        if not isWindowsOS:
+                            subprocess.call(['./docker.sh',original_url,video_id])
+                            if os.path.exists(f'/tmp/{video_id}'):
+                                shutil.rmtree(f'/tmp/{video_id}')
+                            requests.get(f'{API_URL}/mongo/download/queue/{video_id}/complete')
 
-                    elif isWindowsOS:
-                        download(video=original_url,video_range=1, download_confirm=True)
-                        requests.get(f'{API_URL}/mongo/download/queue/{video_id}/complete')
+                        elif isWindowsOS:
+                            download(video=original_url,video_range=1, download_confirm=True)
+                            requests.get(f'{API_URL}/mongo/download/queue/{video_id}/complete')
