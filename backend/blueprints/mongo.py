@@ -7,7 +7,7 @@ import shutil
 import time
 
 from functions.downloader import download
-from functions.utils import getCurrentTime
+from functions.utils import getCurrentTime, getInitialVideosToLoad
 from functions.backblaze_upload import b2_upload, b2_sync
 from functions.convert_ffmpeg import convert_to_hls
 
@@ -70,12 +70,13 @@ def get_channels_cover_photo_missing():
 
 @mongo_bp.route('/videos/', methods=['GET'])
 def get_videos():
+    print(getInitialVideosToLoad())
     if len(request.args) == 0:
         limit = slice(0,25)
     else:
         limit = slice(0,int(request.args['limit']))
 
-    query = Mongo.Videos.objects(watched=False).order_by('-upload_date')[limit]
+    query = Mongo.Videos.objects(watched=False,upload_date__gte=getInitialVideosToLoad()).order_by('-upload_date')[limit]
     query_json = json.loads(query.to_json())
     return(jsonify(query_json))
 
