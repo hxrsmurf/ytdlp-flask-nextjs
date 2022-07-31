@@ -2,6 +2,8 @@ import asyncio
 import json
 import os
 import requests
+import shutil
+import subprocess
 import sys
 
 from ffmpeg import FFmpeg
@@ -115,9 +117,6 @@ if __name__ == "__main__":
             thumbnail_url = video['thumbnail']
 
             if 'HelloWorld' in channel_name and FEATURE_DOWNLOAD:
-                if not os.path.exists(f'{video_id}/{video_id}.webp'):
-                    download_thumbnail(thumbnail_url=thumbnail_url,video_id=video_id)
-
-                if not os.path.exists(video_id):
-                    download(video=original_url, video_range=1, download_confirm=True)
-                    convert_to_hls(video_id=video_id)
+                subprocess.call(['./script.sh',original_url,video_id])
+                if os.path.exists(f'/tmp/{video_id}'):
+                    shutil.rmtree(f'/tmp/{video_id}')
