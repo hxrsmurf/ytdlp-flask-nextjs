@@ -96,6 +96,7 @@ if __name__ == "__main__":
     FEATURE_DOWNLOAD, isWindowsOS = True, False
     config = parse_config()
     API_URL = config['API_URL']
+    CDN_URL = config['CDN_URL']
 
     if os.name == 'nt':
         isWindowsOS = True
@@ -121,9 +122,12 @@ if __name__ == "__main__":
 
             if 'HBO' in channel_name and FEATURE_DOWNLOAD:
                 print(channel_name)
-                if not isWindowsOS:
-                    subprocess.call(['./docker.sh',original_url,video_id])
-                    if os.path.exists(f'/tmp/{video_id}'):
-                        shutil.rmtree(f'/tmp/{video_id}')
-                elif isWindowsOS:
-                    download(video=original_url,video_range=1, download_confirm=True)
+                check_exists_cdn = requests.head(f'{CDN_URL}/{video_id}/{video_id}.mp4')
+                print(f'{video_id} - {check_exists_cdn}')
+                if not check_exists_cdn.status_code == 200:
+                    if not isWindowsOS:
+                        subprocess.call(['./docker.sh',original_url,video_id])
+                        if os.path.exists(f'/tmp/{video_id}'):
+                            shutil.rmtree(f'/tmp/{video_id}')
+                    elif isWindowsOS:
+                        download(video=original_url,video_range=1, download_confirm=True)
