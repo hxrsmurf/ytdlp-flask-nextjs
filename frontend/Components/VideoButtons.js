@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 import DownloadIcon from '@mui/icons-material/Download';
+import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import TvTwoToneIcon from '@mui/icons-material/TvTwoTone';
 import TvOutlinedIcon from '@mui/icons-material/TvOutlined';
@@ -19,10 +20,12 @@ export default function VideoButtons(props) {
     const [modalShow, setModalShow] = useState()
     const [blobURL, setBlobURL] = useState()
     const [loading, setLoading] = useState()
+    const [downloadQueued, setdownloadQueued] = useState(null)
 
     const handleDownloadClick = async (event) => {
         const query_url = (process.env.NEXT_PUBLIC_BASE_API_URL + '/mongo/download/video/' + event)
         fetch(query_url)
+        setdownloadQueued(true)
     }
 
     const handlePlayCDNVideo = async (event) => {
@@ -77,6 +80,8 @@ export default function VideoButtons(props) {
                     </IconButton>
                 </Grid>
 
+                {result.cdn_video == 'queued' ? <HourglassEmptyIcon/> : <>
+
                 {result.cdn_video ?
                     <>
                         <Grid item>
@@ -119,11 +124,16 @@ export default function VideoButtons(props) {
                     </>
                     :
                     <Grid item>
-                        <IconButton onMouseDown={() => handleDownloadClick(result._id)}>
-                            <CloudDownloadIcon />
-                        </IconButton>
+                        {downloadQueued ? 
+                            <HourglassEmptyIcon/> 
+                        :
+                            <IconButton onMouseDown={() => handleDownloadClick(result._id)}>
+                                <CloudDownloadIcon />
+                            </IconButton>
+                        }
                     </Grid>
                 }
+                </>}
 
                 <Grid item>
                     {isWatched ?

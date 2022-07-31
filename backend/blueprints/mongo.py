@@ -331,7 +331,7 @@ def download_video_by_id(video_id):
     query_json = json.loads(query.to_json())[0]
     original_url = query_json['original_url']
     video_title = query_json['title']
-    cdn_mp4_exists, cdn_mp4_db, cdn_hls_exists, cdn_hls_db = False,False, False, False
+    cdn_mp4_exists, cdn_mp4_db, cdn_hls_exists, cdn_hls_db, check_cdn_mp4 = False,False, False, False, False
 
     if 'cdn_video' in query_json.keys():
         cdn_mp4_db = True
@@ -339,10 +339,13 @@ def download_video_by_id(video_id):
     else:
         cdn_video_url = f'{os.environ.get("CDN_URL")}/{os.environ.get("B2_BUCKET")}/videos/{video_id}/{video_id}.mp4'
 
-    check_cdn_mp4 = requests.head(cdn_video_url)
+    if not cdn_video_url == 'queued':
+        check_cdn_mp4 = requests.head(cdn_video_url)
+
     debug = False
-    if check_cdn_mp4.status_code == 200 & debug == False:
-        cdn_mp4_exists = True
+    if check_cdn_mp4:
+        if check_cdn_mp4.status_code == 200 & debug == False:
+            cdn_mp4_exists = True
 
     if 'cdn_video_hls' in query_json.keys():
         cdn_hls_db = True
@@ -373,9 +376,28 @@ def download_video_by_id(video_id):
             return(bunnycdn_video_guid)
     else:
         if cdn_mp4_db:
-            return(cdn_video_url)
+            return(f'{cdn_video_url} for {video_id}')
         else:
-            FEATURE_AWS_API = True
+            FEATURE_DOWNLOAD_QUEUE = True
+
+            if FEATURE_DOWNLOAD_QUEUE:
+                db_check_existing = Mongo.DownloadQueue.objects(video_id=video_id)
+                if db_check_existing:
+                    message = f'{video_id} - Exists in database'
+                    print(message)
+                    return(message)
+                else:
+                    message = f'Queueing {video_id} - {original_url}'
+                    Mongo.DownloadQueue(
+                        video_id=video_id,
+                        webpage_url=original_url,
+                        downloaded = False
+                    ).save()
+                    Mongo.Videos.objects(video_id=video_id).update_one(set__cdn_video='queued')
+                    print(message)
+                    return(message)
+
+            FEATURE_AWS_API = False
             if FEATURE_AWS_API:
                 bunnycdn_video_guid = bunnycdn_create_video(title=video_title)
 
@@ -388,22 +410,23 @@ def download_video_by_id(video_id):
                 #Mongo.Videos.objects(video_id=video_id).update_one(set__cdn_video=cdn_video_url)
                 return(cdn_video_url)
             else:
-                print(f'Downloading: {video_id} - {video_title}')
-                download(video=original_url, video_range=1, download_confirm=True)
+                if not FEATURE_DOWNLOAD_QUEUE:
+                    print(f'Downloading: {video_id} - {video_title}')
+                    download(video=original_url, video_range=1, download_confirm=True)
 
-                print(f'Completed download\nUploading to Backblaze')
-                b2_sync(video_id)
+                    print(f'Completed download\nUploading to Backblaze')
+                    b2_sync(video_id)
 
-                print(f'Completed upload to Backblaze\nUpdating database')
-                cdn_video_url = f'{os.environ.get("CDN_URL")}/{os.environ.get("B2_BUCKET")}/videos/{video_id}/{video_id}.mp4'
-                Mongo.Videos.objects(video_id=video_id).update_one(set__cdn_video=cdn_video_url)
+                    print(f'Completed upload to Backblaze\nUpdating database')
+                    cdn_video_url = f'{os.environ.get("CDN_URL")}/{os.environ.get("B2_BUCKET")}/videos/{video_id}/{video_id}.mp4'
+                    Mongo.Videos.objects(video_id=video_id).update_one(set__cdn_video=cdn_video_url)
 
-                print(f'Completed update todatabase\nRemoving local file')
-                if os.path.exists(video_id):
-                    shutil.rmtree(video_id)
-                print(f'Completed {video_id}')
+                    print(f'Completed update todatabase\nRemoving local file')
+                    if os.path.exists(video_id):
+                        shutil.rmtree(video_id)
+                    print(f'Completed {video_id}')
 
-                return(cdn_video_url)
+                    return(cdn_video_url)
 
     if cdn_mp4_exists and cdn_hls_exists:
         return(f'MP4 reachable on CDN: {cdn_video_url}</br>CDN reachable on CDN: {cdn_video_hls_url}')
@@ -414,6 +437,29 @@ def download_video_by_id(video_id):
 
     # To Do:
     # Once available on CDN, add to HLS Queue
+
+@mongo_bp.route('/download/queue/')
+def get_download_queue():
+    query = Mongo.DownloadQueue.objects(downloaded=False)
+    query_json = json.loads(query.to_json())
+    return(jsonify(query_json))
+
+@mongo_bp.route('/download/queue/<string:video_id>/complete')
+def update_download_queue_video(video_id):
+    cdn_video_url = f'{os.environ.get("CDN_URL")}/{os.environ.get("B2_BUCKET")}/videos/{video_id}/{video_id}.mp4'
+    print(f'Marking {video_id} as complete and updating database with CDN URL')
+    Mongo.DownloadQueue.objects(video_id=video_id).update_one(set__downloaded=True)
+    Mongo.Videos.objects(video_id=video_id).update_one(set__cdn_video=cdn_video_url)
+
+    return(f'{cdn_video_url} - {video_id}')
+
+@mongo_bp.route('/download/queue/delete-queue/')
+def delete_download_queue_video():
+    videos_with_queued_download_status = json.loads((Mongo.Videos.objects(cdn_video='queued')).to_json())
+    for video in videos_with_queued_download_status:
+        video_id = video['_id']
+        Mongo.Videos.objects(video_id=video_id).update_one(set__cdn_video=None)
+    return('Successfully queued cdn_video')
 
 @mongo_bp.route('/database/clear/cdn/videos')
 def clear_cdn_videos():
