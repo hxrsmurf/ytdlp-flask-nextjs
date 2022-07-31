@@ -375,6 +375,13 @@ def download_video_by_id(video_id):
         if cdn_mp4_db:
             return(cdn_video_url)
         else:
+            FEATURE_DOWNLOAD_QUEUE = True
+
+            if FEATURE_DOWNLOAD_QUEUE:
+                message = f'Queueing {video_id} - {original_url}'
+                print(message)
+                return(message)
+
             FEATURE_AWS_API = True
             if FEATURE_AWS_API:
                 bunnycdn_video_guid = bunnycdn_create_video(title=video_title)
