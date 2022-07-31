@@ -20,7 +20,7 @@ export default function EntryForm() {
             setTimeout(() => setLoading(false), 1000)
         }
         else {
-            await fetch(base_api + '/mongo/videos/add?url=' + value)
+            await fetch(base_api + '/mongo/channels/add?url=' + value)
         }
 
         setLoading(false)
