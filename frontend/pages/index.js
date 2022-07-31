@@ -25,7 +25,6 @@ export default function index({ results, result_all_channels }) {
 
     const handleDropdownClick = async (event) => {
         setDropdownName(channel)
-        console.log(channel)
         const request_channel_videos = await fetch(process.env.NEXT_PUBLIC_BASE_API_URL + '/mongo/videos/search/' + channelID)
         const new_results = await request_channel_videos.json()
         setNewResults(new_results)
