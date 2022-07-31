@@ -8,6 +8,8 @@ import MissingChannels from '../Components/MissingChannels'
 import SyncChannels from '../Components/SyncChannels'
 import { Container, Grid, Menu, MenuItem } from '@mui/material'
 
+import FilterListIcon from '@mui/icons-material/FilterList';
+
 export default function index({ results, result_all_channels }) {
     const [channel, setChannel] = useState()
     const [channelID, setChannelID] = useState()
@@ -112,15 +114,17 @@ export default function index({ results, result_all_channels }) {
             }
 
             <Grid container spacing={2} sx={{marginTop: 5}} direction='row' justifyContent="center" alignItems="center">
-                <Grid item  sx={{marginRight: 2}} width={200}>
+                <Grid item  sx={{marginRight: 2}} width={300}>
                     <Button
                         variant='contained'
                         aria-controls={channelMenuOpen ? 'basic-menu' : undefined}
                         aria-haspopup='true'
                         aria-expanded={channelMenuOpen ? 'true' : undefined}
                         onClick={handleChannelMenuClick}
+                        fullWidth
+                        startIcon={dropdownName ? <></> : <FilterListIcon/>}
                     >
-                    {dropdownName ? <>{loadingChannelFilter ? <LoadingCircle/>:  dropdownName}</> : 'Channels...'}
+                    {dropdownName ? <>{loadingChannelFilter ? <LoadingCircle/>:  dropdownName}</> : <>Channels</>}
                     </Button>
                     <Menu
                         open={channelMenuOpen}
