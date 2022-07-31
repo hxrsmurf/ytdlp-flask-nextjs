@@ -1,5 +1,5 @@
 import Button from '@mui/material/Button'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import EntryForm from '../Components/EntryForm'
 import LoadingCircle from '../Components/LoadingCircle'
@@ -87,14 +87,15 @@ export default function index({ results, result_all_channels }) {
         setAnchorEl(null)
         setDropdownName(event.channel_name)
         setChannelID(event.channel_id)
-
-        console.log(event.channel_name)
-        setLoadingChannelFilter(true)
-        const request_channel_videos = await fetch(process.env.NEXT_PUBLIC_BASE_API_URL + '/mongo/videos/search/' + channelID)
-        const new_results = await request_channel_videos.json()
-        setNewResults(new_results)
-        setLoadingChannelFilter(false)
     }
+
+    useEffect(()  => {
+        (async () => {
+            const request_channel_videos = await fetch(process.env.NEXT_PUBLIC_BASE_API_URL + '/mongo/videos/search/' + channelID)
+            const new_results = await request_channel_videos.json()
+            setNewResults(new_results)
+        })()
+    }, [channelID])
 
     return (
         <>
