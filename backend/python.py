@@ -1,14 +1,11 @@
 import os
 import json
 from flask import Flask, jsonify, request, redirect
-from sqlalchemy import collate, desc
 from yt_dlp import YoutubeDL
 from flask_cors import CORS, cross_origin
 from dotenv import load_dotenv
 import datetime
 import requests
-
-from flask_sqlalchemy import SQLAlchemy
 
 from functions.handler_json import handler_json, handler_json_file, handler_downloader
 from functions.downloader import download
@@ -16,8 +13,6 @@ from functions.downloader import download
 load_dotenv('.env')
 app = Flask(__name__)
 
-# SQLAlchemy
-app.config ['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///youtube.sqlite3'
 app.config['MONGODB_SETTINGS'] = {
     'db' : 'ytdlp',
     'host' : '192.168.2.12',
