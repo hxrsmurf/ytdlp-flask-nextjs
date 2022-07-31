@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 import DownloadIcon from '@mui/icons-material/Download';
@@ -33,11 +33,13 @@ export default function VideoButtons(props) {
     const handleWatchedClick = async (event) => {
         const query_url = (process.env.NEXT_PUBLIC_BASE_API_URL + '/mongo/videos/' + event + '/watched')
         const result = await fetch(query_url)
+        setisWatched(true)
     }
 
     const handleUnwatchedClick = async (event) => {
         const query_url = (process.env.NEXT_PUBLIC_BASE_API_URL + '/mongo/videos/' + event + '/unwatched')
         const result = await fetch(query_url)
+        setisWatched(false)
     }
 
     const handleDownloadBlob = async (event) => {
@@ -52,6 +54,14 @@ export default function VideoButtons(props) {
             })
         setLoading(false)
     }
+
+    const [isWatched, setisWatched] = useState()
+
+    useEffect(() => {
+        setisWatched(isWatched)
+    }, [isWatched])
+
+
 
     return (
         <>
@@ -116,7 +126,7 @@ export default function VideoButtons(props) {
                 }
 
                 <Grid item>
-                    {result.watched ?
+                    {isWatched ?
                         <>
                             <IconButton onMouseDown={() => handleUnwatchedClick(result._id)}>
                                 <TvTwoToneIcon />
@@ -124,9 +134,16 @@ export default function VideoButtons(props) {
                         </>
                         :
                         <>
+                            {result.watched ?
+                            <IconButton onMouseDown={() => handleUnwatchedClick(result._id)}>
+                                <TvTwoToneIcon />
+                            </IconButton>
+
+                            :
                             <IconButton onMouseDown={() => handleWatchedClick(result._id)}>
                                 <TvOutlinedIcon />
                             </IconButton>
+                            }
                         </>
                     }
                 </Grid>
