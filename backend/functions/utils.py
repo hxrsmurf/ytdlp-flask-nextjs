@@ -25,6 +25,6 @@ def redis_publish(video_id,url):
     )
 
     redis_channel='download_queue'
-    message = str({"url": url, "id": video_id})
+    message = str({'url': url, 'video_id': video_id})
     redis_db.publish(redis_channel, message)
     return(message)
