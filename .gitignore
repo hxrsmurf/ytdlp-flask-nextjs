@@ -28,3 +28,4 @@ aws/lambda-ec2/.aws-sam/*
 standalone/config.json
 digitalocean/docker.sh
 standalone/docker.sh
+redis/__pycache__/*
