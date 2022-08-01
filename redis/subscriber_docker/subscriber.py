@@ -5,7 +5,7 @@ import ast
 from functions import youtube_download
 
 r = redis.Redis(
-    host='127.0.0.1',
+    host='192.168.1.58',
     port='6379',
     decode_responses=True
 )
