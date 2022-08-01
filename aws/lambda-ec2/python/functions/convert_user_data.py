@@ -8,8 +8,18 @@ B2_BUCKET = os.environ['B2_BUCKET']
 BUNNYCDN_LIBRARY = os.environ['BUNNYCDN_LIBRARY']
 BUNNYCDN_KEY = os.environ['BUNNYCDN_KEY']
 
-def convert(video_id, bunnycdn_guid):
+def convert(video_id, bunnycdn_guid=None):
     data = f'\
+    #!/bin/bash\n\
+    apt-get update\n\
+    apt-get install docker.io -yf\n\
+    docker run -v /tmp:/media:Z tnk4on/yt-dlp --format bestvideo*+bestaudio/best --merge-output-format mp4 --output \'%(id)s/%(id)s.%(ext)s\' https://youtu.be/{video_id}\n\
+    docker run --rm -v /tmp:/root -e B2_APPLICATION_KEY_ID={B2_KEY_ID} -e B2_APPLICATION_KEY={B2_KEY} sierra1011/backblaze-b2 authorize_account\n\
+    docker run --rm -v /tmp:/root sierra1011/backblaze-b2 sync /root/{video_id} b2://{B2_BUCKET}/videos/{video_id}\n\
+    sudo shutdown -h now\
+    '
+
+    bunnycnd = f'\
     #!/bin/bash\n\
     apt-get update\n\
     apt-get install docker.io -yf\n\

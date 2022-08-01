@@ -93,10 +93,11 @@ def parse_config():
     return json.loads(file_data)
 
 if __name__ == "__main__":
-    FEATURE_DOWNLOAD, isWindowsOS = True, False
+    FEATURE_DOWNLOAD, isWindowsOS, FEATURE_AWS_PROCESSING = True, False, False
     config = parse_config()
-    API_URL = config['API_URL']
+    API_URL = config['LOCAL_API_URL']
     CDN_URL = config['CDN_URL']
+    AWS_API_URL = config['AWS_API_URL']
 
     if os.name == 'nt':
         isWindowsOS = True
@@ -126,14 +127,18 @@ if __name__ == "__main__":
                     check_exists_cdn = requests.head(f'{CDN_URL}/{video_id}/{video_id}.mp4')
                     print(f'{video_id} - {check_exists_cdn}')
                     if not check_exists_cdn.status_code == 200:
-                        if duration >= 1000:
-                            print('Process on AWS')
-                        if not isWindowsOS:
-                            subprocess.call(['./docker.sh',original_url,video_id])
-                            if os.path.exists(f'/tmp/{video_id}'):
-                                shutil.rmtree(f'/tmp/{video_id}')
-                            requests.get(f'{API_URL}/mongo/download/queue/{video_id}/complete')
+                        if FEATURE_AWS_PROCESSING:
+                            if duration >= 600:
+                                print(f'Process on AWS: {video_id}')
+                                aws_api_url = f'{AWS_API_URL}/?id={video_id}'
+                                print(requests.get(aws_api_url))
+                        else:
+                            if not isWindowsOS:
+                                subprocess.call(['./docker.sh',original_url,video_id])
+                                if os.path.exists(f'/tmp/{video_id}'):
+                                    shutil.rmtree(f'/tmp/{video_id}')
 
-                        elif isWindowsOS:
-                            download(video=original_url,video_range=1, download_confirm=True)
-                            requests.get(f'{API_URL}/mongo/download/queue/{video_id}/complete')
+                            elif isWindowsOS:
+                                download(video=original_url,video_range=1, download_confirm=True)
+
+                        print(requests.get(f'{API_URL}/mongo/download/queue/{video_id}/complete'))
