@@ -11,3 +11,4 @@ yt-dlp==2022.5.18
 flask-mongoengine==1.0.0
 mongoengine==0.24.1
 pymongo==4.1.1
+redis==4.3.4
