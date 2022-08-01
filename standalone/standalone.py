@@ -120,11 +120,14 @@ if __name__ == "__main__":
             for video in response_json:
                 video_id = video['video_id']
                 original_url = video['webpage_url']
+                duration = video['duration']
 
                 if FEATURE_DOWNLOAD:
                     check_exists_cdn = requests.head(f'{CDN_URL}/{video_id}/{video_id}.mp4')
                     print(f'{video_id} - {check_exists_cdn}')
                     if not check_exists_cdn.status_code == 200:
+                        if duration >= 1000:
+                            print('Process on AWS')
                         if not isWindowsOS:
                             subprocess.call(['./docker.sh',original_url,video_id])
                             if os.path.exists(f'/tmp/{video_id}'):
