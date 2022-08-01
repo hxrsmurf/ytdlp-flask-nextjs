@@ -331,6 +331,8 @@ def download_video_by_id(video_id):
     query_json = json.loads(query.to_json())[0]
     original_url = query_json['original_url']
     video_title = query_json['title']
+    duration = query_json['duration']
+
     cdn_mp4_exists, cdn_mp4_db, cdn_hls_exists, cdn_hls_db, check_cdn_mp4 = False,False, False, False, False
 
     if 'cdn_video' in query_json.keys():
@@ -389,9 +391,10 @@ def download_video_by_id(video_id):
                 else:
                     message = f'Queueing {video_id} - {original_url}'
                     Mongo.DownloadQueue(
-                        video_id=video_id,
-                        webpage_url=original_url,
-                        downloaded = False
+                        video_id = video_id,
+                        webpage_url = original_url,
+                        downloaded = False,
+                        duration = duration
                     ).save()
                     Mongo.Videos.objects(video_id=video_id).update_one(set__cdn_video='queued')
                     print(message)
