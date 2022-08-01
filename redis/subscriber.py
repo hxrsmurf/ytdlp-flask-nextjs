@@ -9,7 +9,7 @@ r = redis.Redis(
 )
 
 p = r.pubsub()
-p.subscribe('test')
+p.subscribe('download_queue')
 
 while True:
     message = p.get_message()
@@ -21,7 +21,5 @@ while True:
             id = message_json['id']
             print(f'{url} - {id}')
         except Exception as e:
-            print(e)
-            print(type(message))
-
+            print(f'{message} -- {e}')
     time.sleep(1)
