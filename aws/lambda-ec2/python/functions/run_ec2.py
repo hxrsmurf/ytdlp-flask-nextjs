@@ -20,6 +20,13 @@ def run_instance(user_data, instance_type):
             'SpotOptions': {
                 'SpotInstanceType' : 'one-time'
             }
-        }
+        },
+        BlockDeviceMappings=[{
+            'DeviceName': '/dev/xvda',
+            'Ebs':{
+                'DeleteOnTermination': True,
+                'VolumeSize': 30
+            }
+        }]
     )
     return(response)
