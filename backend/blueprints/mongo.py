@@ -10,6 +10,7 @@ from functions.downloader import download
 from functions.utils import getCurrentTime, getInitialVideosToLoad
 from functions.backblaze_upload import b2_upload, b2_sync
 from functions.convert_ffmpeg import convert_to_hls
+from functions.utils import redis_publish
 
 from functions.bunnycdn import *
 
@@ -381,6 +382,7 @@ def download_video_by_id(video_id):
             return(f'{cdn_video_url} for {video_id}')
         else:
             FEATURE_DOWNLOAD_QUEUE = True
+            FEATURE_REDIS = True
 
             if FEATURE_DOWNLOAD_QUEUE:
                 db_check_existing = Mongo.DownloadQueue.objects(video_id=video_id)
@@ -390,15 +392,18 @@ def download_video_by_id(video_id):
                     return(message)
                 else:
                     message = f'Queueing {video_id} - {original_url}'
-                    Mongo.DownloadQueue(
-                        video_id = video_id,
-                        webpage_url = original_url,
-                        downloaded = False,
-                        duration = duration
-                    ).save()
-                    Mongo.Videos.objects(video_id=video_id).update_one(set__cdn_video='queued')
-                    print(message)
+                    redis_publish(video_id=video_id, url=original_url)
                     return(message)
+                    if not FEATURE_REDIS:
+                        Mongo.DownloadQueue(
+                            video_id = video_id,
+                            webpage_url = original_url,
+                            downloaded = False,
+                            duration = duration
+                        ).save()
+                        Mongo.Videos.objects(video_id=video_id).update_one(set__cdn_video='queued')
+                        print(message)
+                        return(message)
 
             FEATURE_AWS_API = False
             if FEATURE_AWS_API:
