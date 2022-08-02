@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta
 import os
-import json
 import redis
 
 from classes import Mongo
@@ -21,6 +20,6 @@ def redis_publish(video_id, video_url):
     )
 
     redis_channel='download_queue'
-    message = str({'url': video_url, 'video_id': video_id})
+    message = str({'video_url': video_url, 'video_id': video_id})
     redis_db.publish(redis_channel, message)
     return(message)

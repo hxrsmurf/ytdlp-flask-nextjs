@@ -9,7 +9,7 @@ r = redis.Redis(
 loop = False
 
 def publish():
-    test = {"url": "test", "video_id": "555"}
+    test = {"original_url": "test", "video_id": "555"}
     r.publish('download_queue',str(test))
 
 if loop:
