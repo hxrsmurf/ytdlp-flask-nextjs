@@ -392,7 +392,7 @@ def download_video_by_id(video_id):
                     return(message)
                 else:
                     message = f'Queueing {video_id} - {original_url}'
-                    redis_publish(video_id=video_id, video_url=original_url)
+                    redis_publish(video_id=video_id, video_url=original_url, duration=duration)
                     return(message)
                     if not FEATURE_REDIS:
                         Mongo.DownloadQueue(
