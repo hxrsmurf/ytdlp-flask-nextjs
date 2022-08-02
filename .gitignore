@@ -29,3 +29,4 @@ standalone/config.json
 digitalocean/docker.sh
 standalone/docker.sh
 redis/__pycache__/*
+redis/subscriber_docker/__pycache__/*
