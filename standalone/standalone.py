@@ -117,12 +117,12 @@ def redis_subscriber():
                 message_json = ast.literal_eval(message['data'])
                 original_url = message_json['video_url']
                 video_id = message_json['video_id']
-                duration = message_json['duration'] # Seconds
+                duration_seconds = message_json['duration'] # Seconds
 
                 check_exists_cdn = requests.head(f'{CDN_URL}/{video_id}/{video_id}.mp4')
                 print(f'{video_id} - {check_exists_cdn}')
                 if not check_exists_cdn == 200:
-                    if duration >= 300:
+                    if duration_seconds >= 600:
                         # To Do: After AWS upload, proprly mark video complete
                         print(f'Send to AWS: {video_id}')
                         aws_api = f'{AWS_API_URL}/?id={video_id}'
