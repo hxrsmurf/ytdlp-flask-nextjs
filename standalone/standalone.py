@@ -6,6 +6,11 @@ import shutil
 import subprocess
 import sys
 
+import redis
+import time
+import ast
+
+
 from ffmpeg import FFmpeg
 from yt_dlp import YoutubeDL
 
@@ -92,8 +97,55 @@ def parse_config():
 
     return json.loads(file_data)
 
+def redis_subscriber():
+    print('Starting redis subscriber')
+
+    r = redis.Redis(
+        host=config['REDIS_URL'],
+        port='6379',
+        decode_responses=True
+    )
+
+    p = r.pubsub()
+    p.subscribe('download_queue')
+
+    while True:
+        time.sleep(1)
+        message = p.get_message()
+        if message:
+            try:
+                message_json = ast.literal_eval(message['data'])
+                original_url = message_json['video_url']
+                video_id = message_json['video_id']
+                duration_seconds = message_json['duration'] # Seconds
+
+                check_exists_cdn = requests.head(f'{CDN_URL}/{video_id}/{video_id}.mp4')
+                print(f'{video_id} - {check_exists_cdn}')
+                if not check_exists_cdn == 200:
+                    if duration_seconds >= 600:
+                        # To Do: After AWS upload, properly mark video complete
+                        print(f'Send to AWS: {video_id}')
+                        aws_api = f'{AWS_API_URL}/?id={video_id}'
+                        print(requests.get(aws_api))
+                        requests.get(f'{API_URL}/mongo/download/queue/{video_id}/complete')
+                    else:
+                        if not isWindowsOS:
+                            subprocess.call(['./docker.sh',original_url,video_id])
+                            if os.path.exists(f'/tmp/{video_id}'):
+                                shutil.rmtree(f'/tmp/{video_id}')
+                        elif isWindowsOS:
+                            download(video=original_url,video_range=1, download_confirm=True)
+
+                    if RUNNING_LOCAL:
+                        pass
+                    else:
+                        requests.get(f'{API_URL}/mongo/download/queue/{video_id}/complete')
+
+            except Exception as e:
+                print(f'{message} -- {e}')
+
 if __name__ == "__main__":
-    FEATURE_DOWNLOAD, isWindowsOS, FEATURE_AWS_PROCESSING = True, False, False
+    FEATURE_DOWNLOAD, isWindowsOS, FEATURE_AWS_PROCESSING, RUNNING_LOCAL = True, False, False, True
     config = parse_config()
     API_URL = config['LOCAL_API_URL']
     CDN_URL = config['CDN_URL']
@@ -102,6 +154,7 @@ if __name__ == "__main__":
     if os.name == 'nt':
         isWindowsOS = True
 
+    # Used for quck, local runs
     if not len(sys.argv) == 1:
         video_id = sys.argv[1]
         if 'https' in video_id:
@@ -112,33 +165,4 @@ if __name__ == "__main__":
         download(video=youtube_url, video_range=1, download_confirm=True)
         print(f'Successfully downloadeded {video_id}')
     else:
-        response = requests.get(f'{API_URL}/mongo/download/queue/')
-        response_json = json.loads(response.content)
-
-        if len(response_json) == 0:
-            print('Nothing queued to download')
-        else:
-            for video in response_json:
-                video_id = video['video_id']
-                original_url = video['webpage_url']
-                duration = video['duration']
-
-                if FEATURE_DOWNLOAD:
-                    check_exists_cdn = requests.head(f'{CDN_URL}/{video_id}/{video_id}.mp4')
-                    print(f'{video_id} - {check_exists_cdn}')
-                    if not check_exists_cdn.status_code == 200:
-                        if FEATURE_AWS_PROCESSING:
-                            if duration >= 600:
-                                print(f'Process on AWS: {video_id}')
-                                aws_api_url = f'{AWS_API_URL}/?id={video_id}'
-                                print(requests.get(aws_api_url))
-                        else:
-                            if not isWindowsOS:
-                                subprocess.call(['./docker.sh',original_url,video_id])
-                                if os.path.exists(f'/tmp/{video_id}'):
-                                    shutil.rmtree(f'/tmp/{video_id}')
-
-                            elif isWindowsOS:
-                                download(video=original_url,video_range=1, download_confirm=True)
-
-                        print(requests.get(f'{API_URL}/mongo/download/queue/{video_id}/complete'))
+        redis_subscriber()

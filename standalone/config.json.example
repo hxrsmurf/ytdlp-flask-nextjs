@@ -11,4 +11,5 @@
     "BUNNYCDN_URL": "example",
     "VIDEO_ID_TO_USE": "example",
     "AWS_API_URL": "example"
+    "REDIS_URL": "example"
 }
