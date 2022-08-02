@@ -117,25 +117,35 @@ def redis_subscriber():
                 message_json = ast.literal_eval(message['data'])
                 original_url = message_json['video_url']
                 video_id = message_json['video_id']
+                duration = message_json['duration'] # Seconds
+
                 check_exists_cdn = requests.head(f'{CDN_URL}/{video_id}/{video_id}.mp4')
                 print(f'{video_id} - {check_exists_cdn}')
                 if not check_exists_cdn == 200:
-                    if not isWindowsOS:
-                        subprocess.call(['./docker.sh',original_url,video_id])
-                        if os.path.exists(f'/tmp/{video_id}'):
-                            shutil.rmtree(f'/tmp/{video_id}')
-                    elif isWindowsOS:
-                        download(video=original_url,video_range=1, download_confirm=True)
+                    if duration >= 300:
+                        # To Do: After AWS upload, proprly mark video complete
+                        print(f'Send to AWS: {video_id}')
+                        aws_api = f'{AWS_API_URL}/?id={video_id}'
+                        print(requests.get(aws_api))
+                        requests.get(f'{API_URL}/mongo/download/queue/{video_id}/complete')
+                    else:
+                        if not isWindowsOS:
+                            subprocess.call(['./docker.sh',original_url,video_id])
+                            if os.path.exists(f'/tmp/{video_id}'):
+                                shutil.rmtree(f'/tmp/{video_id}')
+                        elif isWindowsOS:
+                            download(video=original_url,video_range=1, download_confirm=True)
 
-                    #requests.get(f'{API_URL}/mongo/download/queue/{video_id}/complete')
-                else:
-                    pass
-                    #requests.get(f'{API_URL}/mongo/download/queue/{video_id}/complete')
+                    if RUNNING_LOCAL:
+                        pass
+                    else:
+                        requests.get(f'{API_URL}/mongo/download/queue/{video_id}/complete')
+
             except Exception as e:
                 print(f'{message} -- {e}')
 
 if __name__ == "__main__":
-    FEATURE_DOWNLOAD, isWindowsOS, FEATURE_AWS_PROCESSING = True, False, False
+    FEATURE_DOWNLOAD, isWindowsOS, FEATURE_AWS_PROCESSING, RUNNING_LOCAL = True, False, False, True
     config = parse_config()
     API_URL = config['LOCAL_API_URL']
     CDN_URL = config['CDN_URL']
