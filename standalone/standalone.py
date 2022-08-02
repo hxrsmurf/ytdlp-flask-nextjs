@@ -110,20 +110,29 @@ def redis_subscriber():
     p.subscribe('download_queue')
 
     while True:
+        time.sleep(1)
         message = p.get_message()
         if message:
             try:
                 message_json = ast.literal_eval(message['data'])
-                url = message_json['url']
+                original_url = message_json['video_url']
                 video_id = message_json['video_id']
                 check_exists_cdn = requests.head(f'{CDN_URL}/{video_id}/{video_id}.mp4')
                 print(f'{video_id} - {check_exists_cdn}')
                 if not check_exists_cdn == 200:
-                    download(video=url,download_confirm=True)
-                    print(f'Completed {video_id}')
+                    if not isWindowsOS:
+                        subprocess.call(['./docker.sh',original_url,video_id])
+                        if os.path.exists(f'/tmp/{video_id}'):
+                            shutil.rmtree(f'/tmp/{video_id}')
+                    elif isWindowsOS:
+                        download(video=original_url,video_range=1, download_confirm=True)
+
+                    #requests.get(f'{API_URL}/mongo/download/queue/{video_id}/complete')
+                else:
+                    pass
+                    #requests.get(f'{API_URL}/mongo/download/queue/{video_id}/complete')
             except Exception as e:
                 print(f'{message} -- {e}')
-        time.sleep(1)
 
 if __name__ == "__main__":
     FEATURE_DOWNLOAD, isWindowsOS, FEATURE_AWS_PROCESSING = True, False, False
@@ -132,51 +141,18 @@ if __name__ == "__main__":
     CDN_URL = config['CDN_URL']
     AWS_API_URL = config['AWS_API_URL']
 
-    FEATURE_REDIS = True
+    if os.name == 'nt':
+        isWindowsOS = True
 
-    if FEATURE_REDIS:
-        redis_subscriber()
-    else:
-        if os.name == 'nt':
-            isWindowsOS = True
-
-        if not len(sys.argv) == 1:
-            video_id = sys.argv[1]
-            if 'https' in video_id:
-                youtube_url = video_id
-            else:
-                youtube_url = f'https://youtu.be/{video_id}'
-            print(youtube_url)
-            download(video=youtube_url, video_range=1, download_confirm=True)
-            print(f'Successfully downloadeded {video_id}')
+    # Used for quck, local runs
+    if not len(sys.argv) == 1:
+        video_id = sys.argv[1]
+        if 'https' in video_id:
+            youtube_url = video_id
         else:
-            response = requests.get(f'{API_URL}/mongo/download/queue/')
-            response_json = json.loads(response.content)
-
-            if len(response_json) == 0:
-                print('Nothing queued to download')
-            else:
-                for video in response_json:
-                    video_id = video['video_id']
-                    original_url = video['webpage_url']
-                    duration = video['duration']
-
-                    if FEATURE_DOWNLOAD:
-                        check_exists_cdn = requests.head(f'{CDN_URL}/{video_id}/{video_id}.mp4')
-                        print(f'{video_id} - {check_exists_cdn}')
-                        if not check_exists_cdn.status_code == 200:
-                            if FEATURE_AWS_PROCESSING:
-                                if duration >= 600:
-                                    print(f'Process on AWS: {video_id}')
-                                    aws_api_url = f'{AWS_API_URL}/?id={video_id}'
-                                    print(requests.get(aws_api_url))
-                            else:
-                                if not isWindowsOS:
-                                    subprocess.call(['./docker.sh',original_url,video_id])
-                                    if os.path.exists(f'/tmp/{video_id}'):
-                                        shutil.rmtree(f'/tmp/{video_id}')
-
-                                elif isWindowsOS:
-                                    download(video=original_url,video_range=1, download_confirm=True)
-
-                            print(requests.get(f'{API_URL}/mongo/download/queue/{video_id}/complete'))
+            youtube_url = f'https://youtu.be/{video_id}'
+        print(youtube_url)
+        download(video=youtube_url, video_range=1, download_confirm=True)
+        print(f'Successfully downloadeded {video_id}')
+    else:
+        redis_subscriber()
