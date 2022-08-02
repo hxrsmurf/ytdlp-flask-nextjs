@@ -6,8 +6,15 @@ r = redis.Redis(
     port='6379'
 )
 
-test = {"url": "test", "id": "1234"}
-print(type(test))
-while True:
-    r.publish('test',str(test))
-    time.sleep(1)
+loop = False
+
+def publish():
+    test = {"url": "test", "video_id": "555"}
+    r.publish('download_queue',str(test))
+
+if loop:
+    while True:
+        publish()
+        time.sleep(1)
+else:
+    publish()
