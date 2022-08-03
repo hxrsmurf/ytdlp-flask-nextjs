@@ -13,5 +13,6 @@
     "AWS_API_URL": "example"
     "REDIS_URL": "example",
     "REDIS_QUEUE_NAME": "example",
-    "RUNNING_LOCAL": [true | false]
+    "RUNNING_LOCAL": [true | false],
+    "DURATION_UNTIL_AWS": 300
 }

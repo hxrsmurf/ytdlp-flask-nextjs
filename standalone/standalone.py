@@ -159,7 +159,7 @@ def redis_get_list():
             check_exists_cdn = requests.head(f'{CDN_URL}/{video_id}/{video_id}.mp4')
             print(f'{video_id} - {check_exists_cdn}')
             if not check_exists_cdn == 200:
-                if duration_seconds >= 180:
+                if duration_seconds >= config['DURATION_UNTIL_AWS']:
                     # To Do: After AWS upload, properly mark video complete
                     print(f'Send to AWS: {video_id}')
                     if not RUNNING_LOCAL:
