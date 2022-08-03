@@ -30,3 +30,4 @@ digitalocean/docker.sh
 standalone/docker.sh
 redis/__pycache__/*
 redis/subscriber_docker/__pycache__/*
+redis/lists/__pycache__/*
