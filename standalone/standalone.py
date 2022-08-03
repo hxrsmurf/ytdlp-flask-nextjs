@@ -147,7 +147,7 @@ def redis_subscriber():
 def redis_get_list():
     redis_db = redis.Redis(host=config['REDIS_URL'], port='6379', decode_responses=True)
     while True:
-        message = redis_db.blpop([config['REDIS_QUEUE_NAME']],30)
+        message = redis_db.blpop([config['REDIS_QUEUE_NAME']],120)
         if not message:
             continue
         else:
