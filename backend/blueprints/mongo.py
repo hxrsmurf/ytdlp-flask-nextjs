@@ -334,8 +334,6 @@ def download_video_by_id(video_id):
     video_title = query_json['title']
     duration = query_json['duration']
 
-    redis_add_to_list(video_id=video_id, video_url=original_url, duration=duration)
-
     cdn_mp4_exists, cdn_mp4_db, cdn_hls_exists, cdn_hls_db, check_cdn_mp4 = False,False, False, False, False
 
     if 'cdn_video' in query_json.keys():
@@ -394,7 +392,7 @@ def download_video_by_id(video_id):
                     return(message)
                 else:
                     message = f'Queueing {video_id} - {original_url}'
-                    redis_publish(video_id=video_id, video_url=original_url, duration=duration)
+                    redis_add_to_list(video_id=video_id, video_url=original_url, duration=duration)
                     return(message)
                     if not FEATURE_REDIS:
                         Mongo.DownloadQueue(
