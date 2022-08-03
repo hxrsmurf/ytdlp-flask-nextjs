@@ -10,7 +10,7 @@ from functions.downloader import download
 from functions.utils import getCurrentTime, getInitialVideosToLoad
 from functions.backblaze_upload import b2_upload, b2_sync
 from functions.convert_ffmpeg import convert_to_hls
-from functions.utils import redis_publish
+from functions.utils import redis_publish, redis_add_to_list
 
 from functions.bunnycdn import *
 
@@ -392,7 +392,7 @@ def download_video_by_id(video_id):
                     return(message)
                 else:
                     message = f'Queueing {video_id} - {original_url}'
-                    redis_publish(video_id=video_id, video_url=original_url, duration=duration)
+                    redis_add_to_list(video_id=video_id, video_url=original_url, duration=duration)
                     return(message)
                     if not FEATURE_REDIS:
                         Mongo.DownloadQueue(
