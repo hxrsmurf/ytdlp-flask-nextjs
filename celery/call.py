@@ -1,3 +1,4 @@
 from tasks import add
 
-add.delay(3,5)
+
+print(add.delay(2,2))
