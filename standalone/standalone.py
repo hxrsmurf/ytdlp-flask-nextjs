@@ -147,7 +147,10 @@ def redis_subscriber():
 if __name__ == "__main__":
     FEATURE_DOWNLOAD, isWindowsOS, FEATURE_AWS_PROCESSING, RUNNING_LOCAL = True, False, False, True
     config = parse_config()
-    API_URL = config['LOCAL_API_URL']
+    if RUNNING_LOCAL:
+        API_URL = config['LOCAL_API_URL']
+    else:
+        API_URL = config['API_URL']
     CDN_URL = config['CDN_URL']
     AWS_API_URL = config['AWS_API_URL']
 
