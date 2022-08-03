@@ -11,5 +11,7 @@
     "BUNNYCDN_URL": "example",
     "VIDEO_ID_TO_USE": "example",
     "AWS_API_URL": "example"
-    "REDIS_URL": "example"
+    "REDIS_URL": "example",
+    "REDIS_QUEUE_NAME": "example",
+    "RUNNING_LOCAL": [true | false]
 }
