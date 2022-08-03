@@ -10,7 +10,7 @@ from functions.downloader import download
 from functions.utils import getCurrentTime, getInitialVideosToLoad
 from functions.backblaze_upload import b2_upload, b2_sync
 from functions.convert_ffmpeg import convert_to_hls
-from functions.utils import redis_publish
+from functions.utils import redis_publish, redis_add_to_list
 
 from functions.bunnycdn import *
 
@@ -333,6 +333,8 @@ def download_video_by_id(video_id):
     original_url = query_json['original_url']
     video_title = query_json['title']
     duration = query_json['duration']
+
+    redis_add_to_list(video_id=video_id, video_url=original_url, duration=duration)
 
     cdn_mp4_exists, cdn_mp4_db, cdn_hls_exists, cdn_hls_db, check_cdn_mp4 = False,False, False, False, False
 
