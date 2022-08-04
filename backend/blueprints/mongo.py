@@ -10,7 +10,7 @@ from functions.downloader import download
 from functions.utils import getCurrentTime, getInitialVideosToLoad
 from functions.backblaze_upload import b2_upload, b2_sync
 from functions.convert_ffmpeg import convert_to_hls
-from functions.utils import redis_publish, redis_add_to_list
+from functions.utils import redis_publish, redis_add_to_list, redis_cache_videos
 
 from functions.bunnycdn import *
 
@@ -71,9 +71,14 @@ def get_channels_cover_photo_missing():
 
 @mongo_bp.route('/videos/', methods=['GET'])
 def get_videos():
-    query = Mongo.Videos.objects(watched=False,upload_date__gte=getInitialVideosToLoad()).order_by('-upload_date')
-    query_json = json.loads(query.to_json())
-    return(jsonify(query_json))
+    cached_videos = redis_cache_videos()
+    if cached_videos:
+        return(jsonify(cached_videos))
+    else:
+        query = Mongo.Videos.objects(watched=False,upload_date__gte=getInitialVideosToLoad()).order_by('-upload_date')
+        query_json = json.loads(query.to_json())
+        redis_cache_videos(data=query_json)
+        return(jsonify(query_json))
 
 @mongo_bp.route('/videos/search/<string:channel_id>', methods=['GET'])
 def search_videos(channel_id):
