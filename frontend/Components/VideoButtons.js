@@ -11,7 +11,7 @@ import YouTubeIcon from '@mui/icons-material/YouTube';
 import VideoPlayer from './Modals/VideoPlayer'
 import LoadingCircle from './LoadingCircle';
 
-import { Grid, IconButton } from '@mui/material';
+import { Alert, Grid, IconButton, Snackbar } from '@mui/material';
 
 export default function VideoButtons(props) {
     const result = props.data
@@ -21,6 +21,7 @@ export default function VideoButtons(props) {
     const [blobURL, setBlobURL] = useState()
     const [loading, setLoading] = useState()
     const [downloadQueued, setdownloadQueued] = useState(null)
+    const [openSnackbar, setopenSnackbar] = useState()
 
     const handleDownloadClick = async (event) => {
         const query_url = (process.env.NEXT_PUBLIC_BASE_API_URL + '/mongo/download/video/' + event)
@@ -37,12 +38,18 @@ export default function VideoButtons(props) {
         const query_url = (process.env.NEXT_PUBLIC_BASE_API_URL + '/mongo/videos/' + event + '/watched')
         const result = await fetch(query_url)
         setisWatched(true)
+        setopenSnackbar(true)
     }
 
     const handleUnwatchedClick = async (event) => {
         const query_url = (process.env.NEXT_PUBLIC_BASE_API_URL + '/mongo/videos/' + event + '/unwatched')
         const result = await fetch(query_url)
         setisWatched(false)
+        setopenSnackbar(true)
+    }
+
+    const handleSnackbarClose = async (event) => {
+        setopenSnackbar(false)
     }
 
     const handleDownloadBlob = async (event) => {
@@ -124,8 +131,8 @@ export default function VideoButtons(props) {
                     </>
                     :
                     <Grid item>
-                        {downloadQueued ? 
-                            <HourglassEmptyIcon/> 
+                        {downloadQueued ?
+                            <HourglassEmptyIcon/>
                         :
                             <IconButton onMouseDown={() => handleDownloadClick(result._id)}>
                                 <CloudDownloadIcon />
@@ -134,6 +141,17 @@ export default function VideoButtons(props) {
                     </Grid>
                 }
                 </>}
+
+                <Snackbar
+                    open={openSnackbar}
+                    autoHideDuration={2000}
+                    onClose={handleSnackbarClose}
+                    anchorOrigin={{'horizontal': 'center', 'vertical': 'bottom'}}
+                >
+                    <Alert severity='success'>
+                        {result.channel_name} {result.title}
+                    </Alert>
+                </Snackbar>
 
                 <Grid item>
                     {isWatched ?
