@@ -30,9 +30,9 @@ export default function VideoCardList({ data }) {
                                 />
                                 <CardContent>
 
-                                {result.thumbnail ?
+                                {result.cdn_video_thumbnail ?
                                     <Image
-                                        src={result.thumbnail}
+                                        src={result.cdn_video_thumbnail ? result.cdn_video_thumbnail : result.thumbnail}
                                         width={700}
                                         height={400}
                                         layout='responsive'
