@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 from b2sdk.v2 import *
 
-load_dotenv('../.env')
+load_dotenv('.env')
 
 B2_BUCKET = os.environ.get("B2_BUCKET")
 B2_KEY_ID = os.environ.get("B2_KEY_ID")
