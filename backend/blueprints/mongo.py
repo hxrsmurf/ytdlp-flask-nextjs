@@ -6,7 +6,7 @@ from flask import Blueprint, jsonify, request, Response
 import shutil
 import time
 
-from functions.downloader import download
+from functions.downloader import download, download_thumbnail
 from functions.utils import getCurrentTime, getInitialVideosToLoad
 from functions.backblaze_upload import b2_upload, b2_sync
 from functions.convert_ffmpeg import convert_to_hls
@@ -117,6 +117,9 @@ def add_videos():
 
     if not is_playlist:
         channel_name_lowercase = download_result['channel'].lower()
+        thumbnail = download_result['thumbnail']
+        video_id = download_result['id']
+        download_thumbnail(thumbnail_url=thumbnail, video_id=video_id)
 
         query = Mongo.Videos(
             channel_name = download_result['channel'],
@@ -250,6 +253,20 @@ def videos_view_unwatched():
     query = Mongo.Videos.objects(watched__ne=True,upload_date__gte=getInitialVideosToLoad()).order_by('-upload_date')[limit]
     query_json = json.loads(query.to_json())
     return(jsonify(query_json))
+
+@mongo_bp.route('/videos/thumbnails/')
+def videos_get_thumbnails():
+    videos = json.loads(get_videos().data)
+    list_of_thumbnails = []
+    for video in videos:
+        thumbnail = video['thumbnail']
+        video_id = video['_id']
+        cdn_video_thumbnail_url = video['cdn_video_thumbnail']
+
+        if not 'https' in cdn_video_thumbnail_url:
+            list_of_thumbnails.append(thumbnail)
+            download_thumbnail(thumbnail_url=thumbnail, video_id=video_id)
+    return(jsonify(list_of_thumbnails))
 
 @mongo_bp.route('/download/latest', methods=['GET'])
 def download_latest():

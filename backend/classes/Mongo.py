@@ -36,6 +36,7 @@ class Videos(mongo_db.Document):
     cdn_video = mongo_db.StringField()
     cdn_video_hls = mongo_db.StringField()
     watched = mongo_db.BooleanField()
+    cdn_video_thumbnail = mongo_db.StringField()
 
 class DownloadQueue(mongo_db.Document):
     video_id = mongo_db.StringField()
