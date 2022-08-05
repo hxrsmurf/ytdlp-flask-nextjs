@@ -117,6 +117,9 @@ def add_videos():
 
     if not is_playlist:
         channel_name_lowercase = download_result['channel'].lower()
+        thumbnail = download_result['thumbnail']
+        video_id = download_result['id']
+        download_thumbnail(thumbnail_url=thumbnail, video_id=video_id)
 
         query = Mongo.Videos(
             channel_name = download_result['channel'],
