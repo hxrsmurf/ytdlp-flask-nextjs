@@ -1,4 +1,7 @@
+import requests
 from yt_dlp import YoutubeDL
+
+from .backblaze_upload import b2_upload
 
 def download(video, video_range=2, download_confirm=False):
     def hook(d):
@@ -21,3 +24,13 @@ def download(video, video_range=2, download_confirm=False):
     with YoutubeDL(ytdl_opts) as ydl:
         info = ydl.extract_info(video, download=download_confirm)
         return info
+
+def download_thumbnail(thumbnail_url, video_id):
+    video_thumbnail_output_name = f'{video_id}.jpg'
+    video_thumbnail_folder = 'video_thumbnails'
+    if '8ZMxwS57b4A' in thumbnail_url:
+        thumbnail_request = requests.get(thumbnail_url, stream=True)
+        if thumbnail_request.status_code == 200:
+            with open(video_thumbnail_output_name, 'wb') as file:
+                file.write(thumbnail_request.content)
+            b2_upload(file=video_thumbnail_output_name,folder=video_thumbnail_folder)
