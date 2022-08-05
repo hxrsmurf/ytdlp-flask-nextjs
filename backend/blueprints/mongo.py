@@ -6,7 +6,7 @@ from flask import Blueprint, jsonify, request, Response
 import shutil
 import time
 
-from functions.downloader import download
+from functions.downloader import download, download_thumbnail
 from functions.utils import getCurrentTime, getInitialVideosToLoad
 from functions.backblaze_upload import b2_upload, b2_sync
 from functions.convert_ffmpeg import convert_to_hls
@@ -257,8 +257,10 @@ def videos_get_thumbnails():
     list_of_thumbnails = []
     for video in videos:
         thumbnail = video['thumbnail']
+        video_id = video['_id']
         if 'https' in thumbnail:
             list_of_thumbnails.append(thumbnail)
+            download_thumbnail(thumbnail_url=thumbnail, video_id=video_id)
     return(jsonify(list_of_thumbnails))
 
 @mongo_bp.route('/download/latest', methods=['GET'])
