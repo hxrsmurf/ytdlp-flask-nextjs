@@ -251,6 +251,16 @@ def videos_view_unwatched():
     query_json = json.loads(query.to_json())
     return(jsonify(query_json))
 
+@mongo_bp.route('/videos/thumbnails/')
+def videos_get_thumbnails():
+    videos = json.loads(get_videos().data)
+    list_of_thumbnails = []
+    for video in videos:
+        thumbnail = video['thumbnail']
+        if 'https' in thumbnail:
+            list_of_thumbnails.append(thumbnail)
+    return(jsonify(list_of_thumbnails))
+
 @mongo_bp.route('/download/latest', methods=['GET'])
 def download_latest():
     channel_id = request.args['id']
