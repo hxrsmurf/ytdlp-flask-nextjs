@@ -261,7 +261,9 @@ def videos_get_thumbnails():
     for video in videos:
         thumbnail = video['thumbnail']
         video_id = video['_id']
-        if 'https' in thumbnail:
+        cdn_video_thumbnail_url = video['cdn_video_thumbnail']
+
+        if not 'https' in cdn_video_thumbnail_url:
             list_of_thumbnails.append(thumbnail)
             download_thumbnail(thumbnail_url=thumbnail, video_id=video_id)
     return(jsonify(list_of_thumbnails))
