@@ -10,7 +10,7 @@ from functions.downloader import download, download_thumbnail
 from functions.utils import getCurrentTime, getInitialVideosToLoad
 from functions.backblaze_upload import b2_upload, b2_sync
 from functions.convert_ffmpeg import convert_to_hls
-from functions.utils import redis_publish, redis_add_to_list, redis_cache_videos
+from functions.utils import redis_publish, redis_add_to_list, redis_cache_videos, redis_cache_channels
 
 from functions.bunnycdn import *
 
@@ -20,9 +20,13 @@ mongo_bp = Blueprint('mongo', __name__, url_prefix='/mongo')
 
 @mongo_bp.route('/channels/', methods=['GET'])
 def get_channels():
-    query = Mongo.Channels.objects().order_by('channel_name_lowercase')
-    query_json = json.loads(query.to_json())
-    return(jsonify(query_json))
+    cached_channels = redis_cache_channels()
+    if cached_channels == None:
+        query = Mongo.Channels.objects().order_by('channel_name_lowercase')
+        query_json = json.loads(query.to_json())
+        cached_channels = redis_cache_channels(data=query_json)
+
+    return(jsonify(cached_channels))
 
 @mongo_bp.route('/channels/search/<string:channel_id>', methods=['GET'])
 def search_channels(channel_id):

@@ -51,3 +51,13 @@ def redis_cache_videos(data=None):
     else:
         result = redis_db.get('videos')
         return(ast.literal_eval(result))
+
+def redis_cache_channels(data=None):
+    cached_channels = redis_db.get('channels')
+    if cached_channels:
+        return(ast.literal_eval(cached_channels))
+    else:
+        redis_db.set('channels', str(data))
+        redis_db.expire('channels', 600)
+        cached_channels = redis_db.get('channels')
+        return(ast.literal_eval(cached_channels))
