@@ -276,7 +276,17 @@ def videos_get_thumbnails():
         if not 'https' in cdn_video_thumbnail_url:
             list_of_thumbnails.append(thumbnail)
             download_thumbnail(thumbnail_url=thumbnail, video_id=video_id)
+
     return(jsonify(list_of_thumbnails))
+
+@mongo_bp.route('/videos/thumbnails/repair/')
+def videos_thumbnails_repair():
+    query = Mongo.Videos.objects(cdn_video_thumbnail__contains='https')
+    query_json = json.loads(query.to_json())
+    for video in query_json:
+        video_id = video['_id']
+        Mongo.Videos.objects(video_id=video_id).update(unset__cdn_video_thumbnail=True)
+    return(jsonify(query_json))
 
 @mongo_bp.route('/download/latest', methods=['GET'])
 def download_latest():
