@@ -17,8 +17,8 @@ b2_api = B2Api(info)
 b2_api.authorize_account("production", B2_KEY_ID, B2_KEY)
 bucket = b2_api.get_bucket_by_name(B2_BUCKET)
 
-def b2_upload(file, folder):
-    b2_destination = f'{folder}/{file}'
+def b2_upload(file, video_id):
+    b2_destination = f'/videos/{video_id}/{file}'
     print('Uploading to BackBlaze')
     result = bucket.upload_local_file(
             local_file=file,

@@ -42,7 +42,7 @@ def download_thumbnail(thumbnail_url, video_id):
         if thumbnail_request.status_code == 200:
             with open(video_thumbnail_output_name, 'wb') as file:
                 file.write(thumbnail_request.content)
-            b2_upload(file=video_thumbnail_output_name,folder=video_thumbnail_folder)
+            b2_upload(file=video_thumbnail_output_name,video_id=video_id)
 
             Mongo.Videos.objects(video_id=video_id).update_one(set__cdn_video_thumbnail=cdn_video_thumbnail_url)
 
