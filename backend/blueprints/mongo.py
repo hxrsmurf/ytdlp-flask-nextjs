@@ -10,7 +10,7 @@ from functions.downloader import download, download_thumbnail
 from functions.utils import getCurrentTime, getInitialVideosToLoad
 from functions.backblaze_upload import b2_upload, b2_sync
 from functions.convert_ffmpeg import convert_to_hls
-from functions.utils import redis_publish, redis_add_to_list, redis_cache_videos, redis_cache_channels
+from functions.utils import redis_publish, redis_add_to_list, redis_cache_videos, redis_cache_channels, redis_cache_channels_unique
 
 from functions.bunnycdn import *
 
@@ -160,32 +160,36 @@ def add_videos():
 
 @mongo_bp.route('/videos/unique/channel', methods=['GET'])
 def get_videos_unique_channel():
-    query = Mongo.Videos.objects.aggregate([
-        { "$group" :
-            {
-                "_id" : {
-                    "channel_name" : "$channel_name", "channel_id" : "$channel_id", "channel_name_lowercase" : "$channel_name_lowercase"
-                    },
-                "lowercase" : {
-                    "$push" : {
-                        "channel_name_lowercase" : "$channel_name_lowercase"
+    cached_channels_unique = redis_cache_channels_unique()
+    if cached_channels_unique:
+        return(jsonify(cached_channels_unique))
+    else:
+        query = Mongo.Videos.objects.aggregate([
+            { "$group" :
+                {
+                    "_id" : {
+                        "channel_name" : "$channel_name", "channel_id" : "$channel_id", "channel_name_lowercase" : "$channel_name_lowercase"
+                        },
+                    "lowercase" : {
+                        "$push" : {
+                            "channel_name_lowercase" : "$channel_name_lowercase"
+                            }
                         }
-                    }
-            }
-        },
-        { "$sort" : {"lowercase": 1}}
-    ])
+                }
+            },
+            { "$sort" : {"lowercase": 1}}
+        ])
 
-    query_array = []
+        query_array = []
 
-    for q in query:
-        query_array.append({
-            'channel_name' : q['_id']['channel_name'],
-            'channel_id' : q['_id']['channel_id'],
-            'channel_name_lowercase' : q['_id']['channel_name_lowercase'],
-            })
+        for q in query:
+            query_array.append({
+                'channel_name' : q['_id']['channel_name'],
+                'channel_id' : q['_id']['channel_id'],
+                'channel_name_lowercase' : q['_id']['channel_name_lowercase'],
+                })
 
-    return(jsonify(query_array))
+        return(jsonify(redis_cache_channels_unique(query_array)))
 
 @mongo_bp.route('/videos/sync-channels')
 def videos_sync_channels():

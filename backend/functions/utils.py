@@ -61,3 +61,15 @@ def redis_cache_channels(data=None):
         redis_db.expire('channels', 600)
         cached_channels = redis_db.get('channels')
         return(ast.literal_eval(cached_channels))
+
+def redis_cache_channels_unique(data=None):
+    cached_channels_unique = redis_db.get('channels_unique')
+    if cached_channels_unique == 'None' or cached_channels_unique == None:
+        print("go cache")
+        redis_db.set('channels_unique', str(data))
+        redis_db.expire('channels_unique', 5)
+        cached_channels_unique = redis_db.get('channels_unique')
+        return(ast.literal_eval(cached_channels_unique))
+    else:
+        print('aredy cached')
+        return(ast.literal_eval(cached_channels_unique))
