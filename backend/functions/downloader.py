@@ -35,6 +35,7 @@ def download_thumbnail(thumbnail_url, video_id):
 
     check_cdn = requests.get(cdn_video_thumbnail_url)
     if check_cdn.status_code == 200:
+        Mongo.Videos.objects(video_id=video_id).update_one(set__cdn_video_thumbnail=cdn_video_thumbnail_url)
         return(cdn_video_thumbnail_url)
     else:
         thumbnail_request = requests.get(thumbnail_url, stream=True)

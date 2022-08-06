@@ -261,7 +261,12 @@ def videos_get_thumbnails():
     for video in videos:
         thumbnail = video['thumbnail']
         video_id = video['_id']
-        cdn_video_thumbnail_url = video['cdn_video_thumbnail']
+        cdn_video_thumbnail_url = ''
+
+        try:
+            cdn_video_thumbnail_url = video['cdn_video_thumbnail']
+        except:
+            pass
 
         if not 'https' in cdn_video_thumbnail_url:
             list_of_thumbnails.append(thumbnail)
