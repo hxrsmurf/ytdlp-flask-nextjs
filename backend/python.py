@@ -15,7 +15,7 @@ app = Flask(__name__)
 
 app.config['MONGODB_SETTINGS'] = {
     'db' : 'ytdlp',
-    'host' : '192.168.2.12',
+    'host' : os.environ.get('MONGODB_SERVER'),
     'port':  27017,
     'username' : os.environ.get("MONGODB_USER"),
     'password' : os.environ.get("MONGODB_PASSWORD"),
