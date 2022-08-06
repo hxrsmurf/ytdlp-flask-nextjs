@@ -44,22 +44,23 @@ def redis_add_to_list(video_id, video_url, duration):
 
 
 def redis_cache_videos(data=None):
-    if not redis_db.get('videos'):
+    cached_videos = redis_db.get('videos')
+    if cached_videos == 'None' or cached_videos == None:
         redis_db.set('videos', str(data))
         redis_db.expire('videos',600)
-        return None
+        cached_videos = redis_db.get('videos')
+        return(ast.literal_eval(cached_videos))
     else:
-        result = redis_db.get('videos')
-        return(ast.literal_eval(result))
+        return(ast.literal_eval(cached_videos))
 
 def redis_cache_channels(data=None):
     cached_channels = redis_db.get('channels')
-    if cached_channels:
-        return(ast.literal_eval(cached_channels))
-    else:
+    if cached_channels == 'None' or cached_channels == None:
         redis_db.set('channels', str(data))
         redis_db.expire('channels', 600)
         cached_channels = redis_db.get('channels')
+        return(ast.literal_eval(cached_channels))
+    else:
         return(ast.literal_eval(cached_channels))
 
 def redis_cache_channels_unique(data=None):
