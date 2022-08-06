@@ -18,6 +18,7 @@ For now...
 - This just links the YouTube Video's URL which you can click on.
 - I just run `python backend\python.py` and `npm run build && npm run start`
 
+Read more of my [Notes](https://github.com/hxrsmurf/ytdlp-flask-nextjs/blob/master/docs/Notes.md)
 
 ## Inspiration / Based On
 This is heavily based on / inspired by the below GitHub Repos.
@@ -39,6 +40,8 @@ I also want to learn more about Python Flask and NextJS!
 
 While YouTubeDL-Material & TubeArchivist are great projects, I wanted something more lightweight and geared towards "serverless".
 
+## Diagram
+![image](https://user-images.githubusercontent.com/14148184/183228479-0798685e-d98b-465f-a514-9767c0edbfe4.png)
 
 ## To Do
 
