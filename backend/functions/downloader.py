@@ -30,8 +30,7 @@ def download(video, video_range=2, download_confirm=False):
 
 def download_thumbnail(thumbnail_url, video_id):
     video_thumbnail_output_name = f'{video_id}.jpg'
-    video_thumbnail_folder = 'video_thumbnails'
-    cdn_video_thumbnail_url = f'{os.environ.get("CDN_URL")}/{os.environ.get("B2_BUCKET")}/{video_thumbnail_folder}/{video_thumbnail_output_name}'
+    cdn_video_thumbnail_url = f'{os.environ.get("CDN_URL")}/{os.environ.get("B2_BUCKET")}/videos/{video_id}/{video_thumbnail_output_name}'
 
     check_cdn = requests.get(cdn_video_thumbnail_url)
     if check_cdn.status_code == 200:
@@ -42,7 +41,7 @@ def download_thumbnail(thumbnail_url, video_id):
         if thumbnail_request.status_code == 200:
             with open(video_thumbnail_output_name, 'wb') as file:
                 file.write(thumbnail_request.content)
-            b2_upload(file=video_thumbnail_output_name,folder=video_thumbnail_folder)
+            b2_upload(file=video_thumbnail_output_name,video_id=video_id)
 
             Mongo.Videos.objects(video_id=video_id).update_one(set__cdn_video_thumbnail=cdn_video_thumbnail_url)
 
