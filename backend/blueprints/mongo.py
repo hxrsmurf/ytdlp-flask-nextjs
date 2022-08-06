@@ -121,7 +121,6 @@ def add_videos():
         thumbnail = download_result['thumbnail']
         video_id = download_result['id']
         original_url = download_result['original_url']
-        download_thumbnail(thumbnail_url=thumbnail, video_id=video_id)
 
         if '/shorts/' in original_url:
             is_watched = True
@@ -146,6 +145,8 @@ def add_videos():
         )
 
         query.save()
+
+        download_thumbnail(thumbnail_url=thumbnail, video_id=video_id)
 
         query_json = json.loads(query.to_json())
         return({'download_results' : download_result, 'query_json' : query_json})
