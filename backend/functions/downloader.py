@@ -30,8 +30,7 @@ def download(video, video_range=2, download_confirm=False):
 
 def download_thumbnail(thumbnail_url, video_id):
     video_thumbnail_output_name = f'{video_id}.jpg'
-    video_thumbnail_folder = 'video_thumbnails'
-    cdn_video_thumbnail_url = f'{os.environ.get("CDN_URL")}/{os.environ.get("B2_BUCKET")}/{video_thumbnail_folder}/{video_thumbnail_output_name}'
+    cdn_video_thumbnail_url = f'{os.environ.get("CDN_URL")}/{os.environ.get("B2_BUCKET")}/{video_id}/{video_thumbnail_output_name}'
 
     check_cdn = requests.get(cdn_video_thumbnail_url)
     if check_cdn.status_code == 200:
