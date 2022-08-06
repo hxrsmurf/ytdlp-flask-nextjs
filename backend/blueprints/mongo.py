@@ -90,6 +90,7 @@ def search_videos(channel_id):
 def add_videos():
     url = request.args['url']
     is_playlist = False
+    is_watched = False
 
     if len(url.split('playlist?')) > 1:
         range = 99
@@ -119,7 +120,11 @@ def add_videos():
         channel_name_lowercase = download_result['channel'].lower()
         thumbnail = download_result['thumbnail']
         video_id = download_result['id']
+        original_url = download_result['original_url']
         download_thumbnail(thumbnail_url=thumbnail, video_id=video_id)
+
+        if '/shorts/' in original_url:
+            is_watched = True
 
         query = Mongo.Videos(
             channel_name = download_result['channel'],
@@ -132,12 +137,12 @@ def add_videos():
             video_id = download_result['id'],
             like_count = download_result['like_count'],
             view_count = download_result['view_count'],
-            original_url = download_result['original_url'],
+            original_url = original_url,
             thumbnail = download_result['thumbnail'],
             title = download_result['title'],
             upload_date = download_result['upload_date'],
             webpage_url = download_result['webpage_url'],
-            watched = False
+            watched = is_watched
         )
 
         query.save()
