@@ -73,6 +73,17 @@ def get_channels_cover_photo_missing():
         Mongo.Channels.objects(channel_id=channel_id).update_one(set__cdn_photo_cover=result_download_cover_photo)
     return(jsonify(query_json))
 
+@mongo_bp.route('/channels/videos/<string:channel_id>', methods=['GET'])
+def get_channel_videos(channel_id):
+    query = search_videos(channel_id)
+    video_ids = []
+    query_results = json.loads(query.data)
+    for q in query_results:
+        video_id = q['_id']
+        video_ids.append(video_id)
+        download_video_by_id(video_id)
+    return(jsonify(video_ids))
+
 @mongo_bp.route('/videos/', methods=['GET'])
 def get_videos():
     cached_videos = redis_cache_videos()
