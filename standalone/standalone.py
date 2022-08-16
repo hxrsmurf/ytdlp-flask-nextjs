@@ -10,6 +10,7 @@ import redis
 import time
 import ast
 
+import concurrent.futures
 
 from ffmpeg import FFmpeg
 from yt_dlp import YoutubeDL
@@ -147,36 +148,37 @@ def redis_subscriber():
 def redis_get_list():
     redis_db = redis.Redis(host=config['REDIS_URL'], port='6379', decode_responses=True)
     while True:
-        message = redis_db.blpop([config['REDIS_QUEUE_NAME']],120)
-        if not message:
-            continue
-        else:
-            queue_message = ast.literal_eval(message[1])
-            video_id = queue_message['video_id']
-            video_url = queue_message['video_url']
-            duration_seconds = queue_message['duration']
+        with concurrent.futures.ThreadPoolExecutor(max_workers=None) as executor:
+            message = redis_db.blpop([config['REDIS_QUEUE_NAME']],120)
+            if not message:
+                continue
+            else:
+                queue_message = ast.literal_eval(message[1])
+                video_id = queue_message['video_id']
+                video_url = queue_message['video_url']
+                duration_seconds = queue_message['duration']
 
-            check_exists_cdn = requests.head(f'{CDN_URL}/{video_id}/{video_id}.mp4')
-            print(f'{video_id} - {check_exists_cdn}')
-            if not check_exists_cdn == 200:
-                if duration_seconds >= config['DURATION_UNTIL_AWS']:
-                    # To Do: After AWS upload, properly mark video complete
-                    print(f'Send to AWS: {video_id}')
-                    if not RUNNING_LOCAL:
-                        aws_api = f'{AWS_API_URL}/?id={video_id}'
-                        print(requests.get(aws_api))
-                else:
-                    if not isWindowsOS:
-                        subprocess.call(['./docker.sh',video_url,video_id])
-                        if os.path.exists(f'/tmp/{video_id}'):
-                            shutil.rmtree(f'/tmp/{video_id}')
-                    elif isWindowsOS:
-                        download(video=video_url,video_range=1, download_confirm=True)
+                check_exists_cdn = requests.head(f'{CDN_URL}/{video_id}/{video_id}.mp4')
+                print(f'{video_id} - {check_exists_cdn}')
+                if not check_exists_cdn == 200:
+                    if duration_seconds >= config['DURATION_UNTIL_AWS']:
+                        # To Do: After AWS upload, properly mark video complete
+                        print(f'Send to AWS: {video_id}')
+                        if not RUNNING_LOCAL:
+                            aws_api = f'{AWS_API_URL}/?id={video_id}'
+                            print(requests.get(aws_api))
+                    else:
+                        if not isWindowsOS:
+                            subprocess.call(['./docker.sh',video_url,video_id])
+                            if os.path.exists(f'/tmp/{video_id}'):
+                                shutil.rmtree(f'/tmp/{video_id}')
+                        elif isWindowsOS:
+                            download(video=video_url,video_range=1, download_confirm=True)
 
-                if RUNNING_LOCAL:
-                    break
-                else:
-                    requests.get(f'{API_URL}/mongo/download/queue/{video_id}/complete')
+                    if RUNNING_LOCAL:
+                        break
+                    else:
+                        requests.get(f'{API_URL}/mongo/download/queue/{video_id}/complete')
 
 if __name__ == "__main__":
     FEATURE_DOWNLOAD, isWindowsOS, FEATURE_AWS_PROCESSING = True, False, False

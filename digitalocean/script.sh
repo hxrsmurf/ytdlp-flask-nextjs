@@ -1,8 +1,7 @@
 #!/bin/bash
 
-yt-dlp --format bestvideo*+bestaudio/best --merge-output-format mp4 --output '%(id)s/%(id)s.%(ext)s' https://youtu.be/VIDEOID
+yt-dlp --format bestvideo*+bestaudio/best --merge-output-format mp4 --output '%(id)s/%(id)s.%(ext)s' https://youtu.be/lZJ56cXSI-o
 
-yt-dlp --format bestvideo*+bestaudio/best --merge-output-format mp4 --output '%(id)s/%(id)s.%(ext)s' https://youtu.be/VIDEOID
 
 #!/bin/bash
 apt-get update
