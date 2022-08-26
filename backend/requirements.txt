@@ -7,7 +7,7 @@ gunicorn==20.1.0
 python-dotenv==0.20.0
 python-ffmpeg==1.0.14
 requests==2.27.1
-yt-dlp==2022.5.18
+yt-dlp==2022.08.19
 flask-mongoengine==1.0.0
 mongoengine==0.24.1
 pymongo==4.1.1
