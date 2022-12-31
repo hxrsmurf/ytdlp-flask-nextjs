@@ -1,11 +1,13 @@
+import AddChannel from '../components/forms/AddChannel'
 import { redis } from '../lib/database'
-import LoginButton from '../login-button'
 
-export default function Home({videos, channels}: any) {
+export default function Home() {
   return (
     <div className='flex justify-center mt-4'>
       <div>
-        <div>Hello World</div>
+        <div>
+          <AddChannel />
+        </div>
       </div>
     </div>
   )
