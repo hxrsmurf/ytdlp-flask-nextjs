@@ -18,7 +18,6 @@ alpine-cron/docker-compose.yaml
 docker-compose.yml
 *.sqlite3
 mongodb/restore.txt
-*.ts
 *.webm
 ffmpeg/script.ps1
 powershell/delete-b2-files.ps1
