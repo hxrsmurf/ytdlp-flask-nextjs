@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { redis } from '../../lib/database'
+import { add_channel, channel_exists } from '../../utils/channels'
 
 export default async function handler(
   req: NextApiRequest,
@@ -9,8 +9,20 @@ export default async function handler(
 
   if (query['id']) {
     const id = String(query['id'])
-    await redis().HSET('channels', id, id)
-    res.status(200).json({ result: 'Added Channel' })
+    const exists = await channel_exists(id)
+
+    if (exists < 0) {
+      const result = await add_channel(id)
+      if (result) {
+        res.status(200).json({ result: 'Added Channel' })
+      } else {
+        res.status(500).json({ result: 'Error Adding Channel' })
+      }
+      return
+    }
+    res.status(200).json({ result: 'Channel Exists' })
+    return
   }
   res.status(200).json({ result: 'Invalid Channel' })
+  return
 }
