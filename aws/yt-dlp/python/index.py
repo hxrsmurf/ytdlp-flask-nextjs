@@ -13,11 +13,11 @@ def handler(event, context):
     if not testing:
         json_event = json.loads(json.dumps(event))
         request_context = json_event['requestContext']
-        query_string = json_event['queryStringParameters']
-        channel_info, video_id = get_channel(query_string['id'])
-        dynamo_video_id = get_item(URL)
+        url = json_event['queryStringParameters']['id']
+        channel_info, video_id = get_channel(url)
+        dynamo_video_id = get_item(url)
         if not video_id == dynamo_video_id:
-            put_item(URL, channel_info, video_id)
+            put_item(url, channel_info, video_id)
     else:
         URL = 'https://www.youtube.com/@MrBeast'
         video_id = '7IKab3HcfFk'
