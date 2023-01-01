@@ -1,0 +1,45 @@
+Transform: AWS::Serverless-2016-10-31
+
+Description: NextJS-13 YouTube-DLP
+
+Resources:
+  Lambda:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: index.handler
+      Runtime: python3.9
+      CodeUri: python
+      Timeout: 900
+      Layers:
+        - !Ref Layer
+        - !Ref ffmpeg
+      Events:
+        PostAPI:
+          Type: HttpApi
+          Properties:
+            Path: /
+            Method: GET
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: '*'
+  Layer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      ContentUri: yt-dlp
+      CompatibleRuntimes:
+        - python3.9
+      Description: YouTube-DLP (Python)
+      LayerName: YouTube-dlp
+    Metadata:
+      BuildMethod: python3.9
+
+  ffmpeg:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      ContentUri: ffmpeg
+      CompatibleRuntimes:
+        - python3.9
+      Description: ffmpeg (python)
+      LayerName: ffmpeg
+    Metadata:
+      BuildMethod: python3.9
