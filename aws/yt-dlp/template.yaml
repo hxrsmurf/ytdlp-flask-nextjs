@@ -10,6 +10,8 @@ Resources:
       Runtime: python3.9
       CodeUri: python
       Timeout: 900
+      Layers:
+        - !Ref Layer
       Events:
         PostAPI:
           Type: HttpApi
@@ -19,3 +21,13 @@ Resources:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: '*'
+  Layer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      ContentUri: yt-dlp
+      CompatibleRuntimes:
+        - python3.9
+      Description: YouTube-DLP (Python)
+      LayerName: YouTube-dlp
+    Metadata:
+      BuildMethod: python3.9
