@@ -21,6 +21,7 @@ Resources:
       Environment:
         Variables:
           TableName: !Ref Table
+          QueueUrl: !Ref Queue
       Layers:
         - !Ref Layer
         - !Ref ffmpeg
@@ -33,6 +34,8 @@ Resources:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref Table
+        - SQSSendMessagePolicy:
+            QueueName: !GetAtt Queue.QueueName
   Layer:
     Type: AWS::Serverless::LayerVersion
     Properties:
