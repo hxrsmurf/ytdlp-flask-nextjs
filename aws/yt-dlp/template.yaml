@@ -64,6 +64,30 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: !Ref Table
 
+  ListChannels:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: index.handler
+      Runtime: python3.9
+      CodeUri: list-channels
+      MemorySize: 128
+      Timeout: 30
+      Environment:
+        Variables:
+          TableName: !Ref Table
+          QueueUrl: !Ref Queue
+      Events:
+        EventBridge:
+          Type: ScheduleV2
+          Properties:
+            ScheduleExpression: rate(1 hours)
+            State: ENABLED
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref Table
+        - SQSSendMessagePolicy:
+            QueueName: !GetAtt Queue.QueueName
+
   Layer:
     Type: AWS::Serverless::LayerVersion
     Properties:

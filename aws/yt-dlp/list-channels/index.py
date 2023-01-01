@@ -8,7 +8,6 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 def handler(event, context):
-
     result_scan = scan_items()
     channels = parse_paginated_info(result_scan)
     for channel in channels:
