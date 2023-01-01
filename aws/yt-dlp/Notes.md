@@ -24,5 +24,13 @@
 | Local | 10710.226 | 10721.9291217 | 11.703121700000338 |
 | AWS | 10814.1933493 | 10844.9377323 | 30.744383000001108 |
 
+# yt-dlp MP4 Encoding Run Times
+
+| Location | Memory | Duration |
+| - | - | - |
+| AWS | 256 MB | 28504 MS |
+| AWS | 128 MB | 58515 MS |
+
+
 # Docs
 - https://aws.amazon.com/blogs/media/processing-user-generated-content-using-aws-lambda-and-ffmpeg/

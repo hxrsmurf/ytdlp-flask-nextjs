@@ -88,6 +88,25 @@ Resources:
         - SQSSendMessagePolicy:
             QueueName: !GetAtt Queue.QueueName
 
+  Downloader:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: index.handler
+      Runtime: python3.9
+      CodeUri: python
+      MemorySize: 256
+      Timeout: 900
+      Environment:
+        Variables:
+          TableName: !Ref Table
+          QueueUrl: !Ref Queue
+      Layers:
+        - !Ref Layer
+        - !Ref ffmpeg
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref Table
+
   Layer:
     Type: AWS::Serverless::LayerVersion
     Properties:
