@@ -13,4 +13,4 @@ def download(id):
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(id, download=True)
 
-    return info
+    return info['id']
