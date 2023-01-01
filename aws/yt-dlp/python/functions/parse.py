@@ -2,7 +2,9 @@ import logging
 import json
 
 def parse_channel_info(info):
+    logging.info('Parsing info...')
     json_info = json.loads(info)
+    video_id = json_info['entries'][0]['entries'][0]['id']
 
     output_info = {
         'id' : json_info['id'],
@@ -19,7 +21,7 @@ def parse_channel_info(info):
         'channel_url' : json_info['channel_url'],
 
         # First Entry of Channel's Video
-        'video_id': json_info['entries'][0]['entries'][0]['id'],
+        'video_id': video_id,
         'video_webpage_url': json_info['entries'][0]['entries'][0]['webpage_url'],
         'video_original_url': json_info['entries'][0]['entries'][0]['original_url'],
 
@@ -28,5 +30,4 @@ def parse_channel_info(info):
         'webpage_url_basename' : json_info['webpage_url_basename']
     }
 
-    logging.info(output_info)
-    return json.dumps(output_info)
+    return json.dumps(output_info), video_id

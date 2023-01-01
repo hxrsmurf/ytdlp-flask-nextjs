@@ -18,12 +18,11 @@ def handler(event, context):
     else:
         URL = 'https://www.youtube.com/@MrBeast'
         video_id = '7IKab3HcfFk'
-        exists_in_database = get_item(URL)
-        if not exists_in_database:
-            put_item(URL)
+        channel_info, video_id = get_channel(URL)
+        dynamo_video_id = get_item(URL)
+        if not video_id == dynamo_video_id:
+            put_item(URL, channel_info, video_id)
             #send_sqs_message(video_id)
-        #channel_info = get_channel(URL)
-        channel_info = 'kevin'
 
     return({
             'statusCode': 200,
