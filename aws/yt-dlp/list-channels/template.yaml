@@ -1,0 +1,35 @@
+Transform: AWS::Serverless-2016-10-31
+
+Description: List Channels - NextJS-13 YouTube-DLP
+
+Parameters:
+  Table:
+    Type: String
+    Default: nextjs-13-yt-dlp-channels
+  QueueName:
+    Type: String
+    Default: https://sqs.us-east-1.amazonaws.com/195663387853/nextjs13-yt-dlp-Queue-gt48b8JYx63M
+
+Resources:
+  Lambda:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: index.handler
+      Runtime: python3.9
+      CodeUri: python
+      Timeout: 900
+      Environment:
+        Variables:
+          TableName: !Ref Table
+          QueueName: !Ref QueueName
+      Events:
+        PostAPI:
+          Type: HttpApi
+          Properties:
+            Path: /
+            Method: GET
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref Table
+        - SQSSendMessagePolicy:
+            QueueName: !Ref QueueName
