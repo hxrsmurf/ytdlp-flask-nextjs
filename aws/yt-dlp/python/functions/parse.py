@@ -17,6 +17,12 @@ def parse_channel_info(info):
         'channel' : json_info['channel'],
         'channel_id' : json_info['channel_id'],
         'channel_url' : json_info['channel_url'],
+
+        # First Entry of Channel's Video
+        'video_id': json_info['entries'][0]['entries'][0]['id'],
+        'video_webpage_url': json_info['entries'][0]['entries'][0]['webpage_url'],
+        'video_original_url': json_info['entries'][0]['entries'][0]['original_url'],
+
         'webpage_url' : json_info['webpage_url'],
         'original_url' : json_info['original_url'],
         'webpage_url_basename' : json_info['webpage_url_basename']
