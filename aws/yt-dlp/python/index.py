@@ -3,6 +3,7 @@ import logging
 
 from functions.download import get_channel
 from functions.database import get_item
+from functions.sqs import send_sqs_message
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -17,7 +18,9 @@ def handler(event, context):
     else:
         URL = 'https://www.youtube.com/@MrBeast'
         video_id = '7IKab3HcfFk'
-        get_item(video_id)
+        exists_in_database = get_item(video_id)
+        if not exists_in_database:
+            send_sqs_message(video_id)
         #channel_info = get_channel(URL)
         channel_info = 'kevin'
 
