@@ -9,12 +9,15 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 def handler(event, context):
-    testing = True
+    testing = False
     if not testing:
         json_event = json.loads(json.dumps(event))
         request_context = json_event['requestContext']
         query_string = json_event['queryStringParameters']
-        channel_info = get_channel(query_string['id'])
+        channel_info, video_id = get_channel(query_string['id'])
+        dynamo_video_id = get_item(URL)
+        if not video_id == dynamo_video_id:
+            put_item(URL, channel_info, video_id)
     else:
         URL = 'https://www.youtube.com/@MrBeast'
         video_id = '7IKab3HcfFk'
