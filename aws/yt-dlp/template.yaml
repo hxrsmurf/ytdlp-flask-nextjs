@@ -5,6 +5,8 @@ Description: NextJS-13 YouTube-DLP
 Resources:
   Queue:
     Type: AWS::SQS::Queue
+    Properties:
+      VisibilityTimeout: 60
 
   Table:
     Type: AWS::Serverless::SimpleTable
@@ -36,6 +38,32 @@ Resources:
             TableName: !Ref Table
         - SQSSendMessagePolicy:
             QueueName: !GetAtt Queue.QueueName
+
+  SQSParser:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: index.handler
+      Runtime: python3.9
+      CodeUri: python
+      MemorySize: 256
+      Timeout: 60
+      Environment:
+        Variables:
+          TableName: !Ref Table
+          QueueUrl: !Ref Queue
+      Layers:
+        - !Ref Layer
+        - !Ref ffmpeg
+      Events:
+        SQS:
+          Type: SQS
+          Properties:
+             BatchSize: 1
+             Queue: !GetAtt Queue.Arn
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref Table
+
   Layer:
     Type: AWS::Serverless::LayerVersion
     Properties:
