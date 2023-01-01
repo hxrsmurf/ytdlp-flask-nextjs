@@ -12,6 +12,7 @@ Resources:
       Timeout: 900
       Layers:
         - !Ref Layer
+        - !Ref ffmpeg
       Events:
         PostAPI:
           Type: HttpApi
@@ -29,5 +30,16 @@ Resources:
         - python3.9
       Description: YouTube-DLP (Python)
       LayerName: YouTube-dlp
+    Metadata:
+      BuildMethod: python3.9
+
+  ffmpeg:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      ContentUri: ffmpeg
+      CompatibleRuntimes:
+        - python3.9
+      Description: ffmpeg (python)
+      LayerName: ffmpeg
     Metadata:
       BuildMethod: python3.9
