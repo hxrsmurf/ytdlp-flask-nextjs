@@ -2,6 +2,11 @@ Transform: AWS::Serverless-2016-10-31
 
 Description: NextJS-13 YouTube-DLP
 
+Parameters:
+  ApiUrl:
+    Type: String
+    Default: http://placeholder.homelabwithkevin.com:8080
+
 Resources:
   Queue:
     Type: AWS::SQS::Queue
@@ -12,11 +17,6 @@ Resources:
     Type: AWS::Serverless::SimpleTable
     Properties:
       TableName: nextjs-13-yt-dlp-channels
-
-  ApiUrl:
-    Type: String
-    Properties:
-      Default: http://placeholder.homelabwithkevin.com:8080
 
   Lambda:
     Type: 'AWS::Serverless::Function'
@@ -49,8 +49,8 @@ Resources:
     Properties:
       Handler: index.handler
       Runtime: python3.9
-      CodeUri: python
-      MemorySize: 256
+      CodeUri: sqs-parser
+      MemorySize: 512
       Timeout: 60
       Environment:
         Variables:
@@ -59,7 +59,7 @@ Resources:
           ApiUrl: !Ref ApiUrl
       Layers:
         - !Ref Layer
-        - !Ref ffmpeg
+        - !Ref requests
       Events:
         SQS:
           Type: SQS
