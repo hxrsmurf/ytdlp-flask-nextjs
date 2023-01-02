@@ -4,7 +4,7 @@ from functions.downloader import download
 
 app = Flask(__name__)
 app_celery = Celery('tasks')
-app_celery.conf.broker_url = 'redis://localhost:6379/0'
+app_celery.conf.broker_url = 'redis://redis:6379/0'
 
 @app.route('/')
 def hello():
