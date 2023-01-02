@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { Key } from 'react'
-import { redis } from '../lib/database'
+import { redis, scan } from '../lib/database'
 
 export default function subscriptions({ channels }: any) {
   return (
@@ -10,9 +10,22 @@ export default function subscriptions({ channels }: any) {
         {channels.map((channel: any, id: Key) => (
           <div key={id} className='mt-4'>
             <div className='hover:cursor-pointer'>
-              {channel.url}
-              <Link href={String(channel.url)} passHref legacyBehavior>
-                <Image src={channel.cover[0]} alt='' width={1000} height={1000} />
+              {channel.id.S}
+              <Link href={channel.id.S} passHref legacyBehavior>
+                {channel.info ? (
+                  <Image
+                    src={
+                      JSON.parse(JSON.parse(channel.info.S))['thumbnails'][7][
+                        'url'
+                      ]
+                    }
+                    alt=''
+                    width={800}
+                    height={800}
+                  />
+                ) : (
+                  <>{channel.id.S}</>
+                )}
               </Link>
             </div>
           </div>
@@ -23,12 +36,11 @@ export default function subscriptions({ channels }: any) {
 }
 
 export async function getServerSideProps() {
-  const db_result: string | null = await redis().get('channels')
-  const channels = JSON.parse(db_result!)
+  const channels = await scan()
 
   return {
     props: {
-      channels: channels,
+      channels: channels.Items,
     },
   }
 }

@@ -1,13 +1,8 @@
 *.mp4
-backend/functions/__pycache__/*
 backend/.env
 backend/youtube.sqlite3
 *.part
-backend/blueprints/__pycache__/*
-backend/classes/__pycache__/*
-backend/functions/databaseCalls/__pycache__/*
 backend/serviceAccountKey.json
-backend/__pycache__/*
 mongodb/docker-compose.yaml
 backend/*.jpg
 alpine-cron/cronjobs
@@ -27,9 +22,7 @@ aws/lambda-ec2/.aws-sam/*
 standalone/config.json
 digitalocean/docker.sh
 standalone/docker.sh
-redis/__pycache__/*
-redis/subscriber_docker/__pycache__/*
-redis/lists/__pycache__/*
-*/__pycache__/*
 celery/celerybeat-*
 **/.aws-sam/
+**/__pycache__/
+**/ffmpeg/

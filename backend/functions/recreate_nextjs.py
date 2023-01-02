@@ -110,5 +110,12 @@ def multiprocessy():
     finish = perf_counter()
     logging.info(f'{start} - {finish} - {finish - start}')
 
+def celery():
+    file_contents = read_file(recreate_file)
+    for channel in file_contents:
+        url = f'http://homelabwithkevin.com:8080/download?url={channel}'
+        result = requests.get(url)
+        print(result.status_code)
+
 if __name__ == '__main__':
-    multiprocessy()
+    celery()
