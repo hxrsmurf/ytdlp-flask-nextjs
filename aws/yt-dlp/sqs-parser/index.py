@@ -17,6 +17,8 @@ def handler(event, context):
         base_url = os.environ['ApiUrl']
         url = f'{base_url}/download?url={video_original_url}'
         requests.get(url)
+    else:
+        logging.info(f'Already exists: {url}')
 
     return({
             'statusCode': 200,
