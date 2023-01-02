@@ -1,9 +1,13 @@
 import json
 import yt_dlp
 import logging
+import os
 
 from .parse import parse_info
 from .database import get_item, put_item_channel, put_item_video
+
+table_channels = os.environ['TableChannels']
+table_videos = os.environ['TableVideos']
 
 def download(url):
     ydl_opts = {
@@ -23,20 +27,22 @@ def check_database(url_info):
     download_type = url_info['download_type']
 
     if download_type == 'playlist':
+        table_name = table_channels
         original_url = ''.join(url_info['original_url'])
         latest_video_original_url = ''.join(url_info['latest_video_original_url'])
-        latest_video_original_url_database = get_item(original_url)
+        latest_video_original_url_database = get_item(original_url, download_type, table_name)
 
         if not latest_video_original_url == latest_video_original_url_database:
-            put_item_channel(original_url, url_info)
+            put_item_channel(original_url, url_info, table_name)
         else:
             logging.info('Already in database')
     elif download_type == 'video':
+        table_name = table_videos
         id = url_info['id']
         like_count = url_info['like_count']
-        like_count_database = get_item(id, download_type)
+        like_count_database = get_item(id, download_type, table_name)
 
         if not like_count == like_count_database:
-            put_item_video(id, url_info)
+            put_item_video(id, url_info, table_name)
         else:
             logging.info('Already in database')

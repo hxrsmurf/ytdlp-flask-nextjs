@@ -5,14 +5,7 @@ import json
 
 client = boto3.client('dynamodb')
 
-# Allows me to run this python locally
-if 'TableName' in os.environ:
-    table_name = os.environ['TableName']
-else:
-    logging.info('Please manually set table_name')
-    table_name = None
-
-def get_item(id, download_type):
+def get_item(id, download_type, table_name):
     logging.info('Getting item')
     response = client.get_item(
         TableName=table_name,
@@ -31,14 +24,14 @@ def get_item(id, download_type):
     else:
         return False
 
-def put_item(item):
+def put_item(item, table_name):
     response = client.put_item(
         TableName = table_name,
         Item = item
     )
     return response
 
-def put_item_channel(original_url, url_info):
+def put_item_channel(original_url, url_info, table_name):
     logging.info(f'Adding {original_url}')
 
     item = {
@@ -69,9 +62,9 @@ def put_item_channel(original_url, url_info):
         else:
             logging.error(f'Cannot convert {key} {value}')
 
-    put_item(item)
+    put_item(item, table_name)
 
-def put_item_video(id, url_info):
+def put_item_video(id, url_info, table_name):
     logging.info(f'Adding {id}')
 
     item = {
@@ -101,4 +94,4 @@ def put_item_video(id, url_info):
         else:
             logging.error(f'Cannot convert {key} {value} {value_type}')
 
-    put_item(item)
+    put_item(item, table_name)
