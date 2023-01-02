@@ -13,26 +13,22 @@ def get_item(id):
         Key = {
             'id': {
                 'S': id
-
             }
         }
     )
 
     if 'Item' in response:
-        return response['Item']['video_id']['S']
+        return True
     else:
         return False
 
-def put_item(url, info, video_id):
-    logging.info(f'Adding item: {url}')
+def put_item(id, info):
+    logging.info(f'Adding item: {id}')
     response = client.put_item(
         TableName = table_name,
         Item = {
             'id': {
-                'S': url
-            },
-            'video_id': {
-                'S': video_id
+                'S': id
             },
             'info':{
                 'S': json.dumps(info)
