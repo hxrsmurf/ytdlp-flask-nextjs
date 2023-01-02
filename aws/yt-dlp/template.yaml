@@ -103,7 +103,8 @@ Resources:
             Fn::Sub: '${LayerStackName}-ytdlp'
       Environment:
         Variables:
-          TableName: !Ref Table
+          TableChannels: !Ref Table
+          TableVideos: !Ref TableVideos
           QueueUrl: !Ref Queue
       Events:
         HttpApi:
