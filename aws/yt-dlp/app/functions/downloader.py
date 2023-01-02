@@ -6,7 +6,7 @@ def download(video, video_range=2, download_confirm=False):
                 return(d['filename'])
 
     ytdl_opts = {
-        'outtmpl' : '%(id)s/%(id)s.%(ext)s',
+        'outtmpl' : '/videos/%(channel)s/%(title)s-%(id)s.%(ext)s',
         'progress_hooks' : [hook],
         #'windowsfilenames': True,
         'playlistend' : video_range,

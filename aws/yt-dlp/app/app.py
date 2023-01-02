@@ -11,9 +11,9 @@ def hello():
 def download_web():
     url = request.args['url']
     range = 1
-    confirm = False
+    confirm = True
     download_result = download(video=url, video_range=range, download_confirm=confirm)
-    return download_result
+    return ('Success')
 
 if __name__ == '__main__':
 	app.run(host='0.0.0.0', port=8000)
