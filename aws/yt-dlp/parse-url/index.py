@@ -4,24 +4,26 @@ import json
 from functions.utils import download, check_database
 
 logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 def handler(event, context):
-    if 'queryStringParameters' in event:
-        url = event['queryStringParameters']['url']
-    else:
-        # Parses SQS Input
-        url = event['Records'][0]['body']
+    if event:
+        if 'queryStringParameters' in event:
+            url = event['queryStringParameters']['url']
+        elif 'Records' in event:
+            # Parses SQS Input
+            url = event['Records'][0]['body']
 
-    info, id, type = download(url)
-
-    # Check id in database
-    # As required, update database
-    check_database(info, id, type)
+    url_info = download(url)
+    check_database(url_info)
 
     return({
         'statusCode': 200,
-        'body': json.dumps(info),
+        'body': json.dumps(url_info),
         'headers': {
             'Content-Type': 'application/json'
         }
     })
+
+if __name__ == '__main__':
+    handler(None, None)
