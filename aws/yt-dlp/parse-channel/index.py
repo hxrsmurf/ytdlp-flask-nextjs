@@ -10,13 +10,14 @@ def handler(event, context):
         url = event['queryStringParameters']['url']
         channel_info = url
     else:
-        pass
+        # Parses SQS Input
+        url = event['Records'][0]['body']
 
     channel_info, video_id, video_original_url = get_channel_info(url)
     dynamo_video_id = get_item(url)
 
     if not video_id == dynamo_video_id:
-        put_item(url, channel_info, video_id)
+        put_item(url, channel_info, video_id, video_original_url)
 
     return({
             'statusCode': 200,
