@@ -1,0 +1,9 @@
+version: '3.3'
+services:
+  web:
+    build:
+      context: app
+    volumes:
+      - ./videos:/videos
+    ports:
+      - '8080:8080'
