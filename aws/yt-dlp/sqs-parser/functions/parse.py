@@ -31,4 +31,4 @@ def parse_channel_info(info):
         'webpage_url_basename' : json_info['webpage_url_basename']
     }
 
-    return json.dumps(output_info), video_id
+    return json.dumps(output_info), video_id, video_original_url
