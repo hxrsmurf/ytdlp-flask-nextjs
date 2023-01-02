@@ -12,7 +12,7 @@ else:
     logging.info('Please manually set table_name')
     table_name = None
 
-def get_item(id):
+def get_item(id, download_type):
     logging.info('Getting item')
     response = client.get_item(
         TableName=table_name,
@@ -24,7 +24,10 @@ def get_item(id):
     )
 
     if 'Item' in response:
-        return response['Item']['latest_video_original_url']['S']
+        if download_type == 'playlist':
+            return response['Item']['latest_video_original_url']['S']
+        elif download_type == 'video':
+            return response['Item']['id']['S']
     else:
         return False
 
@@ -55,7 +58,6 @@ def put_item_channel(original_url, url_info):
             item[key] = {
                 'S': str(value)
             }
-            # string = ''.join(value)
         elif value_type == list:
             item[key] = {
                 'S': str(value)
@@ -66,5 +68,37 @@ def put_item_channel(original_url, url_info):
             }
         else:
             logging.error(f'Cannot convert {key} {value}')
+
+    put_item(item)
+
+def put_item_video(id, url_info):
+    logging.info(f'Adding {id}')
+
+    item = {
+        'id': {
+            'S': id
+        },
+    }
+
+    for key, value in url_info.items():
+        value_type = type(value)
+        if value_type == str or value_type == int:
+            item[key] = {
+                'S': str(value)
+            }
+        elif value_type == list:
+            item[key] = {
+                'S': str(value)
+            }
+        elif value_type == tuple:
+            item[key] = {
+                'S': ''.join(value)
+            }
+        elif not value:
+            item[key] = {
+                'NULL': True
+            }
+        else:
+            logging.error(f'Cannot convert {key} {value} {value_type}')
 
     put_item(item)

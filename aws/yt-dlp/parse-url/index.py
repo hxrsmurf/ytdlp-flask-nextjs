@@ -13,6 +13,9 @@ def handler(event, context):
         elif 'Records' in event:
             # Parses SQS Input
             url = event['Records'][0]['body']
+    else:
+        # url = 'https://www.youtube.com/@MrBeast'
+        url = 'https://www.youtube.com/watch?v=7IKab3HcfFk'
 
     url_info = download(url)
     check_database(url_info)

@@ -3,7 +3,7 @@ import yt_dlp
 import logging
 
 from .parse import parse_info
-from .database import get_item, put_item_channel
+from .database import get_item, put_item_channel, put_item_video
 
 def download(url):
     ydl_opts = {
@@ -20,11 +20,22 @@ def download(url):
 def check_database(url_info):
     logging.info('Checking database')
 
-    original_url = ''.join(url_info['original_url'])
-    latest_video_original_url = ''.join(url_info['latest_video_original_url'])
-    latest_video_original_url_database = get_item(original_url)
+    download_type = url_info['download_type']
 
-    if not latest_video_original_url == latest_video_original_url_database:
-        put_item_channel(original_url, url_info)
-    else:
-        logging.info('Already in database')
+    if download_type == 'playlist':
+        original_url = ''.join(url_info['original_url'])
+        latest_video_original_url = ''.join(url_info['latest_video_original_url'])
+        latest_video_original_url_database = get_item(original_url)
+
+        if not latest_video_original_url == latest_video_original_url_database:
+            put_item_channel(original_url, url_info)
+        else:
+            logging.info('Already in database')
+    elif download_type == 'video':
+        id = url_info['id']
+        id_database = get_item(id, download_type)
+
+        if not id == id_database:
+            put_item_video(id, url_info)
+        else:
+            logging.info('Already in database')
