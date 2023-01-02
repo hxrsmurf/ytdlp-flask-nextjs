@@ -33,9 +33,10 @@ def check_database(url_info):
             logging.info('Already in database')
     elif download_type == 'video':
         id = url_info['id']
-        id_database = get_item(id, download_type)
+        like_count = url_info['like_count']
+        like_count_database = get_item(id, download_type)
 
-        if not id == id_database:
+        if not like_count == like_count_database:
             put_item_video(id, url_info)
         else:
             logging.info('Already in database')

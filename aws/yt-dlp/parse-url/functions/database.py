@@ -27,7 +27,7 @@ def get_item(id, download_type):
         if download_type == 'playlist':
             return response['Item']['latest_video_original_url']['S']
         elif download_type == 'video':
-            return response['Item']['id']['S']
+            return response['Item']['like_count']['S']
     else:
         return False
 
