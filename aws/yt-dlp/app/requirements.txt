@@ -1,4 +1,4 @@
-celery
+celery[redis]
 flask
 waitress
 yt-dlp
