@@ -9,6 +9,13 @@ Parameters:
   PythonVersion:
     Type: String
     Default: python3.9
+  LayerStackName:
+    Type: String
+    Default: python-lambda-layers
+
+Outputs:
+  ApiUrl:
+    Value: !GetAtt ServerlessHttpApi.ApiEndpoint
 
 Resources:
   Queue:
@@ -67,6 +74,33 @@ Resources:
           Properties:
             ScheduleExpression: rate(1 hours)
             State: DISABLED
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref Table
+        - SQSSendMessagePolicy:
+            QueueName: !GetAtt Queue.QueueName
+
+  ParseUrl:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: index.handler
+      Runtime: !Ref PythonVersion
+      CodeUri: parse-url
+      MemorySize: 256
+      Timeout: 60
+      Layers:
+        - Fn::ImportValue:
+            Fn::Sub: '${LayerStackName}-ytdlp'
+      Environment:
+        Variables:
+          TableName: !Ref Table
+          QueueUrl: !Ref Queue
+      Events:
+        HttpApi:
+          Type: HttpApi
+          Properties:
+            Path: /
+            Method: GET
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref Table
