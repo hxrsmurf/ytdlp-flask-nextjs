@@ -26,3 +26,4 @@ standalone/docker.sh
 celery/celerybeat-*
 **/.aws-sam/
 **/__pycache__/
+.env
