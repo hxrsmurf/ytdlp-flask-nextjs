@@ -6,6 +6,9 @@ Parameters:
   ApiUrl:
     Type: String
     Default: http://placeholder.homelabwithkevin.com:8080
+  PythonVersion:
+    Type: String
+    Default: python3.9
 
 Resources:
   Queue:
@@ -45,3 +48,27 @@ Resources:
             Resource:
               - !Sub arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${Table}
               - !Sub arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${Table}/index/*
+
+  ListChannels:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: index.handler
+      Runtime: !Ref PythonVersion
+      CodeUri: list-channels
+      MemorySize: 128
+      Timeout: 60
+      Environment:
+        Variables:
+          TableName: !Ref Table
+          QueueUrl: !Ref Queue
+      Events:
+        EventBridge:
+          Type: ScheduleV2
+          Properties:
+            ScheduleExpression: rate(1 hours)
+            State: DISABLED
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref Table
+        - SQSSendMessagePolicy:
+            QueueName: !GetAtt Queue.QueueName
