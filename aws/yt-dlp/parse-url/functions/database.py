@@ -1,7 +1,5 @@
 import boto3
-import os
 import logging
-import json
 
 client = boto3.client('dynamodb')
 
