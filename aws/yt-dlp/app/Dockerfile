@@ -6,4 +6,4 @@ RUN apk add ffmpeg
 
 FROM builder as app
 COPY . /
-CMD ["waitress-serve", "app:app" ]
+CMD ["waitress-serve", "app:app"]
