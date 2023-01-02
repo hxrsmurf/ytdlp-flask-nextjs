@@ -11,9 +11,10 @@ def handler(event, context):
     result_scan = scan_items()
     channels = parse_paginated_info(result_scan)
     for channel in channels:
-        send_sqs_message(channel)
+        logging.info(channel)
+        #send_sqs_message(channel)
 
     return({
-            'statusCode': 200,
-            'body': 'Success'
-        })
+        'statusCode': 200,
+        'body': 'Success'
+    })
