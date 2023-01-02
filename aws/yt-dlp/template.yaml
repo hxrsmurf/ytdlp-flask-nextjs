@@ -13,6 +13,11 @@ Resources:
     Properties:
       TableName: nextjs-13-yt-dlp-channels
 
+  ApiUrl:
+    Type: String
+    Properties:
+      Default: http://seedbox.homelabwithkevin.com:8080
+
   Lambda:
     Type: 'AWS::Serverless::Function'
     Properties:
@@ -51,6 +56,7 @@ Resources:
         Variables:
           TableName: !Ref Table
           QueueUrl: !Ref Queue
+          ApiUrl: !Ref ApiUrl
       Layers:
         - !Ref Layer
         - !Ref ffmpeg
@@ -93,16 +99,16 @@ Resources:
     Properties:
       Handler: index.handler
       Runtime: python3.9
-      CodeUri: python
+      CodeUri: downloader
       MemorySize: 256
       Timeout: 900
       Environment:
         Variables:
           TableName: !Ref Table
           QueueUrl: !Ref Queue
+          ApiUrl: !Ref ApiUrl
       Layers:
-        - !Ref Layer
-        - !Ref ffmpeg
+        - !Ref requests
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref Table
@@ -126,5 +132,16 @@ Resources:
         - python3.9
       Description: ffmpeg (python)
       LayerName: ffmpeg
+    Metadata:
+      BuildMethod: python3.9
+
+  requests:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      ContentUri: requests
+      CompatibleRuntimes:
+        - python3.9
+      Description: requests (python)
+      LayerName: requests-py
     Metadata:
       BuildMethod: python3.9
