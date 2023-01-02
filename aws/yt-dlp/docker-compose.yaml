@@ -3,7 +3,16 @@ services:
   web:
     build:
       context: app
-    volumes:
-      - ./videos:/videos
     ports:
       - '8080:8080'
+  redis:
+    image: "redis:alpine"
+    command: redis-server
+    ports:
+      - 6379:6379
+
+  celery:
+    build:
+      context: celery
+      volumes:
+        - ./videos:/videos
