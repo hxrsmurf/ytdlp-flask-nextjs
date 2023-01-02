@@ -92,6 +92,7 @@ def parse_video_info(json_info):
     original_url = json_info['original_url']
     display_id = json_info['display_id']
     fulltitle = json_info['fulltitle']
+    download_type = json_info['_type']
 
     raw_info = {
         'id': id,
@@ -119,6 +120,7 @@ def parse_video_info(json_info):
         'original_url': original_url,
         'display_id': display_id,
         'fulltitle': fulltitle,
+        'download_type' : download_type,
     }
 
     return raw_info
