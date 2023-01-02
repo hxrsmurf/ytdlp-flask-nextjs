@@ -39,7 +39,6 @@ def parse_channel_info(json_info):
     latest_video_webpage_url = entries['webpage_url']
     latest_video_original_url = entries['original_url']
 
-
     raw_info = {
         'id' : id,
         'uploader' : uploader,
@@ -68,33 +67,58 @@ def parse_channel_info(json_info):
     return raw_info
 
 def parse_video_info(json_info):
+    id = json_info['id']
+    title = json_info['title']
+    thumbnail = json_info['thumbnail']
+    description = json_info['description']
+    uploader = json_info['uploader']
+    uploader_id = json_info['uploader_id']
+    uploader_url = json_info['uploader_url']
     channel_id = json_info['channel_id']
-    output_info = {
-        'id': json_info['id'],
-        'title': json_info['title'],
-        'thumbnail': json_info['thumbnail'],
-        'description': json_info['description'],
-        'uploader': json_info['uploader'],
-        'uploader_id': json_info['uploader_id'],
-        'uploader_url': json_info['uploader_url'],
+    channel_url = json_info['channel_url']
+    duration = json_info['duration']
+    view_count = json_info['view_count']
+    webpage_url = json_info['webpage_url']
+    categories = json_info['categories']
+    tags = json_info['tags']
+    release_timestamp = json_info['release_timestamp']
+    comment_count = json_info['comment_count']
+    chapters = json_info['chapters']
+    like_count = json_info['like_count']
+    channel = json_info['channel']
+    channel_follower_count = json_info['channel_follower_count']
+    upload_date = json_info['upload_date']
+    availability = json_info['availability']
+    original_url = json_info['original_url']
+    display_id = json_info['display_id']
+    fulltitle = json_info['fulltitle']
+
+    raw_info = {
+        'id': id,
+        'title': title,
+        'thumbnail': thumbnail,
+        'description': description,
+        'uploader': uploader,
+        'uploader_id': uploader_id,
+        'uploader_url': uploader_url,
         'channel_id': channel_id,
-        'channel_url': json_info['channel_url'],
-        'duration': json_info['duration'],
-        'view_count': json_info['view_count'],
-        'webpage_url': json_info['webpage_url'],
-        'categories': json_info['categories'],
-        'tags': json_info['tags'],
-        'release_timestamp': json_info['release_timestamp'],
-        'comment_count': json_info['comment_count'],
-        'chapters': json_info['chapters'],
-        'like_count': json_info['like_count'],
-        'channel': json_info['channel'],
-        'channel_follower_count': json_info['channel_follower_count'],
-        'upload_date': json_info['upload_date'],
-        'availability': json_info['availability'],
-        'original_url': json_info['original_url'],
-        'display_id': json_info['display_id'],
-        'fulltitle': json_info['fulltitle'],
+        'channel_url': channel_url,
+        'duration': duration,
+        'view_count': view_count,
+        'webpage_url': webpage_url,
+        'categories': categories,
+        'tags': tags,
+        'release_timestamp': release_timestamp,
+        'comment_count': comment_count,
+        'chapters': chapters,
+        'like_count': like_count,
+        'channel': channel,
+        'channel_follower_count': channel_follower_count,
+        'upload_date': upload_date,
+        'availability': availability,
+        'original_url': original_url,
+        'display_id': display_id,
+        'fulltitle': fulltitle,
     }
 
-    return output_info, channel_id, 'video'
+    return raw_info
