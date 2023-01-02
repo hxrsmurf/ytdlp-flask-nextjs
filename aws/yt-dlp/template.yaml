@@ -16,7 +16,7 @@ Resources:
   ApiUrl:
     Type: String
     Properties:
-      Default: http://seedbox.homelabwithkevin.com:8080
+      Default: http://placeholder.homelabwithkevin.com:8080
 
   Lambda:
     Type: 'AWS::Serverless::Function'
