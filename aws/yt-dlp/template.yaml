@@ -23,6 +23,11 @@ Resources:
     Properties:
       VisibilityTimeout: 60
 
+  QueueDownload:
+    Type: AWS::SQS::Queue
+    Properties:
+      VisibilityTimeout: 900
+
   Table:
     Type: AWS::Serverless::SimpleTable
     Properties:
@@ -111,3 +116,30 @@ Resources:
             TableName: !Ref Table
         - SQSSendMessagePolicy:
             QueueName: !GetAtt Queue.QueueName
+
+  Downloader:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: index.handler
+      Runtime: !Ref PythonVersion
+      CodeUri: downloader
+      MemorySize: 2048
+      Timeout: 900
+      Layers:
+        - Fn::ImportValue:
+            Fn::Sub: '${LayerStackName}-ffmpeg'
+        - Fn::ImportValue:
+            Fn::Sub: '${LayerStackName}-requests'
+        - Fn::ImportValue:
+            Fn::Sub: '${LayerStackName}-ytdlp'
+      Environment:
+        Variables:
+          ApiUrl: !Ref ApiUrl
+          QueueUrl: !Ref Queue
+          TableName: !Ref Table
+      Events:
+        SQS:
+          Type: SQS
+          Properties:
+             BatchSize: 1
+             Queue: !GetAtt QueueDownload.Arn
