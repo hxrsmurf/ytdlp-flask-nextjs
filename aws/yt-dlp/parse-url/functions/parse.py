@@ -2,53 +2,70 @@ import logging
 import json
 
 def parse_info(info):
-    logging.info('Parsing info...')
     json_info = json.loads(info)
     type = json_info['_type']
+    original_url = json_info['original_url']
+    logging.info(f'Parsing: {original_url} - {type}')
+
     if type == 'playlist':
-        logging.info('Parsing channel/playlist')
         return parse_channel_info(json.loads(info))
     elif type == 'video':
-        logging.info('Parsing video')
         return parse_video_info(json.loads(info))
     else:
         return 'Error'
 
 def parse_channel_info(json_info):
-    video_id = json_info['entries'][0]['entries'][0]['id']
-    video_original_url = json_info['entries'][0]['entries'][0]['original_url']
+    id = json_info['id']
+    uploader = json_info['uploader']
+    uploader_id = json_info['uploader_id']
+    uploader_url = json_info['uploader_url']
+    title = json_info['title']
+    channel_follower_count = json_info['channel_follower_count']
+    description = json_info['description']
+    tags = json_info['tags']
     thumbnails = json_info['thumbnails']
     cover_photo = thumbnails[4]['url'] # height: 263, width: 960
-    uploader_id = json_info['uploader_id']
+    channel = json_info['channel']
+    channel_id = json_info['channel_id']
+    channel_url = json_info['channel_url']
+    webpage_url = json_info['webpage_url'],
+    original_url = json_info['original_url'],
+    webpage_url_basename = json_info['webpage_url_basename']
+    download_type = json_info['_type']
 
-    output_info = {
-        'id' : json_info['id'],
-        'uploader' : json_info['uploader'],
+    # Latest Upload
+    entries = json_info['entries'][0]['entries'][0]
+    latest_video_id = entries['id']
+    latest_video_webpage_url = entries['webpage_url']
+    latest_video_original_url = entries['original_url']
+
+
+    raw_info = {
+        'id' : id,
+        'uploader' : uploader,
         'uploader_id' : uploader_id,
-        'uploader_url' : json_info['uploader_url'],
-        'title' : json_info['title'],
-        'channel_follower_count' : json_info['channel_follower_count'],
-        'description' : json_info['description'],
-        'tags' : json_info['tags'],
+        'uploader_url' : uploader_url,
+        'title' : title,
+        'channel_follower_count' : channel_follower_count,
+        'description' : description,
+        'tags' : tags,
         'thumbnails' : thumbnails,
-        'channel' : json_info['channel'],
-        'channel_id' : json_info['channel_id'],
-        'channel_url' : json_info['channel_url'],
-
-        # First Entry of Channel's Video
-        'video_id': video_id,
-        'video_webpage_url': json_info['entries'][0]['entries'][0]['webpage_url'],
-        'video_original_url': video_original_url,
-
-        # Thumbnails
         'cover_photo': cover_photo,
+        'channel' : channel,
+        'channel_id' : channel_id,
+        'channel_url' : channel_url,
+        'webpage_url' : webpage_url,
+        'original_url' : original_url,
+        'webpage_url_basename' : webpage_url_basename,
+        'download_type' : download_type,
 
-        'webpage_url' : json_info['webpage_url'],
-        'original_url' : json_info['original_url'],
-        'webpage_url_basename' : json_info['webpage_url_basename']
+        # Latest Upload
+        'latest_video_id': latest_video_id,
+        'latest_video_webpage_url': latest_video_webpage_url,
+        'latest_video_original_url': latest_video_original_url
     }
 
-    return output_info, uploader_id, 'playlist'
+    return raw_info
 
 def parse_video_info(json_info):
     channel_id = json_info['channel_id']
