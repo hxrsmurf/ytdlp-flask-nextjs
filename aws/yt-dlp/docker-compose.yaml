@@ -14,5 +14,5 @@ services:
   celery:
     build:
       context: celery
-    volumes:
-      - ./videos:/videos
+      volumes:
+        - ./videos:/videos
