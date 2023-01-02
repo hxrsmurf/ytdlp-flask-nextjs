@@ -28,7 +28,7 @@ Resources:
     Properties:
       VisibilityTimeout: 900
 
-  Table:
+  TableChannels:
     Type: AWS::Serverless::SimpleTable
     Properties:
       TableName: nextjs-13-yt-dlp-channels
@@ -63,8 +63,8 @@ Resources:
               - 'dynamodb:DescribeTable'
               - 'dynamodb:ConditionCheckItem'
             Resource:
-              - !Sub arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${Table}
-              - !Sub arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${Table}/index/*
+              - !Sub arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:{TableChannels}/$
+              - !Sub arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:{TableChannels}/$/index/*
 
   ListChannels:
     Type: 'AWS::Serverless::Function'
@@ -76,7 +76,7 @@ Resources:
       Timeout: 60
       Environment:
         Variables:
-          TableName: !Ref Table
+          TableName: !Ref TableChannels
           QueueUrl: !Ref Queue
       Events:
         EventBridge:
@@ -86,7 +86,7 @@ Resources:
             State: DISABLED
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: !Ref Table
+            TableName: !Ref TableChannels
         - SQSSendMessagePolicy:
             QueueName: !GetAtt Queue.QueueName
 
@@ -103,7 +103,7 @@ Resources:
             Fn::Sub: '${LayerStackName}-ytdlp'
       Environment:
         Variables:
-          TableChannels: !Ref Table
+          TableChannels: !Ref TableChannels
           TableVideos: !Ref TableVideos
           QueueUrl: !Ref Queue
       Events:
@@ -119,7 +119,7 @@ Resources:
              Queue: !GetAtt Queue.Arn
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: !Ref Table
+            TableName: !Ref TableChannels
         - DynamoDBCrudPolicy:
             TableName: !Ref TableVideos
         - SQSSendMessagePolicy:
@@ -144,7 +144,7 @@ Resources:
         Variables:
           ApiUrl: !Ref ApiUrl
           QueueUrl: !Ref Queue
-          TableName: !Ref Table
+          TableName: !Ref TableChannels
       Events:
         SQS:
           Type: SQS
