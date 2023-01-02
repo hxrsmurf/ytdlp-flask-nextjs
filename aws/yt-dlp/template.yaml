@@ -33,6 +33,11 @@ Resources:
     Properties:
       TableName: nextjs-13-yt-dlp-channels
 
+  TableVideos:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      TableName: nextjs-13-yt-dlp-videos
+
   NextJSUser:
     Type: 'AWS::IAM::User'
     Properties: {}
@@ -114,6 +119,8 @@ Resources:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref Table
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TableVideos
         - SQSSendMessagePolicy:
             QueueName: !GetAtt Queue.QueueName
 
