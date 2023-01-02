@@ -16,13 +16,6 @@ Parameters:
 Outputs:
   ApiUrl:
     Value: !GetAtt ServerlessHttpApi.ApiEndpoint
-  LayerStackName:
-    Type: String
-    Default: python-lambda-layers
-
-Outputs:
-  ApiUrl:
-    Value: !GetAtt ServerlessHttpApi.ApiEndpoint
 
 Resources:
   Queue:
