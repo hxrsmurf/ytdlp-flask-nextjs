@@ -30,7 +30,7 @@ Resources:
           TableName: !Ref Table
           QueueUrl: !Ref Queue
       Layers:
-        - !Ref Layer
+        - !Ref ytdlp
         - !Ref ffmpeg
       Events:
         PostAPI:
@@ -58,7 +58,7 @@ Resources:
           QueueUrl: !Ref Queue
           ApiUrl: !Ref ApiUrl
       Layers:
-        - !Ref Layer
+        - !Ref ytdlp
         - !Ref requests
       Events:
         SQS:
@@ -113,14 +113,14 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: !Ref Table
 
-  Layer:
+  ytdlp:
     Type: AWS::Serverless::LayerVersion
     Properties:
       ContentUri: yt-dlp
       CompatibleRuntimes:
         - python3.9
       Description: YouTube-DLP (Python)
-      LayerName: YouTube-dlp
+      LayerName: yt-dlp
     Metadata:
       BuildMethod: python3.9
 
