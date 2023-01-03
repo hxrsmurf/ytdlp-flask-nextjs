@@ -14,6 +14,15 @@ def handler(event, context):
         send_sqs_message(channel)
 
     return({
+        'statusCode': 200,
+        'body': 'Success'
+    })
+
+    return({
             'statusCode': 200,
             'body': 'Success'
         })
+    return({
+        'statusCode': 200,
+        'body': 'Success'
+    })

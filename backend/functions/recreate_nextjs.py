@@ -11,8 +11,7 @@ logging.basicConfig(level='INFO')
 
 recreate_file = 'recreate.txt'
 api_url = 'http://localhost:3000/api/addChannel?id='
-base_url = 'https://6vgaxmdml7.execute-api.us-east-1.amazonaws.com/?id='
-
+base_url = 'https://4kwaux93vj.execute-api.us-east-1.amazonaws.com/?url='
 list_channels = []
 
 r = redis.Redis(
@@ -118,4 +117,5 @@ def celery():
         print(result.status_code)
 
 if __name__ == '__main__':
-    celery()
+    # celery()
+    multiprocessy()

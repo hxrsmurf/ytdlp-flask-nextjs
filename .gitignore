@@ -26,3 +26,6 @@ celery/celerybeat-*
 **/.aws-sam/
 **/__pycache__/
 **/ffmpeg/
+**/__pycache__/
+.env
+*.zip
