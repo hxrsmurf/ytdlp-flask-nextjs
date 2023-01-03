@@ -1,3 +1,4 @@
+import { channel } from 'diagnostics_channel'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Key } from 'react'
@@ -12,16 +13,14 @@ export default function subscriptions({ channels }: any) {
             <div className='hover:cursor-pointer'>
               {channel.id.S}
               <Link href={channel.id.S} passHref legacyBehavior>
-                {channel.cover_photo ? (
+                <a target='_blank' rel='noopener noreferrer'>
                   <Image
                     src={channel.cover_photo.S}
                     alt=''
                     width={800}
                     height={800}
                   />
-                ) : (
-                  <>{channel.id.S}</>
-                )}
+                </a>
               </Link>
             </div>
           </div>
@@ -33,7 +32,6 @@ export default function subscriptions({ channels }: any) {
 
 export async function getServerSideProps() {
   const channels = await scan()
-  console.log(channels)
 
   return {
     props: {
