@@ -29,13 +29,16 @@ def put_item(item, table_name):
     )
     return response
 
-def put_item_channel(original_url, url_info, table_name):
+def put_item_channel(original_url, url_info, table_name, updated_at):
     logging.info(f'Adding {original_url}')
 
     item = {
         'id': {
             'S': original_url
         },
+        'updated_at_epoch' : {
+            'S': updated_at
+        }
     }
 
     for key, value in url_info.items():
@@ -62,13 +65,16 @@ def put_item_channel(original_url, url_info, table_name):
 
     put_item(item, table_name)
 
-def put_item_video(id, url_info, table_name):
+def put_item_video(id, url_info, table_name, updated_at):
     logging.info(f'Adding {id}')
 
     item = {
         'id': {
             'S': id
         },
+        'updated_at_epoch' : {
+            'S': updated_at
+        }
     }
 
     for key, value in url_info.items():

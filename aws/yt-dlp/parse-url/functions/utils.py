@@ -2,6 +2,7 @@ import json
 import yt_dlp
 import logging
 import os
+from time import time
 
 from .parse import parse_info
 from .database import get_item, put_item_channel, put_item_video
@@ -21,6 +22,9 @@ def download(url):
 
     return parse_info(info)
 
+def current_epoch_time():
+    return str(time())
+
 def check_database(url_info):
     logging.info('Checking database')
 
@@ -33,7 +37,7 @@ def check_database(url_info):
         latest_video_original_url_database = get_item(original_url, download_type, table_name)
 
         if not latest_video_original_url == latest_video_original_url_database:
-            put_item_channel(original_url, url_info, table_name)
+            put_item_channel(original_url, url_info, table_name, updated_at=current_epoch_time())
         else:
             logging.info('Already in database')
     elif download_type == 'video':
@@ -43,6 +47,6 @@ def check_database(url_info):
         like_count_database = get_item(id, download_type, table_name)
 
         if not like_count == like_count_database:
-            put_item_video(id, url_info, table_name)
+            put_item_video(id, url_info, table_name, updated_at=current_epoch_time())
         else:
             logging.info('Already in database')
