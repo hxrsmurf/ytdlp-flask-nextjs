@@ -12,13 +12,9 @@ export default function subscriptions({ channels }: any) {
             <div className='hover:cursor-pointer'>
               {channel.id.S}
               <Link href={channel.id.S} passHref legacyBehavior>
-                {channel.info ? (
+                {channel.cover_photo ? (
                   <Image
-                    src={
-                      JSON.parse(JSON.parse(channel.info.S))['thumbnails'][7][
-                        'url'
-                      ]
-                    }
+                    src={channel.cover_photo.S}
                     alt=''
                     width={800}
                     height={800}
@@ -37,6 +33,7 @@ export default function subscriptions({ channels }: any) {
 
 export async function getServerSideProps() {
   const channels = await scan()
+  console.log(channels)
 
   return {
     props: {
