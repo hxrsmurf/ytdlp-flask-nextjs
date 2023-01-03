@@ -7,8 +7,13 @@ from time import time
 from .parse import parse_info
 from .database import get_item, put_item_channel, put_item_video
 
-table_channels = os.environ['TableChannels']
-table_videos = os.environ['TableVideos']
+# Hard coding this so I can run locally
+table_channels = 'nextjs-13-yt-dlp-channels'
+table_videos = 'nextjs-13-yt-dlp-videos'
+
+if 'TableChannels' in os.environ:
+    table_channels = os.environ['TableChannels']
+    table_videos = os.environ['TableVideos']
 
 def download(url):
     ydl_opts = {
