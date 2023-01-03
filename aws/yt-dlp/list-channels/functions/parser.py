@@ -8,7 +8,6 @@ def parse_paginated_info(info):
 
     for item in items:
         id = item['id']['S']
-        video_id = item['video_id']['S']
         list_of_channels.append(id)
 
     return list_of_channels

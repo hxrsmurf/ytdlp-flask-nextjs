@@ -13,6 +13,13 @@ Parameters:
     Type: String
     Default: python-lambda-layers
 
+  EventBridgeState:
+    Type: String
+    Default: ENABLED
+    AllowedValues:
+      - DISABLED
+      - ENABLED
+
 Outputs:
   ApiUrl:
     Value: !GetAtt ServerlessHttpApi.ApiEndpoint
@@ -28,10 +35,15 @@ Resources:
     Properties:
       VisibilityTimeout: 900
 
-  Table:
+  TableChannels:
     Type: AWS::Serverless::SimpleTable
     Properties:
       TableName: nextjs-13-yt-dlp-channels
+
+  TableVideos:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      TableName: nextjs-13-yt-dlp-videos
 
   NextJSUser:
     Type: 'AWS::IAM::User'
@@ -58,8 +70,10 @@ Resources:
               - 'dynamodb:DescribeTable'
               - 'dynamodb:ConditionCheckItem'
             Resource:
-              - !Sub arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${Table}
-              - !Sub arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${Table}/index/*
+              - !Sub arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:{TableChannels}/$
+              - !Sub arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:{TableChannels}/$/index/*
+              - !Sub arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:{TableVideos}/$
+              - !Sub arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:{TableVideos}/$/index/*
 
   ListChannels:
     Type: 'AWS::Serverless::Function'
@@ -71,17 +85,17 @@ Resources:
       Timeout: 60
       Environment:
         Variables:
-          TableName: !Ref Table
+          TableName: !Ref TableChannels
           QueueUrl: !Ref Queue
       Events:
         EventBridge:
           Type: ScheduleV2
           Properties:
             ScheduleExpression: rate(1 hours)
-            State: DISABLED
+            State: !Ref EventBridgeState
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: !Ref Table
+            TableName: !Ref TableChannels
         - SQSSendMessagePolicy:
             QueueName: !GetAtt Queue.QueueName
 
@@ -98,7 +112,8 @@ Resources:
             Fn::Sub: '${LayerStackName}-ytdlp'
       Environment:
         Variables:
-          TableName: !Ref Table
+          TableChannels: !Ref TableChannels
+          TableVideos: !Ref TableVideos
           QueueUrl: !Ref Queue
       Events:
         HttpApi:
@@ -113,7 +128,9 @@ Resources:
              Queue: !GetAtt Queue.Arn
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: !Ref Table
+            TableName: !Ref TableChannels
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TableVideos
         - SQSSendMessagePolicy:
             QueueName: !GetAtt Queue.QueueName
 
@@ -136,7 +153,7 @@ Resources:
         Variables:
           ApiUrl: !Ref ApiUrl
           QueueUrl: !Ref Queue
-          TableName: !Ref Table
+          TableName: !Ref TableChannels
       Events:
         SQS:
           Type: SQS
