@@ -12,7 +12,7 @@ def handler(event, context):
     channels = parse_paginated_info(result_scan)
     for channel in channels:
         logging.info(channel)
-        #send_sqs_message(channel)
+        send_sqs_message(channel)
 
     return({
         'statusCode': 200,
