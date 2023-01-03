@@ -13,6 +13,13 @@ Parameters:
     Type: String
     Default: python-lambda-layers
 
+  EventBridgeState:
+    Type: String
+    Default: DISABLED
+    AllowedValues:
+      - DISABLED
+      - ENABLED
+
 Outputs:
   ApiUrl:
     Value: !GetAtt ServerlessHttpApi.ApiEndpoint
@@ -85,7 +92,7 @@ Resources:
           Type: ScheduleV2
           Properties:
             ScheduleExpression: rate(1 hours)
-            State: DISABLED
+            State: !Ref EventBridgeState
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref TableChannels

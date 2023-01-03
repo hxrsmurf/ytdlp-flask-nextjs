@@ -6,6 +6,7 @@ from time import time
 
 from .parse import parse_info
 from .database import get_item, put_item_channel, put_item_video
+from .sqs import send_sqs_message
 
 # Hard coding this so I can run locally
 table_channels = 'nextjs-13-yt-dlp-channels'
@@ -43,6 +44,7 @@ def check_database(url_info):
 
         if not latest_video_original_url == latest_video_original_url_database:
             put_item_channel(original_url, url_info, table_name, updated_at=current_epoch_time())
+            send_sqs_message(latest_video_original_url)
         else:
             logging.info('Already in database')
     elif download_type == 'video':
