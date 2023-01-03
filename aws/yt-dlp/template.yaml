@@ -15,7 +15,7 @@ Parameters:
 
   EventBridgeState:
     Type: String
-    Default: DISABLED
+    Default: ENABLED
     AllowedValues:
       - DISABLED
       - ENABLED
