@@ -31,7 +31,10 @@ export default function subscriptions({ channels }: any) {
 }
 
 export async function getServerSideProps() {
-  const channels = await scan(process.env.TABLE_CHANNELS, process.env.CHANNEL_INDEX)
+  const channels = await scan(
+    process.env.TABLE_CHANNELS,
+    process.env.CHANNEL_INDEX
+  )
 
   return {
     props: {
