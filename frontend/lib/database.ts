@@ -25,7 +25,8 @@ export function aws_db(){
 
 export async function scan(){
   const params: any = {
-    TableName: process.env.TABLE_NAME
+    TableName: process.env.TABLE_NAME,
+    IndexName: 'channel-id-index'
   }
 
   const result = await aws_db().scan(params).promise().then((items)=>{
