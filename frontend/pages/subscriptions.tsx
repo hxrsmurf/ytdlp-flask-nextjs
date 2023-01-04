@@ -11,7 +11,7 @@ export default function subscriptions({ channels }: any) {
         {channels.map((channel: any, id: Key) => (
           <div key={id} className='mt-4'>
             <div className='hover:cursor-pointer'>
-              {channel.id.S}
+              {channel.channel.S}
               <Link href={channel.id.S} passHref legacyBehavior>
                 <a target='_blank' rel='noopener noreferrer'>
                   <Image
