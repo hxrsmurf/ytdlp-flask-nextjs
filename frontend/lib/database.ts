@@ -70,3 +70,26 @@ export async function query(
       return items
     })
 }
+
+export async function video_watched(id: string) {
+  const params: any = {
+    TableName: process.env.TABLE_VIDEOS,
+    Key: {
+      'id': {
+        'S': id
+      }
+    },
+    AttributeUpdates: {
+      'watched': {
+        'Action': 'PUT',
+        'Value' : {
+          'BOOL': true
+        }
+      }
+    }
+  }
+  const result = await aws_db().updateItem(params).promise().then((result)=>{
+    return result
+  })
+
+}
