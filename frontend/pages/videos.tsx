@@ -2,9 +2,10 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { Key, useState } from 'react'
+import LoadingPage from '../components/LoadingPage'
 import { redis, scan } from '../lib/database'
 
-export default function videos({ videos }: any) {
+export default function Videos({ videos }: any) {
   const router = useRouter()
   const [showWatched, setShowWatched] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -20,11 +21,7 @@ export default function videos({ videos }: any) {
   }
 
   if (loading) {
-    return (
-      <div className='flex justify-center mt-4'>
-        <div>Loading</div>
-      </div>
-    )
+    return <LoadingPage />
   }
 
   return (
