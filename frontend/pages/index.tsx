@@ -1,7 +1,18 @@
+import { useRouter } from 'next/router'
+import { useEffect } from 'react'
 import AddChannel from '../components/forms/AddChannel'
+import LoadingPage from '../components/LoadingPage'
 import { redis } from '../lib/database'
 
 export default function Home() {
+  const router = useRouter()
+
+  useEffect(() => {
+    router.push('/videos')
+  })
+
+  return <LoadingPage />
+
   return (
     <>
       <div className='flex justify-center mt-4'>
