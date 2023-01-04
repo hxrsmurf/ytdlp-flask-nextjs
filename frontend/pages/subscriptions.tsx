@@ -2,7 +2,7 @@ import { channel } from 'diagnostics_channel'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Key } from 'react'
-import { redis, scan } from '../lib/database'
+import { query, redis, scan } from '../lib/database'
 
 export default function subscriptions({ channels }: any) {
   return (
