@@ -31,9 +31,6 @@ export default function videos({ videos }: any) {
 
 export async function getServerSideProps() {
   const video = await scan(process.env.TABLE_VIDEOS, process.env.VIDEO_INDEX)
-  video.Items?.map((video, id)=>{
-    console.log(video.updated_at_epoch.S)
-  })
 
   return {
     props: {
