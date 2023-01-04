@@ -49,6 +49,11 @@ const menu_items = [
     link: '/subscriptions',
   },
   {
+    name: 'Videos',
+    icon: <VideoCameraIcon className='h-6 w-6' />,
+    link: '/videos',
+  },
+  {
     name: 'Break',
   },
   {
@@ -59,11 +64,6 @@ const menu_items = [
   {
     name: 'History',
     icon: <ArrowPathRoundedSquareIcon className='h-6 w-6' />,
-    link: '/',
-  },
-  {
-    name: 'Your Videos',
-    icon: <VideoCameraIcon className='h-6 w-6' />,
     link: '/',
   },
   {
