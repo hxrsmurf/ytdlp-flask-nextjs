@@ -1,6 +1,6 @@
 data "archive_file" "list-channels" {
   type             = "zip"
-  source_file      = "${path.module}/functions/list-channels/index.py"
+  source_dir = "../list-channels"
   output_file_mode = "0666"
   output_path      = "${path.module}/files/list-channels.zip"
 }

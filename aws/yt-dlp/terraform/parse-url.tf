@@ -1,6 +1,6 @@
 data "archive_file" "parse-url" {
   type             = "zip"
-  source_file      = "${path.module}/functions/parse-url/index.py"
+  source_dir = "../parse-url"
   output_file_mode = "0666"
   output_path      = "${path.module}/files/parse-url.zip"
 }

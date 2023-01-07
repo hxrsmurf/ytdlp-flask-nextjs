@@ -1,6 +1,6 @@
 data "archive_file" "downloader" {
   type             = "zip"
-  source_file      = "${path.module}/functions/downloader/index.py"
+  source_dir = "../downloader"
   output_file_mode = "0666"
   output_path      = "${path.module}/files/downloader.zip"
 }
