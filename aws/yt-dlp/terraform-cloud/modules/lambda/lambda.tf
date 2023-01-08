@@ -22,9 +22,7 @@ resource "aws_iam_role" "role" {
         }
     )
 
-    managed_policy_arns   = [
-        "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-    ]
+    managed_policy_arns   = var.policy-arn
 
     name                  = "yt-dlp-${var.name}-tf"
     path                  = "/"
