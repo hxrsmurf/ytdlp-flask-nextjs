@@ -4,6 +4,10 @@ terraform {
       source = "hashicorp/aws"
       version = "4.49.0"
     }
+    cloudflare = {
+      source  = "cloudflare/cloudflare"
+      version = "~> 3.0"
+    }
   }
 
   cloud {
@@ -19,5 +23,9 @@ provider "aws" {
   region = "us-east-1"
 }
 
-variable "AWS_ACCESS_KEY_ID" {}
-variable "AWS_SECRET_ACCESS_KEY" {}
+provider "cloudflare" {
+  api_token = var.cloudflare_api_token
+}
+
+# variable "AWS_ACCESS_KEY_ID" {}
+# variable "AWS_SECRET_ACCESS_KEY" {}

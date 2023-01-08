@@ -29,3 +29,4 @@ celery/celerybeat-*
 .env
 *.zip
 aws/yt-dlp/terraform-cloud/layers/*
+private-variables.tf
