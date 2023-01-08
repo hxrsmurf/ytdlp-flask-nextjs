@@ -31,7 +31,7 @@ resource "aws_scheduler_schedule" "list-channels" {
     target {
         arn      = module.list-channels.arn
         input    = jsonencode({})
-        role_arn = aws_iam_role.list-channels.arn
+        role_arn = module.role-eventbridge-list-channels.arn
 
         retry_policy {
             maximum_event_age_in_seconds = 86400
@@ -40,38 +40,8 @@ resource "aws_scheduler_schedule" "list-channels" {
     }
 }
 
-resource "aws_iam_role" "list-channels" {
-    assume_role_policy    = jsonencode(
-        {
-            Statement = [
-                {
-                    Action    = "sts:AssumeRole"
-                    Effect    = "Allow"
-                    Principal = {
-                        Service = "scheduler.amazonaws.com"
-                    }
-                },
-            ]
-            Version   = "2012-10-17"
-        }
-    )
-    managed_policy_arns   = []
-    max_session_duration  = 3600
-    name                  = "yt-dlp-ListChannelsEventBridgeRole-tf"
-    path                  = "/"
-
-    inline_policy {
-        name   = "EventBridge"
-        policy = jsonencode(
-            {
-                Statement = [
-                    {
-                        Action   = "lambda:InvokeFunction"
-                        Effect   = "Allow"
-                        Resource = module.list-channels.arn
-                    },
-                ]
-            }
-        )
-    }
+module "role-eventbridge-list-channels" {
+    source = "./modules/eventbridge-role"
+    name = "ListChannels-tf"
+    lambda-arn = module.list-channel-videos.arn
 }
