@@ -4,12 +4,16 @@ import logging
 
 client = boto3.client('sqs')
 
-if 'TableChannels' in os.environ:
-    queue = os.environ['QueueUrl']
+VideoQueue = os.environ['QueueVideos']
+ChannelQueue = os.environ['QueueVideos']
 
-def send_sqs_message(message):
-    logging.info(f'Adding to queue: {message}')
+def send_sqs_message(message, download_type):
+    logging.info(f'Adding to Video Queue: {message}')
+
+    if download_type == 'channel':
+        queue = ChannelQueue
+
     response = client.send_message(
-        QueueUrl=queue,
-        MessageBody=message
+        QueueUrl = queue,
+        MessageBody = message
     )

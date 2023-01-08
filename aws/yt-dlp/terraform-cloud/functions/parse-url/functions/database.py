@@ -18,7 +18,7 @@ def get_item(id, download_type, table_name):
         if download_type == 'playlist':
             return response['Item']['latest_video_original_url']['S']
         elif download_type == 'video':
-            return response['Item']['like_count']['S']
+            return response['Item']['id']['S']
     else:
         return False
 
@@ -29,12 +29,12 @@ def put_item(item, table_name):
     )
     return response
 
-def put_item_channel(original_url, url_info, table_name, updated_at):
-    logging.info(f'Adding {original_url}')
+def put_item_channel(channel, url_info, table_name, updated_at):
+    logging.info(f'Adding {channel}')
 
     item = {
         'id': {
-            'S': original_url
+            'S': channel
         },
         'updated_at_epoch' : {
             'S': updated_at

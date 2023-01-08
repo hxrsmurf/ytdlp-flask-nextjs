@@ -4,17 +4,20 @@ module "parse-url" {
     layers = [
         module.yt-dlp.arn
     ]
-    memory = "128"
-    timeout = "60"
+    memory = "256"
+    timeout = "30"
     environment = {
         TableChannels = aws_dynamodb_table.channels.id,
         TableVideos = aws_dynamodb_table.videos.id,
-        QueueUrl = module.sqs-videos.url
+        QueueVideos = module.sqs-videos.url
+        QueueChannels = module.sqs-channels.url
     }
     policy-arn = [
         var.default-arn,
         "arn:aws:iam::aws:policy/service-role/AWSLambdaSQSQueueExecutionRole",
-        aws_iam_policy.sqs.arn
+        aws_iam_policy.sqs.arn,
+        aws_iam_policy.dynamodb-channels.arn,
+        aws_iam_policy.dynamodb-videos.arn
     ]
 }
 
