@@ -34,7 +34,13 @@ def parse_channel_info(json_info):
     download_type = json_info['_type']
 
     # Latest Upload
-    entries = json_info['entries'][0]['entries'][0]
+    base_entries = json_info['entries'][0]
+
+    if 'entries' in base_entries:
+        entries = base_entries['entries'][0]
+    else:
+        entries = base_entries
+
     latest_video_id = entries['id']
     latest_video_webpage_url = entries['webpage_url']
     latest_video_original_url = entries['original_url']
