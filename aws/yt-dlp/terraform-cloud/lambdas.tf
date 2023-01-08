@@ -11,4 +11,27 @@ module "hello" {
     environment = {
         Blank = "blank"
     }
+    policy-arn = [
+        var.default-arn
+    ]
+}
+
+module "recreate" {
+    source = "./modules/lambda"
+    name = "recreate"
+    layers = [
+    ]
+    memory = "128"
+    timeout = "60"
+    environment = {
+        QueueUrl = module.sqs-channels.url
+    }
+    policy-arn = [
+        var.default-arn,
+        aws_iam_policy.sqs.arn
+    ]
+}
+
+variable "default-arn" {
+    default = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
