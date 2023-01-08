@@ -61,3 +61,7 @@ resource "aws_lambda_function" "function" {
         mode = "PassThrough"
     }
 }
+
+output "arn" {
+    value = aws_lambda_function.function.arn
+}
