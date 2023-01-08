@@ -118,3 +118,8 @@ resource "aws_lambda_function" "parse-url" {
         mode = "PassThrough"
     }
 }
+
+resource "aws_lambda_event_source_mapping" "parse-url" {
+  event_source_arn = aws_sqs_queue.videos.arn
+  function_name    = aws_lambda_function.parse-url.arn
+}
