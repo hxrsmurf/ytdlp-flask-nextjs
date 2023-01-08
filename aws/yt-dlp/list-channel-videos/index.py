@@ -8,12 +8,14 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 def handler(event, context):
-    url = 'https://www.youtube.com/@MrBeast'
+    url = event['Records'][0]['body']
 
     url_info = json.loads(download(url=url, playlistend=2))
+
     for entry in url_info['entries']:
         for video in entry['entries']:
             original_url = video['original_url']
+            logging.info(original_url)
             send_sqs_message(original_url)
 
     return({

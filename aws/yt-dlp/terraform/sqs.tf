@@ -24,3 +24,13 @@ resource "aws_sqs_queue" "videos-dlq" {
     sourceQueueArns   = [aws_sqs_queue.videos.arn]
   })
 }
+
+resource "aws_sqs_queue" "channels" {
+  name                          = "nextjs13-yt-dlp-Channels-tf"
+  delay_seconds                 = 90
+  visibility_timeout_seconds    = 900
+
+  tags = {
+    Name = "nextjs13-yt-dlp-Channels-tf"
+  }
+}
