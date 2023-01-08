@@ -7,6 +7,14 @@ resource "aws_sqs_queue" "sqs" {
     }
 }
 
+output "url" {
+    value = aws_sqs_queue.sqs.url
+}
+
+output "arn" {
+    value = aws_sqs_queue.sqs.arn
+}
+
 variable "name" {}
 variable "delay_seconds" {}
 variable "visibility_timeout_seconds" {}
