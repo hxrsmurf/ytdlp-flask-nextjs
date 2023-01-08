@@ -1,5 +1,6 @@
 import logging
 import json
+import os
 
 from functions.utils import download, check_database
 
@@ -8,6 +9,13 @@ logger.setLevel(logging.INFO)
 
 def handler(event, context):
     if event:
+        source_ip = event['requestContext']['http']['sourceIp']
+        if not source_ip == os.environ['SourceIp']:
+            return({
+                'statusCode': 500,
+                'body': 'Not Authorized'
+            })
+
         if 'queryStringParameters' in event:
             url = event['queryStringParameters']['url']
         elif 'Records' in event:

@@ -11,6 +11,7 @@ module "parse-url" {
         TableVideos = aws_dynamodb_table.videos.id,
         QueueVideos = module.sqs-videos.url
         QueueChannels = module.sqs-channels.url
+        SourceIp = var.source_ip
     }
     policy-arn = [
         var.default-arn,
