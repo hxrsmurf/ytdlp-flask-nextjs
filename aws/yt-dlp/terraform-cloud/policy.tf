@@ -13,7 +13,8 @@ resource "aws_iam_policy" "sqs" {
         Effect   = "Allow"
         Resource = [
             module.sqs-videos.arn,
-            module.sqs-channels.arn
+            module.sqs-channels.arn,
+            module.sqs-new-video.arn
         ]
       },
     ]
@@ -76,6 +77,27 @@ resource "aws_iam_policy" "dynamodb-videos" {
         Resource = [
           aws_dynamodb_table.videos.arn,
           "${aws_dynamodb_table.videos.arn}/index/*",
+        ]
+      },
+    ]
+  })
+}
+
+resource "aws_iam_policy" "ses" {
+  name        = "yt-dlp-ses-tf"
+  path        = "/"
+  description = "Allow SES"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "ses:SendEmail"
+        ]
+        Effect   = "Allow"
+        Resource = [
+          aws_ses_email_identity.yt-dlp.arn
         ]
       },
     ]
