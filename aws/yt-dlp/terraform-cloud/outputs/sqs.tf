@@ -10,5 +10,5 @@ data "terraform_remote_state" "sqs" {
 }
 
 output "sqs" {
-    value = data.terraform_remote_state.sqs.outputs
+    value = data.terraform_remote_state.sqs.outputs.sqs
 }
