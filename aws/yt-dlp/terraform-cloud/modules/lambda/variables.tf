@@ -12,5 +12,5 @@ variable "policy-arn" {
 }
 
 variable "log-retention-days" {
-    default = 5
+    default = 3
 }
