@@ -1,8 +1,8 @@
 data "archive_file" "archive" {
   type             = "zip"
-  source_dir = "./functions/${var.name}"
+  source_dir = "./code"
   output_file_mode = "0666"
-  output_path      = "./files/${var.name}.zip"
+  output_path      = "./${var.name}.zip"
 }
 
 # aws_iam_role.list-channel-videos:
