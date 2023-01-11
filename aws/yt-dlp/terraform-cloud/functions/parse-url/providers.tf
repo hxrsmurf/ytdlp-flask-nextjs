@@ -10,7 +10,7 @@ terraform {
     organization = "yt-dlp"
 
     workspaces {
-      name = "list-channel-videos"
+      name = "parse-url"
     }
   }
 }
