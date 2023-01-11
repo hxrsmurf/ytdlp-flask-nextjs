@@ -28,5 +28,6 @@ celery/celerybeat-*
 **/__pycache__/
 .env
 *.zip
-aws/yt-dlp/terraform-cloud/layers/*
+aws/yt-dlp/terraform-cloud/layers/files/
+aws/yt-dlp/terraform-cloud/layers/layers/
 private-variables.tf
