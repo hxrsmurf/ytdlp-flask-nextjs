@@ -9,6 +9,6 @@ data "terraform_remote_state" "databases" {
   }
 }
 
-output "table-videos" {
+output "databases" {
     value = data.terraform_remote_state.databases.outputs
 }
