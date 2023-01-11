@@ -28,5 +28,8 @@ resource "aws_dynamodb_table" "channels" {
 }
 
 output "channels" {
-    value = aws_dynamodb_table.channels.arn
+  value = {
+    "arn" : aws_dynamodb_table.channels.arn,
+    "name" : aws_dynamodb_table.channels.id
+  }
 }
