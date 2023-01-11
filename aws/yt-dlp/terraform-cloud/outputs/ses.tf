@@ -10,5 +10,5 @@ data "terraform_remote_state" "ses" {
 }
 
 output "ses" {
-    value = data.terraform_remote_state.ses.outputs
+    value = data.terraform_remote_state.ses.outputs.ses
 }
