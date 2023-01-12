@@ -9,7 +9,7 @@ data "terraform_remote_state" "outputs" {
   }
 }
 
-module "list-channels" {
+module "parse-url" {
     source = "../../modules/lambda"
     name = "parse-url"
     layers = [
@@ -29,4 +29,8 @@ module "list-channels" {
         data.terraform_remote_state.outputs.outputs.policy.channels,
         data.terraform_remote_state.outputs.outputs.policy.videos
     ]
+}
+
+output "invoke_arn" {
+  value = module.parse-url.invoke_arn
 }
