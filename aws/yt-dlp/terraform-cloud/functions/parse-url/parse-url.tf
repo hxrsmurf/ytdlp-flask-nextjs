@@ -31,6 +31,14 @@ module "parse-url" {
     ]
 }
 
+resource "aws_lambda_permission" "allow_http_api" {
+    statement_id  = "d6f0ab7a-032d-5b8c-b207-08dfdd9bf3d2"
+    action        = "lambda:InvokeFunction"
+    function_name = module.parse-url.arn
+    principal     = "apigateway.amazonaws.com"
+    source_arn    = "${data.terraform_remote_state.outputs.outputs.http-api.execution_arn}/*/*/"
+}
+
 output "invoke_arn" {
   value = module.parse-url.invoke_arn
 }
