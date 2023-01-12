@@ -8,3 +8,5 @@ I've wanted to make a server-less YouTube downloader for a long time and definit
 draw.io diagram. I may use mermaid later.
 
 !ytdlp.png
+
+![image](yt-dlp.drawio.png)
