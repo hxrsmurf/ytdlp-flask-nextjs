@@ -70,3 +70,7 @@ resource "aws_apigatewayv2_api_mapping" "api-yt" {
 output "api-http-api" {
   value = aws_apigatewayv2_api.http-api.api_endpoint
 }
+
+output "execution_arn" {
+  value = aws_apigatewayv2_api.http-api.execution_arn
+}
