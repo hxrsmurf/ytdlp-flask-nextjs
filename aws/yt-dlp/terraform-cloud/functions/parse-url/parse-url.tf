@@ -21,7 +21,8 @@ module "parse-url" {
         TableChannels = data.terraform_remote_state.outputs.outputs.databases.channels.name,
         TableVideos = data.terraform_remote_state.outputs.outputs.databases.videos.name,
         QueueChannels = data.terraform_remote_state.outputs.outputs.sqs.channels.url,
-        QueueVideos = data.terraform_remote_state.outputs.outputs.sqs.videos.url
+        QueueVideos = data.terraform_remote_state.outputs.outputs.sqs.videos.url,
+        QueueNewVideo = data.terraform_remote_state.outputs.outputs.sqs.new-video.url
     }
     policy-arn = [
         data.terraform_remote_state.outputs.outputs.arn-default-lambda-execution,
