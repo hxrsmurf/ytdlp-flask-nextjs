@@ -9,7 +9,6 @@ ChannelQueue = os.environ['QueueVideos']
 NewVideoQueue = os.environ['QueueNewVideo']
 
 def send_sqs_message(channel=None, message=None, download_type=None):
-    logging.info(f'Adding to Video Queue: {message}')
 
     if download_type == 'channel':
         queue = ChannelQueue
