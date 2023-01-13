@@ -27,3 +27,32 @@ module "list-channels" {
         data.terraform_remote_state.outputs.outputs.policy.sqs
     ]
 }
+
+module "role-eventbridge" {
+    source = "../../modules/eventbridge-role"
+    name = "list-channels-eventbridge-tf"
+    lambda-arn = module.list-channels.arn
+}
+
+resource "aws_scheduler_schedule" "list-channels" {
+    group_name                   = "default"
+    name                         = "list-channels-tf"
+    schedule_expression          = "rate(1 hours)"
+    schedule_expression_timezone = "America/Detroit"
+    state                        = "ENABLED"
+
+    flexible_time_window {
+        mode                      = "OFF"
+    }
+
+    target {
+        arn      = module.list-channels.arn
+        input    = jsonencode({})
+        role_arn = module.role-eventbridge.arn
+
+        retry_policy {
+            maximum_event_age_in_seconds = 86400
+            maximum_retry_attempts       = 0
+        }
+    }
+}
