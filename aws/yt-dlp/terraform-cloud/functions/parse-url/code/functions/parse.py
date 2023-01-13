@@ -44,6 +44,7 @@ def parse_channel_info(json_info):
     latest_video_id = entries['id']
     latest_video_webpage_url = entries['webpage_url']
     latest_video_original_url = entries['original_url']
+    latest_video_title = entries['title']
 
     raw_info = {
         'id' : id,
@@ -67,7 +68,8 @@ def parse_channel_info(json_info):
         # Latest Upload
         'latest_video_id': latest_video_id,
         'latest_video_webpage_url': latest_video_webpage_url,
-        'latest_video_original_url': latest_video_original_url
+        'latest_video_original_url': latest_video_original_url,
+        'latest_video_title': latest_video_title
     }
 
     return raw_info
