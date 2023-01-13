@@ -23,6 +23,8 @@ module "parse-url" {
         QueueChannels = data.terraform_remote_state.outputs.outputs.sqs.channels.url,
         QueueVideos = data.terraform_remote_state.outputs.outputs.sqs.videos.url,
         QueueNewVideo = data.terraform_remote_state.outputs.outputs.sqs.new-video.url
+        SourceIp = var.source_ip
+
     }
     policy-arn = [
         "arn:aws:iam::aws:policy/service-role/AWSLambdaSQSQueueExecutionRole",
