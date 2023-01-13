@@ -4,13 +4,13 @@ import os
 
 client = boto3.client('ses')
 
-def send_ses(channel, video):
+def send_ses(channel, video, title):
 
     logging.info("Sending email")
     email = os.environ['email']
 
     subject = f'New Video from {channel}'
-    message = f'Video Uploaded\n{video}'
+    message = f'{title}\n{video}'
 
     response = client.send_email(
         Source = email,

@@ -10,8 +10,8 @@ logger.setLevel(logging.INFO)
 
 def handler(event, context):
 
-    channel, video = parse_sqs_channel_video(event)
-    send_ses(channel, video)
+    channel, video, title = parse_sqs_channel_video(event)
+    send_ses(channel, video, title)
 
     return({
         'statusCode': 200,

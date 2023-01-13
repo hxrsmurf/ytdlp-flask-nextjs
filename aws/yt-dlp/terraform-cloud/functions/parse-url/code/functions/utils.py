@@ -36,13 +36,14 @@ def check_database(url_info):
         table_name = table_channels
         channel = ''.join(url_info['channel'])
         latest_video_original_url = ''.join(url_info['latest_video_original_url'])
+        latest_video_title = url_info['latest_video_title']
         latest_video_original_url_database = get_item(channel, download_type, table_name)
 
         if not latest_video_original_url == latest_video_original_url_database:
             logging.info(f'New video uploaded: {channel} - {latest_video_original_url}')
             put_item_channel(channel, url_info, table_name, updated_at=current_epoch_time())
             send_sqs_message(None, latest_video_original_url, 'channel')
-            send_sqs_message(channel, latest_video_original_url, 'new-video')
+            send_sqs_message(channel, latest_video_original_url, 'new-video', latest_video_title)
         else:
             logging.info(f'Already in database: {channel} - {latest_video_original_url}')
 
