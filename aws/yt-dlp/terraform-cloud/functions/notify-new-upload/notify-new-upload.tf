@@ -27,3 +27,8 @@ module "notify-new-upload" {
         "arn:aws:iam::aws:policy/service-role/AWSLambdaSQSQueueExecutionRole"
     ]
 }
+
+resource "aws_lambda_event_source_mapping" "sqs" {
+  event_source_arn = data.terraform_remote_state.outputs.outputs.sqs.new-video.arn
+  function_name    = module.notify-new-upload.arn
+}
