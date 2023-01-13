@@ -4,7 +4,7 @@ import logging
 client = boto3.client('dynamodb')
 
 def get_item(id, download_type, table_name):
-    logging.info('Getting item')
+    logging.info(f'Getting item from database: {id}')
     response = client.get_item(
         TableName=table_name,
         Key = {
@@ -30,7 +30,7 @@ def put_item(item, table_name):
     return response
 
 def put_item_channel(channel, url_info, table_name, updated_at):
-    logging.info(f'Adding {channel}')
+    logging.info(f'Adding to channel database {channel}')
 
     item = {
         'id': {
@@ -66,7 +66,7 @@ def put_item_channel(channel, url_info, table_name, updated_at):
     put_item(item, table_name)
 
 def put_item_video(id, url_info, table_name, updated_at):
-    logging.info(f'Adding {id}')
+    logging.info(f'Adding to video database: {id}')
 
     item = {
         'id': {
