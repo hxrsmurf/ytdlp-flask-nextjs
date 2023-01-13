@@ -25,6 +25,7 @@ module "parse-url" {
         QueueNewVideo = data.terraform_remote_state.outputs.outputs.sqs.new-video.url
     }
     policy-arn = [
+        "arn:aws:iam::aws:policy/service-role/AWSLambdaSQSQueueExecutionRole",
         data.terraform_remote_state.outputs.outputs.arn-default-lambda-execution,
         data.terraform_remote_state.outputs.outputs.policy.sqs,
         data.terraform_remote_state.outputs.outputs.policy.channels,
@@ -38,6 +39,11 @@ resource "aws_lambda_permission" "allow_http_api" {
     function_name = module.parse-url.arn
     principal     = "apigateway.amazonaws.com"
     source_arn    = "${data.terraform_remote_state.outputs.outputs.http-api.execution_arn}/*/*/"
+}
+
+resource "aws_lambda_event_source_mapping" "sqs" {
+  event_source_arn = data.terraform_remote_state.outputs.outputs.sqs.channels.arn
+  function_name    = module.parse-url.arn
 }
 
 output "invoke_arn" {
