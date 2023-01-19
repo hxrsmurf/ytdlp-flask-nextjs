@@ -8,7 +8,7 @@
     "browser_action": {
         "browser_style": true,
         "default_title": "YouTube Saver",
-        "default_popup": "tabs.html"
+        "default_popup": "index.html"
     },
     "description": "Saves YouTube Videos to AWS Dynamo DB via API Gateway",
     "homepage_url": "https://github.com/hxrsmurf/ytdlp-flask-nextjs/tree/master/aws/yt-dlp",
