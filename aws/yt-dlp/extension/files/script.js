@@ -20,7 +20,6 @@ function queryAPI(url) {
 
 function notification(url) {
   const title = browser.i18n.getMessage("notificationTitle");
-  const content = browser.i18n.getMessage("Test");
   browser.notifications.create({
     type: "basic",
     title: "Saved Url",
@@ -43,7 +42,7 @@ document.addEventListener("click", (e) => {
   }
 
   if (e.target.id === "save-url") {
-    callOnActiveTab((tab, tabs) => { });
+    callOnActiveTab((tab, tabs) => {});
   }
   e.preventDefault();
 });
