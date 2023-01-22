@@ -11,7 +11,7 @@ def publish_sns(channel=None, latest_video_title=None, url=None):
 
     logging.info(f'SNS Publishing: {sns_arn} - {sns_message}')
 
-    response = client.send_message(
+    response = client.publish(
         TopicArn = sns_arn,
         Message = f'{latest_video_title}\n{url}'
         Subject = f'New Video from {channel}'
