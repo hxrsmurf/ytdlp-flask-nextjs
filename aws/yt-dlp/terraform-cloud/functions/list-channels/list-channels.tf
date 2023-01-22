@@ -37,7 +37,7 @@ module "role-eventbridge" {
 resource "aws_scheduler_schedule" "list-channels" {
     group_name                   = "default"
     name                         = "list-channels-tf"
-    schedule_expression          = "rate(1 hours)"
+    schedule_expression          = "rate(30 minutes)"
     schedule_expression_timezone = "America/Detroit"
     state                        = "ENABLED"
 
