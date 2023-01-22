@@ -2,6 +2,7 @@ import logging
 from json import dumps
 import requests
 import os
+from functions.parse import parse_sqs_channel_video
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -27,5 +28,7 @@ def handler(event, context):
     bot_message = {
         'text': f'{channel}\n{title}\n{video}'
     }
+
+    logging.info(bot_message)
 
     viaRequests(url, message_headers, bot_message)
