@@ -13,6 +13,6 @@ def publish_sns(channel=None, latest_video_title=None, url=None):
 
     response = client.publish(
         TopicArn = sns_arn,
-        Message = f'{latest_video_title}\n{url}'
+        Message = f'{latest_video_title}\n{url}',
         Subject = f'New Video from {channel}'
     )
