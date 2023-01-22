@@ -24,14 +24,15 @@ module "parse-url" {
         QueueVideos = data.terraform_remote_state.outputs.outputs.sqs.videos.url,
         QueueNewVideo = data.terraform_remote_state.outputs.outputs.sqs.new-video.url
         SourceIp = var.source_ip
-
+        sns_arn = data.terraform_remote_state.outputs.outputs.sns.sns.arn
     }
     policy-arn = [
         "arn:aws:iam::aws:policy/service-role/AWSLambdaSQSQueueExecutionRole",
         data.terraform_remote_state.outputs.outputs.arn-default-lambda-execution,
         data.terraform_remote_state.outputs.outputs.policy.sqs,
         data.terraform_remote_state.outputs.outputs.policy.channels,
-        data.terraform_remote_state.outputs.outputs.policy.videos
+        data.terraform_remote_state.outputs.outputs.policy.videos,
+        aws_iam_policy.sns.arn
     ]
 }
 
