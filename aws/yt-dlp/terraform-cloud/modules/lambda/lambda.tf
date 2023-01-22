@@ -69,3 +69,7 @@ output "arn" {
 output "invoke_arn" {
     value = aws_lambda_function.function.invoke_arn
 }
+
+output "url" {
+    value = "https://us-east-1.console.aws.amazon.com/lambda/home?region=us-east-1#/functions/${aws_lambda_function.function.id}"
+}
