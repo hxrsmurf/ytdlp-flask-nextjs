@@ -25,8 +25,7 @@ module "notify-new-upload" {
   policy-arn = [
     "arn:aws:iam::aws:policy/service-role/AWSLambdaSQSQueueExecutionRole",
     data.terraform_remote_state.outputs.outputs.arn-default-lambda-execution,
-    data.terraform_remote_state.outputs.outputs.policy.ses,
-    aws_iam_policy.sns.arn
+    data.terraform_remote_state.outputs.outputs.policy.ses
   ]
 }
 
