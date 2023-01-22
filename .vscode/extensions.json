@@ -1,0 +1,7 @@
+{
+    "recommendations": [
+        "hashicorp.terraform",
+        "github.vscode-pull-request-github",
+        "vscodevim.vim"
+    ]
+}
