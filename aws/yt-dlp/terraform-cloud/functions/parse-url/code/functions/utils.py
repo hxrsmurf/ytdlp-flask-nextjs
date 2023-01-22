@@ -7,6 +7,7 @@ from time import time
 from .parse import parse_info
 from .database import get_item, put_item_channel, put_item_video
 from .sqs import send_sqs_message
+from .sns import publish_sns
 
 def current_epoch_time():
     return str(time())
@@ -44,6 +45,7 @@ def check_database(url_info):
             put_item_channel(channel, url_info, table_name, updated_at=current_epoch_time())
             send_sqs_message(None, latest_video_original_url, 'channel')
             send_sqs_message(channel, latest_video_original_url, 'new-video', latest_video_title)
+            publish_sns(channel=channel, latest_video_title=latest_video_title, url=latest_video_original_url)
         else:
             logging.info(f'Already in database: {channel} - {latest_video_original_url}')
 
