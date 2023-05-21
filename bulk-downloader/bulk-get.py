@@ -9,7 +9,7 @@ args = parser.parse_args()
 ytdl_opts = {
     'outtmpl' : '/mnt/videos/%(uploader)s/%(title)s-%(id)s.%(ext)s',
     'windowsfilenames': True,
-    #'playlistend' : 1,
+    #'playlistend' : 2,
     'ignoreerrors' : True,
     'quiet' : True,
     'format': 'bestvideo*+bestaudio/best',
@@ -28,7 +28,8 @@ channel = "https://www.youtube.com/@MichelleKhare"
 
 with yt_dlp.YoutubeDL(ytdl_opts) as ydl:
     info = ydl.extract_info(channel, download=False)
-    entries = info['entries'][0]['entries'][0]
-    video = entries['webpage_url']
-    print(video)
-    r.publish('queue', video)
+    entries = info['entries']
+    for entry in entries:
+        for e in entry['entries']:
+            video = e['webpage_url']
+            r.publish('queue', video)
