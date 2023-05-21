@@ -2,11 +2,10 @@ services:
   python:
     build:
       context: .
-    command: ["--channel", "https://youtube.com/@MrBeast"]
     volumes:
       - ./videos:/mnt/videos
     deploy:
-      replicas: 4
+      replicas: 1
 
   redis:
     image: redis:alpine
