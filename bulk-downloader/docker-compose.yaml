@@ -5,6 +5,8 @@ services:
     command: ["--channel", "https://youtube.com/@MrBeast"]
     volumes:
       - ./videos:/mnt/videos
+    deploy:
+      replicas: 4
 
   redis:
     image: redis:alpine
