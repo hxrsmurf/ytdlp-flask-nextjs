@@ -1,0 +1,14 @@
+services:
+  python:
+    build:
+      context: .
+    volumes:
+      - ./videos:/mnt/videos
+    deploy:
+      replicas: 1
+
+  redis:
+    image: redis:alpine
+    command: redis-server
+    ports:
+      - 6379:6379

@@ -31,3 +31,5 @@ celery/celerybeat-*
 aws/yt-dlp/terraform-cloud/layers/files/
 aws/yt-dlp/terraform-cloud/layers/layers/
 private-variables.tf
+bulk-downloader/videos
+bulk-downloader/channels.txt
