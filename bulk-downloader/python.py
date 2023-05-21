@@ -6,7 +6,7 @@ parser.add_argument("--channel", "-c")
 args = parser.parse_args()
 
 ytdl_opts = {
-    'outtmpl' : '%(uploader)s/%(id)s.%(ext)s',
+    'outtmpl' : '/mnt/videos/%(uploader)s/%(id)s.%(ext)s',
     'windowsfilenames': True,
     'playlistend' : 1,
     'ignoreerrors' : True,

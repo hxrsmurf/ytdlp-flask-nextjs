@@ -3,3 +3,5 @@ services:
     build:
       context: .
     command: ["--channel", "https://youtube.com/@MrBeast"]
+    volumes:
+      - ./videos:/mnt/videos
