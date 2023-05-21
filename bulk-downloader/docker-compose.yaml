@@ -5,3 +5,9 @@ services:
     command: ["--channel", "https://youtube.com/@MrBeast"]
     volumes:
       - ./videos:/mnt/videos
+
+  redis:
+    image: redis:alpine
+    command: redis-server
+    ports:
+      - 6379:6379
